@@ -1,11 +1,12 @@
-import React from 'react'
+import HeroSection from "@/components/landing/HeroSection";
+import React from "react";
 
 const Landing = () => {
   return (
     <div>
-      landing page
+      <HeroSection />
     </div>
-  )
-}
+  );
+};
 
-export default Landing
+export default Landing;
