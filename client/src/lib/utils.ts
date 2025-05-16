@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { toast } from "sonner";
@@ -58,9 +59,9 @@ export const withToast = async <T>(
 
 export const createNewUserInDatabase = async (
   user: any,
-  idToken: any,
   userRole: string,
-  fetchWithBQ: any
+  fetchWithBQ: any,
+  idToken: any
 ) => {
   const createEndpoint =
     userRole?.toLowerCase() === "manager" ? "/managers" : "/tenants";
