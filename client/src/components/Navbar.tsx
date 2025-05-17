@@ -1,3 +1,4 @@
+"use client";
 import { NAVBAR_HEIGHT } from "@/lib/constants";
 import Link from "next/link";
 import React from "react";
@@ -71,13 +72,13 @@ const Navbar = () => {
               className="md:ml-4 bg-primary-50 text-primary-700 hover:bg-secondary-500 hover:text-primary-50"
               onClick={() =>
                 router.push(
-                  authUser.userRole?.tolowerCase() === "manager"
+                  authUser.userRole?.toLowerCase() === "manager"
                     ? "/managers/newproperty"
                     : "/search"
                 )
               }
             >
-              {authUser.userRole?.tolowerCase() === "manager" ? (
+              {authUser.userRole?.toLowerCase() === "manager" ? (
                 <>
                   <Plus className="h-4 w-4" />
                   <span className="hidden md:block ml-2">Add New Property</span>
