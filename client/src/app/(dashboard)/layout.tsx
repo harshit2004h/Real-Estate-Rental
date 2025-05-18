@@ -20,7 +20,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         (userRole === "manager" && pathname.startsWith("/tenants")) ||
         (userRole === "tenant" && pathname.startsWith("/managers"))
       ) {
-        router.push(
+        router.push(  
           userRole === "manager"
             ? "/managers/properties"
             : "/tenants/favourites",

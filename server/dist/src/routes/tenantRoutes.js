@@ -7,5 +7,6 @@ const express_1 = __importDefault(require("express"));
 const tenantControllers_1 = require("../controllers/tenantControllers");
 const router = express_1.default.Router();
 router.get("/:cognitoId", tenantControllers_1.getTenant);
+router.put("/:cognitoId", tenantControllers_1.updateTenant);
 router.post("/", tenantControllers_1.createTenant);
 exports.default = router;
