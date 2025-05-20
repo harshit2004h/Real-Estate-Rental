@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateManager = exports.createManager = exports.getManager = void 0;
+exports.getManagerProperties = exports.updateManager = exports.createManager = exports.getManager = void 0;
 const client_1 = require("@prisma/client");
+const wkt_1 = require("@terraformer/wkt");
 const prisma = new client_1.PrismaClient();
 const getManager = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -77,3 +78,35 @@ const updateManager = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.updateManager = updateManager;
+const getManagerProperties = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { cognitoId } = req.params;
+        const properties = yield prisma.property.findMany({
+            where: {
+                managerCognitoId: cognitoId,
+            },
+            include: {
+                location: true,
+            },
+        });
+        const propertiesWithFormattedLocation = yield Promise.all(properties.map((property) => __awaiter(void 0, void 0, void 0, function* () {
+            const coordinates = yield prisma.$queryRaw `SELECT ST_asText(coordinates) as coordinates from "Location" where id = ${property.location.id}`;
+            const geoJSON = (0, wkt_1.wktToGeoJSON)(coordinates[0].coordinates || "");
+            const longitude = geoJSON.coordinates[0];
+            const latitude = geoJSON.coordinates[1];
+            return Object.assign(Object.assign({}, property), { location: Object.assign(Object.assign({}, property.location), { coordinates: {
+                        longitude,
+                        latitude,
+                    } }) });
+        })));
+        res.json(propertiesWithFormattedLocation);
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({
+            message: `Error retrieving manager properties: , ${error.message}`,
+        });
+    }
+});
+exports.getManagerProperties = getManagerProperties;
