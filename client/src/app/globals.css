@@ -99,42 +99,30 @@ body,
   @apply pt-8 pb-5 px-8;
 }
 
-.mapboxgl-popup-content {
-  @apply !bg-primary-700;
-  @apply !rounded-lg;
-  @apply !py-2;
-  @apply !px-3;
-}
-
-.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
-  @apply !border-b-primary-700;
-}
-
-.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
-  @apply !border-t-primary-700;
-}
-
-.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
-  @apply !border-r-primary-700;
-}
-
-.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
-  @apply !border-l-primary-700;
-}
-
+/* Map Popup Styling */
 .marker-popup {
-  @apply bg-primary-700;
-  @apply text-white;
-  @apply p-0;
-  @apply m-0;
-  @apply !flex;
-  @apply justify-between;
-  @apply items-center;
-  @apply gap-3;
+  @apply bg-[#121c2e] dark:bg-[#0f172a];
+  @apply rounded-lg;
+  @apply p-4;
+  @apply shadow-lg;
+  @apply min-w-[200px];
+  @apply transform;
+  @apply transition-all duration-200;
+  display: block;
+  border: none;
 }
 
 .marker-popup-image {
-  @apply w-10 h-10 object-cover bg-white rounded-lg;
+  @apply w-10 h-10 rounded-md bg-gray-700;
+  @apply mb-2;
+}
+
+.marker-popup-title {
+  @apply text-white;
+  @apply font-medium;
+  @apply mb-1;
+  @apply block;
+  font-size: 15px;
 }
 
 .marker-popup-price {
@@ -147,7 +135,18 @@ body,
 }
 
 .marker-popup-price-unit {
-  @apply text-xs text-primary-500 font-normal;
+  @apply text-gray-300;
+  @apply font-normal;
+  font-size: 14px;
+}
+
+/* OpenLayers specific popup customization */
+.ol-overlay-container {
+  pointer-events: auto !important;
+}
+
+.ol-overlay-container .marker-popup {
+  bottom: 12px;
 }
 
 /* scrollbar styling */

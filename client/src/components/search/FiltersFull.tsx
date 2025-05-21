@@ -67,7 +67,7 @@ const FiltersFull = () => {
   if (!isFiltersFullOpen) return null;
 
   return (
-    <div className="bg-white rounded-lg px-4 h-[78.1vh] overflow-y-scroll pb-6 w-5/6">
+    <div className="bg-white rounded-lg px-4 h-[78.1vh] overflow-y-scroll pb-6 w-full">
       <div className="flex flex-col space-y-6 ">
         {/* Location */}
         <div>
@@ -76,7 +76,7 @@ const FiltersFull = () => {
             <Input
               placeholder="Enter location"
               value={filters.location}
-              onChange={(e) =>  
+              onChange={(e) =>
                 setLocalFilters((prev) => ({
                   ...prev,
                   location: e.target.value,
