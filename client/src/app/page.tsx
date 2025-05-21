@@ -1,8 +1,13 @@
+import Navbar from "@/components/Navbar";
+import Landing from "./(nondashboard)/landing/page";
 
 export default function Home() {
   return (
-    <div>
-      <h1 className="text-4xl bg-primary-700">Hello World</h1>
+    <div className="h-full w-full">
+      <Navbar />
+      <main className={`h-full flex w-full flex-col`}>
+        <Landing />
+      </main>
     </div>
   );
 }
