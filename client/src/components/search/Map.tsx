@@ -17,6 +17,7 @@ import { MapPin } from "lucide-react";
 import ReactDOMServer from "react-dom/server";
 // Import required modules for MapTiler integration
 import olms from "ol-mapbox-style";
+import Loading from "../Loading";
 
 const Map = () => {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -155,7 +156,7 @@ const Map = () => {
     });
   };
 
-  if (isLoading) return <>Loading...</>;
+  if (isLoading) return <Loading/>;
   if (isError || !properties) return <div>Failed to fetch properties</div>;
 
   return (

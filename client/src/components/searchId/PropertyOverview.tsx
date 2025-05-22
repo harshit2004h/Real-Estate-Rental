@@ -1,6 +1,7 @@
 import { useGetPropertyQuery } from "@/state/api";
 import { MapPin, Star } from "lucide-react";
 import React from "react";
+import Loading from "../Loading";
 
 const PropertyOverview = ({ propertyId }: PropertyOverviewProps) => {
   const {
@@ -9,7 +10,7 @@ const PropertyOverview = ({ propertyId }: PropertyOverviewProps) => {
     isLoading,
   } = useGetPropertyQuery(propertyId);
 
-  if (isLoading) return <>Loading...</>;
+  if (isLoading) return <Loading />;
   if (isError || !property) {
     return <>Property not Found</>;
   }
@@ -54,12 +55,16 @@ const PropertyOverview = ({ propertyId }: PropertyOverviewProps) => {
           <div className="border-l border-gray-300 h-10"></div>
           <div>
             <div className="text-sm text-gray-500">Bedrooms</div>
-            <div className="font-semibold">{property.beds} bd</div>
+            <div className="font-semibold">
+              {property.beds} {property.beds == 1 ? "bed" : "beds"}
+            </div>
           </div>
           <div className="border-l border-gray-300 h-10"></div>
           <div>
             <div className="text-sm text-gray-500">Bathrooms</div>
-            <div className="font-semibold">{property.baths} ba</div>
+            <div className="font-semibold">
+              {property.baths} {property.baths == 1 ? "bathroom" : "bathrooms"}
+            </div>
           </div>
           <div className="border-l border-gray-300 h-10"></div>
           <div>

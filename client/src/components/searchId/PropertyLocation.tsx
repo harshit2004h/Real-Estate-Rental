@@ -14,6 +14,7 @@ import { Compass, MapPin } from "lucide-react";
 import ReactDOMServer from "react-dom/server";
 // Import required modules for MapTiler integration
 import olms from "ol-mapbox-style";
+import Loading from "../Loading";
 
 const PropertyLocation = ({ propertyId }: PropertyLocationProps) => {
   const {
@@ -52,6 +53,45 @@ const PropertyLocation = ({ propertyId }: PropertyLocationProps) => {
       // Create vector layer for marker after the base map is loaded
       addMarkerToMap(map, property);
     });
+
+    // Add cursor pointer and dragging behavior
+    if (mapContainerRef.current) {
+      // Set default cursor to grab (indicating it can be dragged)
+      mapContainerRef.current.style.cursor = "grab";
+
+      // Add event listeners directly to the container element
+      const container = mapContainerRef.current;
+
+      const handleMouseDown = () => {
+        if (container) container.style.cursor = "grabbing";
+      };
+
+      const handleMouseUp = () => {
+        if (container) container.style.cursor = "grab";
+      };
+
+      // Use DOM events instead of map events
+      container.addEventListener("mousedown", handleMouseDown);
+      container.addEventListener("mouseup", handleMouseUp);
+      // Also handle case when mouse leaves the map during drag
+      container.addEventListener("mouseleave", handleMouseUp);
+
+      // For OpenLayers we can use the supported 'pointermove' event
+      map.on("pointermove", () => {
+        // Only change cursor on move if not currently grabbing
+        if (container && container.style.cursor !== "grabbing") {
+          container.style.cursor = "grab";
+        }
+      });
+
+      // Clean up function to remove event listeners
+      return () => {
+        map.setTarget(undefined);
+        container.removeEventListener("mousedown", handleMouseDown);
+        container.removeEventListener("mouseup", handleMouseUp);
+        container.removeEventListener("mouseleave", handleMouseUp);
+      };
+    }
 
     const resizeMap = () => {
       if (map) setTimeout(() => map.updateSize(), 100);
@@ -97,13 +137,13 @@ const PropertyLocation = ({ propertyId }: PropertyLocationProps) => {
     vectorSource.addFeature(feature);
   };
 
-  if (isLoading) return <>Loading...</>;
+  if (isLoading) return <Loading/>;
   if (isError || !property) {
     return <>Property not Found</>;
   }
 
   return (
-    <div className="py-16">
+    <div className="py-16 w-9/12 mx-auto">
       <h3 className="text-xl font-semibold text-primary-800 dark:text-primary-100">
         Map and Location
       </h3>

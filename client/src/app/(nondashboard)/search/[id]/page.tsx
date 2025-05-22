@@ -20,16 +20,18 @@ const SingleListing = () => {
         images={["/singlelisting-2.jpg", "/singlelisting-3.jpg"]}
       />
 
-      <div className="flex flex-col md:flex-row justify-center gap-0 mx-10 md:w-9/12 md:mx-auto mt-16 mb-8">
-        <div className="order-2 md:order-1 md:pr-6 md:mr-2">
-          <PropertyOverview propertyId={properyId} />
-          <PropertyDetails propertyId={properyId} />
-          <PropertyLocation propertyId={properyId} />
-        </div>
+      <div>
+        <div className="flex flex-col md:flex-row justify-center gap-0 mx-10 md:w-9/12 md:mx-auto mt-16 mb-8">
+          <div className="order-2 md:order-1 md:pr-6 md:mr-2">
+            <PropertyOverview propertyId={properyId} />
+            <PropertyDetails propertyId={properyId} />
+          </div>
 
-        <div className="order-1 md:order-2">
-          <ContactWidget onOpenModal={() => setIsModalOpen(true)} />
-        </div>
+          <div className="order-1 md:order-2">
+            <ContactWidget onOpenModal={() => setIsModalOpen(true)} />
+          </div>
+        </div>{" "}
+        <PropertyLocation propertyId={properyId} />
       </div>
     </div>
   );

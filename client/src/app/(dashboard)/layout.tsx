@@ -1,5 +1,6 @@
 "use client";
 import AppSidebar from "@/components/AppSidebar";
+import Loading from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { NAVBAR_HEIGHT } from "@/lib/constants";
@@ -20,7 +21,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         (userRole === "manager" && pathname.startsWith("/tenants")) ||
         (userRole === "tenant" && pathname.startsWith("/managers"))
       ) {
-        router.push(  
+        router.push(
           userRole === "manager"
             ? "/managers/properties"
             : "/tenants/favorites",
@@ -33,7 +34,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }, [authUser, pathname, router]);
 
   if (authLoading || isLoading) {
-    return <>Loading...</>;
+    return <Loading />;
   }
 
   if (!authUser?.userRole) return null;
