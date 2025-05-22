@@ -12,7 +12,7 @@ import {
 import {
   useGetAuthUserQuery,
   useGetLeasesQuery,
-  useGetPaymentsQuery,
+  useGetPropertyPaymentsQuery,
   useGetPropertyQuery,
 } from "@/state/api";
 import { Lease, Payment, Property } from "@/types/prismaTypes";
@@ -236,7 +236,7 @@ const BillingHistory = ({ payments }: { payments: Payment[] }) => {
 };
 
 const Residence = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // should be defined in route like /residence/:id
   const { data: authUser } = useGetAuthUserQuery();
   const {
     data: property,
@@ -248,13 +248,18 @@ const Residence = () => {
     parseInt(authUser?.cognitoInfo?.userId || "0"),
     { skip: !authUser?.cognitoInfo?.userId }
   );
-  const { data: payments, isLoading: paymentsLoading } = useGetPaymentsQuery(
-    leases?.[0]?.id || 0,
-    { skip: !leases?.[0]?.id }
-  );
+
+  const {
+    data: payments,
+    isLoading: paymentsLoading,
+    error: paymentsError,
+  } = useGetPropertyPaymentsQuery(Number(id), {
+    skip: !id,
+  });
 
   if (propertyLoading || leasesLoading || paymentsLoading) return <Loading />;
   if (!property || propertyError) return <div>Error loading property</div>;
+  if (paymentsError) return <div>Error loading payments</div>;
 
   const currentLease = leases?.find(
     (lease) => lease.propertyId === property.id

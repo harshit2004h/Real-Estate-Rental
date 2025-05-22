@@ -293,6 +293,20 @@ export const api = createApi({
       },
     }),
 
+    getPropertyPayments: build.query<Payment[], number>({
+      query: (propertyId) => `properties/${propertyId}/payments`,
+      providesTags: ["Payments"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await withToast(queryFulfilled, {
+            error: "Failed to fetch property payments.",
+          });
+        } catch (err) {
+          console.error("Failed to fetch payments:", err);
+        }
+      },
+    }),
+
     // application related endpoints
     getApplications: build.query<
       Application[],
@@ -370,4 +384,5 @@ export const {
   useGetApplicationsQuery,
   useUpdateApplicationStatusMutation,
   useCreateApplicationMutation,
+  useGetPropertyPaymentsQuery,
 } = api;
