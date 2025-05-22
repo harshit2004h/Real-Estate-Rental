@@ -24,7 +24,6 @@ const FiltersFull = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
-  const filters = useAppSelector((state) => state.global.filters);
   const [localFilters, setLocalFilters] = useState(initialState.filters);
   const isFiltersFullOpen = useAppSelector(
     (state) => state.global.isFiltersFullOpen
@@ -64,6 +63,33 @@ const FiltersFull = () => {
     }));
   };
 
+  const handleLocationSearch = async () => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          localFilters.location
+        )}&limit=1`,
+        {
+          headers: {
+            "User-Agent": "RealEstateRental (testdesk.personal@gmail.com",
+            "Accept-Language": "en",
+          },
+        }
+      );
+      const data = await response.json();
+      if (data && data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+        setLocalFilters((prev) => ({
+          ...prev,
+          coordinates: [lon, lat],
+        }));
+      }
+    } catch (err) {
+      console.error("Error searching location:", err);
+    }
+  };
+
   if (!isFiltersFullOpen) return null;
 
   return (
@@ -75,7 +101,7 @@ const FiltersFull = () => {
           <div className="flex items-center">
             <Input
               placeholder="Enter location"
-              value={filters.location}
+              value={localFilters.location}
               onChange={(e) =>
                 setLocalFilters((prev) => ({
                   ...prev,
@@ -85,7 +111,7 @@ const FiltersFull = () => {
               className="rounded-l-xl rounded-r-none border-r-0"
             />
             <Button
-              //   onClick={handleLocationSearch}
+              onClick={handleLocationSearch}
               className="rounded-r-xl rounded-l-none border-l-none border-black shadow-none border hover:bg-primary-700 hover:text-primary-50"
             >
               <Search className="w-4 h-4" />

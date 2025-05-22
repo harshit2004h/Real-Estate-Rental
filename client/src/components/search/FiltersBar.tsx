@@ -77,6 +77,35 @@ const FiltersBar = () => {
     updateURL(newFilters);
   };
 
+  const handleLocationSearch = async () => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          searchInput
+        )}&limit=1`,
+        {
+          headers: {
+            "User-Agent": "RealEstateRental (testdesk.personal@gmail.com",
+            "Accept-Language": "en",
+          },
+        }
+      );
+      const data = await response.json();
+      if (data && data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+        dispatch(
+          setFilters({
+            location: searchInput,
+            coordinates: [lon, lat],
+          })
+        );
+      }
+    } catch (err) {
+      console.error("Error searching location:", err);
+    }
+  };
+
   return (
     <div className="flex justify-between items-center w-full py-5">
       {/* Filters */}
@@ -103,7 +132,7 @@ const FiltersBar = () => {
             className="w-40 rounded-l-xl rounded-r-none border-primary-400 border-r-0"
           />
           <Button
-            // onClick={handleLocationSearch}
+            onClick={handleLocationSearch}
             className={`rounded-r-xl rounded-l-none border-l-none border-primary-400 shadow-none 
               border hover:bg-primary-700 hover:text-primary-50`}
           >

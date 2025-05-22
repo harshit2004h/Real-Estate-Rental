@@ -16,7 +16,7 @@ export const getProperties = async (
 ): Promise<void> => {
   try {
     const {
-      favouriteIds,
+      favoriteIds,
       priceMin,
       priceMax,
       beds,
@@ -32,10 +32,10 @@ export const getProperties = async (
 
     let whereConditions: Prisma.Sql[] = [];
 
-    if (favouriteIds) {
-      const favouriteIdsArray = (favouriteIds as string).split(",").map(Number);
+    if (favoriteIds) {
+      const favoriteIdsArray = (favoriteIds as string).split(",").map(Number);
       whereConditions.push(
-        Prisma.sql`p.id IN (${Prisma.join(favouriteIdsArray)})`
+        Prisma.sql`p.id IN (${Prisma.join(favoriteIdsArray)})`
       );
     }
 
@@ -237,7 +237,7 @@ export const createProperty = async (
 
     const geocodingResponse = await axios.get(geocodingUrl, {
       headers: {
-        "User-Agent": "RealEstateRental (testdesk.work@gmail.com",
+        "User-Agent": "RealEstateRental (testdesk.personal@gmail.com",
       },
     });
 

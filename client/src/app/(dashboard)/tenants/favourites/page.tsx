@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Favourites = () => {
+const Favorites = () => {
   return (
     <div>
-      Favourites
+      Favorites
     </div>
   )
 }
 
-export default Favourites
+export default Favorites

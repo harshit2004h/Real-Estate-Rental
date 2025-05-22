@@ -122,7 +122,7 @@ export const getCurrentResidences = async (
   }
 };
 
-export const addFavouriteProperty = async (
+export const addFavoriteProperty = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -138,9 +138,9 @@ export const addFavouriteProperty = async (
     });
 
     const propertyIdNumber = Number(propertyId);
-    const existingFavourite = tenant?.favorites || [];
+    const existingFavorite = tenant?.favorites || [];
 
-    if (!existingFavourite.some((fav) => fav.id === propertyIdNumber)) {
+    if (!existingFavorite.some((fav) => fav.id === propertyIdNumber)) {
       const updatedTenant = await prisma.tenant.update({
         where: {
           cognitoId: cognitoId,
@@ -162,12 +162,12 @@ export const addFavouriteProperty = async (
     }
   } catch (error: any) {
     res.status(500).json({
-      message: `Error adding favourite property: , ${error.message}`,
+      message: `Error adding favorite property: , ${error.message}`,
     });
   }
 };
 
-export const removeFavouriteProperty = async (
+export const removeFavoriteProperty = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -191,7 +191,7 @@ export const removeFavouriteProperty = async (
     res.json(updatedTenant);
   } catch (error: any) {
     res.status(500).json({
-      message: `Error removing favourite property: , ${error.message}`,
+      message: `Error removing favorite property: , ${error.message}`,
     });
   }
 };

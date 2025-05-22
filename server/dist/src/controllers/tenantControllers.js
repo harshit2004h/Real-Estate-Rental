@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeFavouriteProperty = exports.addFavouriteProperty = exports.getCurrentResidences = exports.updateTenant = exports.createTenant = exports.getTenant = void 0;
+exports.removeFavoriteProperty = exports.addFavoriteProperty = exports.getCurrentResidences = exports.updateTenant = exports.createTenant = exports.getTenant = void 0;
 const client_1 = require("@prisma/client");
 const wkt_1 = require("@terraformer/wkt");
 const prisma = new client_1.PrismaClient();
@@ -111,7 +111,7 @@ const getCurrentResidences = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.getCurrentResidences = getCurrentResidences;
-const addFavouriteProperty = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const addFavoriteProperty = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { cognitoId, propertyId } = req.params;
         const tenant = yield prisma.tenant.findUnique({
@@ -123,8 +123,8 @@ const addFavouriteProperty = (req, res) => __awaiter(void 0, void 0, void 0, fun
             },
         });
         const propertyIdNumber = Number(propertyId);
-        const existingFavourite = (tenant === null || tenant === void 0 ? void 0 : tenant.favorites) || [];
-        if (!existingFavourite.some((fav) => fav.id === propertyIdNumber)) {
+        const existingFavorite = (tenant === null || tenant === void 0 ? void 0 : tenant.favorites) || [];
+        if (!existingFavorite.some((fav) => fav.id === propertyIdNumber)) {
             const updatedTenant = yield prisma.tenant.update({
                 where: {
                     cognitoId: cognitoId,
@@ -148,12 +148,12 @@ const addFavouriteProperty = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
     catch (error) {
         res.status(500).json({
-            message: `Error adding favourite property: , ${error.message}`,
+            message: `Error adding favorite property: , ${error.message}`,
         });
     }
 });
-exports.addFavouriteProperty = addFavouriteProperty;
-const removeFavouriteProperty = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.addFavoriteProperty = addFavoriteProperty;
+const removeFavoriteProperty = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { cognitoId, propertyId } = req.params;
         const propertyIdNumber = Number(propertyId);
@@ -174,8 +174,8 @@ const removeFavouriteProperty = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
     catch (error) {
         res.status(500).json({
-            message: `Error removing favourite property: , ${error.message}`,
+            message: `Error removing favorite property: , ${error.message}`,
         });
     }
 });
-exports.removeFavouriteProperty = removeFavouriteProperty;
+exports.removeFavoriteProperty = removeFavoriteProperty;
