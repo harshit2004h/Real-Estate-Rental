@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { NAVBAR_HEIGHT } from "@/lib/constants";
 import { useAppDispatch, useAppSelector } from "@/state/redux";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import FiltersBar from "@/components/search/FiltersBar";
 import FiltersFull from "@/components/search/FiltersFull";
 import { cleanParams } from "@/lib/utils";
@@ -12,7 +11,8 @@ import { setFilters } from "@/state";
 import Map from "@/components/search/Map";
 import Listings from "@/components/search/Listings";
 
-const SearchPage = () => {
+// Create a separate component that uses useSearchParams
+const SearchPageContent = () => {
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const isFiltersFullOpen = useAppSelector(
@@ -63,6 +63,28 @@ const SearchPage = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+// Loading component for Suspense fallback
+const SearchPageLoading = () => (
+  <div
+    className="w-full mx-auto px-5 flex flex-col items-center justify-center"
+    style={{
+      height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
+    }}
+  >
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    <p className="mt-4 text-gray-600">Loading search...</p>
+  </div>
+);
+
+// Main component wrapped in Suspense
+const SearchPage = () => {
+  return (
+    <Suspense fallback={<SearchPageLoading />}>
+      <SearchPageContent />
+    </Suspense>
   );
 };
 

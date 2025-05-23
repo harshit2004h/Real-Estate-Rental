@@ -1,11 +1,62 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { setFilters } from "@/state";
 
 const HeroSection = () => {
+  const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleLocationSearch = async () => {
+    try {
+      const trimmedQuery = searchQuery.trim();
+
+      if (!trimmedQuery) {
+        return;
+      }
+
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          trimmedQuery
+        )}&limit=1`,
+        {
+          headers: {
+            "User-Agent": "RealEstateRental (testdesk.personal@gmail.com)",
+            "Accept-Language": "en",
+          },
+        }
+      );
+
+      const data = await response.json();
+      if (data && data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+        dispatch(
+          setFilters({
+            location: trimmedQuery,
+            coordinates: [lon, lat],
+          })
+        );
+
+        const params = new URLSearchParams({
+          location: trimmedQuery,
+          lat: lat.toString(),
+          lon: lon.toString(),
+        });
+
+        router.push(`/search?${params.toString()}`);
+      }
+    } catch (error) {
+      console.error("Error searching location:", error);
+    }
+  };
+
   return (
     <div className="relative h-screen">
       <Image
@@ -33,12 +84,13 @@ const HeroSection = () => {
             <div className="flex justify-center">
               <Input
                 type="text"
-                onChange={() => {}}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by city, neighbourhood or address"
                 className="w-full max-w-lh rounded-none rounded-l-xl border-none bg-white h-12"
               />
               <Button
-                onClick={() => {}}
+                onClick={handleLocationSearch}
                 className="bg-secondary-500 text-white rounded-none rounded-r-xl border-none h-12 hover:bg-secondary-600"
               >
                 Search
