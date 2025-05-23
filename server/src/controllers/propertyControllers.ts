@@ -206,90 +206,257 @@ export const createProperty = async (
       ...propertyData
     } = req.body;
 
-    const photoUrls = await Promise.all(
-      files.map(async (file) => {
-        const uploadParams = {
-          Bucket: process.env.S3_BUCKET_NAME!,
-          Key: `properties/${Date.now()}-${file.originalname}`,
-          Body: file.buffer,
-          ContentType: file.mimetype,
-        };
+    console.log("Creating property with data:", {
+      address,
+      city,
+      state,
+      country,
+      postalCode,
+      managerCognitoId,
+      propertyDataKeys: Object.keys(propertyData),
+    });
 
-        const uploadResult = await new Upload({
-          client: s3Client,
-          params: uploadParams,
-        }).done();
+    // Handle photo uploads - check if files exist
+    // let photoUrls: string[] = [];
+    // if (files && files.length > 0) {
+    //   console.log(`Uploading ${files.length} photos...`);
+    //   photoUrls = await Promise.all(
+    //     files.map(async (file) => {
+    //       const uploadParams = {
+    //         Bucket: process.env.S3_BUCKET_NAME!,
+    //         Key: `properties/${Date.now()}-${file.originalname}`,
+    //         Body: file.buffer,
+    //         ContentType: file.mimetype,
+    //       };
 
-        return uploadResult.Location;
-      })
-    );
+    //       const uploadResult = await new Upload({
+    //         client: s3Client,
+    //         params: uploadParams,
+    //       }).done();
 
-    const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
+    //       return uploadResult.Location as string;
+    //     })
+    //   );
+    //   console.log("Photos uploaded successfully:", photoUrls.length);
+    // } else {
+    //   console.log("No photos to upload");
+    // }
+
+    // Geocoding - Method 1: Combined query
+    const geocodingUrl1 = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
-        street: address,
-        city,
-        country,
-        postalcode: postalCode,
+        q: `${address}, ${city}, ${state}, ${country}, ${postalCode}`,
         format: "json",
         limit: "1",
+        addressdetails: "1",
       }
     ).toString()}`;
 
-    const geocodingResponse = await axios.get(geocodingUrl, {
+    // Method 2: Structured query (alternative approach)
+    const geocodingUrl2 = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
+      {
+        street: address,
+        city: city,
+        state: state,
+        country: country,
+        postalcode: postalCode,
+        format: "json",
+        limit: "5",
+        addressdetails: "1",
+      }
+    ).toString()}`;
+
+    console.log("Starting geocoding...");
+    let geocodingResponse = await axios.get(geocodingUrl1, {
       headers: {
-        "User-Agent": "RealEstateRental (testdesk.personal@gmail.com",
+        "User-Agent": "RealEstateRental (testdesk.personal@gmail.com)",
+        "Accept-Language": "en",
       },
     });
 
-    const [longitude, latitude] =
-      geocodingResponse.data[0]?.lon && geocodingResponse.data[1]?.lat
-        ? [
-            parseFloat(geocodingResponse.data[0].lon),
-            parseFloat(geocodingResponse.data[1].lat),
-          ]
-        : [0, 0];
+    if (!geocodingResponse.data || geocodingResponse.data.length === 0) {
+      console.log("Trying structured query...");
+      geocodingResponse = await axios.get(geocodingUrl2, {
+        headers: {
+          "User-Agent": "RealEstateRental (testdesk.personal@gmail.com)",
+          "Accept-Language": "en",
+        },
+      });
+    }
 
-    //create location
-    const [location] = await prisma.$queryRaw<Location[]>`
-      INSERT INTO "Location" (address, city, state, country, "postalCode", coordinates)
-      VALUES (${address}, ${city}, ${state}, ${country}, ${postalCode}, ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326))
-      RETURNING id, address, city, state, country, "postalCode", ST_AsText(coordinates) as coordinates;
-    `;
+    if (!geocodingResponse.data || geocodingResponse.data.length === 0) {
+      console.log("Trying city-level geocoding...");
+      const fallbackUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
+        {
+          q: `${city}, ${state}, ${country}`,
+          format: "json",
+          limit: "1",
+        }
+      ).toString()}`;
 
-    //create property
-    const newProperty = await prisma.property.create({
-      data: {
-        ...propertyData,
-        photoUrls,
-        locationId: location.id,
-        managerCognitoId,
-        amenities:
-          typeof propertyData.amenities === "string"
-            ? propertyData.amenities.split(",")
-            : [],
-        highlights:
-          typeof propertyData.highlights === "string"
-            ? propertyData.highlights.split(",")
-            : [],
-        isPetsAllowed: propertyData.isPetsAllowed === "true",
-        isParkingIncluded: propertyData.isParkingIncluded === "true",
-        pricePerMonth: parseFloat(propertyData.pricePerMonth),
-        securityDeposit: parseFloat(propertyData.securityDeposit),
-        applicationFee: parseFloat(propertyData.applicationFee),
-        beds: parseInt(propertyData.beds),
-        baths: parseFloat(propertyData.baths),
-        squareFeet: parseInt(propertyData.squareFeet),
-      },
-      include: {
-        location: true,
-        manager: true,
-      },
+      geocodingResponse = await axios.get(fallbackUrl, {
+        headers: {
+          "User-Agent": "RealEstateRental (testdesk.personal@gmail.com)",
+          "Accept-Language": "en",
+        },
+      });
+    }
+
+    const result = geocodingResponse.data[0];
+
+    if (!result || !result.lon || !result.lat) {
+      throw new Error(
+        `Geocoding failed for address: ${address}, ${city}, ${state}`
+      );
+    }
+
+    const longitude = parseFloat(result.lon);
+    const latitude = parseFloat(result.lat);
+
+    console.log(`Geocoded coordinates: ${latitude}, ${longitude}`);
+    console.log(`Display name: ${result.display_name}`);
+
+    // Basic coordinate validation
+    if (
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180
+    ) {
+      throw new Error("Invalid coordinates returned from geocoding service");
+    }
+
+    // Create location with better error handling
+    console.log("Creating location...");
+    let location;
+    try {
+      const locationResult = await prisma.$queryRaw<any[]>`
+        INSERT INTO "Location" (address, city, state, country, "postalCode", coordinates)
+        VALUES (${address}, ${city}, ${state}, ${country}, ${postalCode}, 
+                ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326))
+        RETURNING id, address, city, state, country, "postalCode";
+      `;
+      location = locationResult[0];
+      console.log("Location created successfully:", location);
+    } catch (locationError: any) {
+      console.error("Location creation error:", locationError);
+      throw new Error(`Failed to create location: ${locationError.message}`);
+    }
+
+    // Validate required fields
+    if (!managerCognitoId) {
+      throw new Error("Missing required field: managerCognitoId");
+    }
+
+    if (!propertyData.pricePerMonth) {
+      throw new Error("Missing required field: pricePerMonth");
+    }
+
+    // Prepare property data with proper type conversions and null checks
+    console.log("Preparing property data...");
+    const propertyCreateData = {
+      ...propertyData,
+      // photoUrls,
+      locationId: location.id,
+      managerCognitoId,
+      amenities:
+        typeof propertyData.amenities === "string" &&
+        propertyData.amenities.trim()
+          ? propertyData.amenities
+              .split(",")
+              .map((item: string) => item.trim())
+              .filter(Boolean)
+          : Array.isArray(propertyData.amenities)
+          ? propertyData.amenities
+          : [],
+      highlights:
+        typeof propertyData.highlights === "string" &&
+        propertyData.highlights.trim()
+          ? propertyData.highlights
+              .split(",")
+              .map((item: string) => item.trim())
+              .filter(Boolean)
+          : Array.isArray(propertyData.highlights)
+          ? propertyData.highlights
+          : [],
+      isPetsAllowed:
+        propertyData.isPetsAllowed === "true" ||
+        propertyData.isPetsAllowed === true,
+      isParkingIncluded:
+        propertyData.isParkingIncluded === "true" ||
+        propertyData.isParkingIncluded === true,
+      pricePerMonth: parseFloat(propertyData.pricePerMonth),
+      securityDeposit: propertyData.securityDeposit
+        ? parseFloat(propertyData.securityDeposit)
+        : 0,
+      applicationFee: propertyData.applicationFee
+        ? parseFloat(propertyData.applicationFee)
+        : 0,
+      beds: propertyData.beds ? parseInt(propertyData.beds) : 1,
+      baths: propertyData.baths ? parseFloat(propertyData.baths) : 1,
+      squareFeet: propertyData.squareFeet
+        ? parseInt(propertyData.squareFeet)
+        : 0,
+    };
+
+    // Remove undefined values to avoid Prisma issues
+    Object.keys(propertyCreateData).forEach((key) => {
+      if (propertyCreateData[key] === undefined) {
+        delete propertyCreateData[key];
+      }
     });
+
+    // console.log("Property data prepared:", {
+    //   ...propertyCreateData,
+    //   photoUrls: `${photoUrls.length} photos`,
+    // });
+
+    // Create property
+    console.log("Creating property...");
+    let newProperty;
+    try {
+      newProperty = await prisma.property.create({
+        data: propertyCreateData,
+        include: {
+          location: true,
+          manager: true,
+        },
+      });
+      console.log("Property created successfully:", newProperty.id);
+    } catch (propertyError: any) {
+      console.error("Property creation error:", propertyError);
+      console.error("Property error details:", {
+        code: propertyError.code,
+        meta: propertyError.meta,
+        message: propertyError.message,
+      });
+
+      // Clean up the location if property creation fails
+      try {
+        await prisma.location.delete({
+          where: { id: location.id },
+        });
+        console.log("Cleaned up location after property creation failure");
+      } catch (cleanupError) {
+        console.error("Failed to cleanup location:", cleanupError);
+      }
+
+      // Provide more specific error messages based on Prisma error codes
+      if (propertyError.code === "P2002") {
+        throw new Error("A property with these details already exists");
+      } else if (propertyError.code === "P2003") {
+        throw new Error("Invalid manager ID or foreign key constraint failed");
+      } else if (propertyError.code === "P2025") {
+        throw new Error("Manager not found");
+      } else {
+        throw new Error(`Failed to create property: ${propertyError.message}`);
+      }
+    }
 
     res.status(201).json(newProperty);
-  } catch (error: any) {
-    res
-      .status(500)
-      .json({ message: `Error creating property: , ${error.message}` });
+  } catch (err: any) {
+    res.status(500).json({
+      message: `Error creating property: ${err.message}`,
+    });
   }
 };

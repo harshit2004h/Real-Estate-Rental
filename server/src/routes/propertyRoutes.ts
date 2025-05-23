@@ -1,11 +1,11 @@
 import express from "express";
 import {
-  createProperty,
-  getProperty,
   getProperties,
+  getProperty,
+  createProperty,
 } from "../controllers/propertyControllers";
-import { AuthMiddleware } from "../middlewares/authMiddleware";
 import multer from "multer";
+import { AuthMiddleware } from "../middlewares/authMiddleware";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });

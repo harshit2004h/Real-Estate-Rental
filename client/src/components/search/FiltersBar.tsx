@@ -85,7 +85,7 @@ const FiltersBar = () => {
         )}&limit=1`,
         {
           headers: {
-            "User-Agent": "RealEstateRental (testdesk.personal@gmail.com",
+            "User-Agent": "RealEstateRental (testdesk.personal@gmail.com)",
             "Accept-Language": "en",
           },
         }
