@@ -7,13 +7,16 @@ import { PropertyFormData, propertySchema } from "@/lib/schemas";
 import { useCreatePropertyMutation, useGetAuthUserQuery } from "@/state/api";
 import { AmenityEnum, HighlightEnum, PropertyTypeEnum } from "@/lib/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const NewProperty = () => {
   const [createProperty] = useCreatePropertyMutation();
   const { data: authUser } = useGetAuthUserQuery();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
@@ -44,6 +47,8 @@ const NewProperty = () => {
       throw new Error("No manager ID found");
     }
 
+    setIsSubmitting(true);
+
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (key === "photoUrls") {
@@ -60,11 +65,17 @@ const NewProperty = () => {
 
     formData.append("managerCognitoId", authUser.cognitoInfo.userId);
 
-    await createProperty(formData);
+    try {
+      await createProperty(formData);
+      setTimeout(() => router.push("/managers/properties"), 1000); // Wait 2 seconds before redirect
+    } catch (error) {
+      console.error("Submission failed", error);
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container relative">
       <Headers
         title="Add New Property"
         subtitle="Create a new property listing with detailed information"
@@ -228,12 +239,57 @@ const NewProperty = () => {
             <Button
               type="submit"
               className="bg-primary-700 text-white w-full mt-8"
+              disabled={isSubmitting}
             >
-              Create Property
+              {isSubmitting ? "Submitting..." : "Create Property"}
             </Button>
           </form>
         </Form>
       </div>
+
+      {/* Fullscreen overlay after submission */}
+      {isSubmitting && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white bg-opacity-90">
+          <svg
+            className="w-28 h-28 text-green-500"
+            viewBox="0 0 52 52"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              className="stroke-green-300"
+              cx="26"
+              cy="26"
+              r="24"
+              fill="none"
+              strokeWidth="4"
+            />
+            <path
+              className="stroke-green-500"
+              fill="none"
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray="48"
+              strokeDashoffset="48"
+              style={{
+                animation: "dash 0.7s ease forwards 0.3s",
+              }}
+              d="M14 27l10 10 14-20"
+            />
+          </svg>
+          <p className="mt-6 text-2xl font-semibold text-green-700">
+            Submitted Successfully!
+          </p>
+
+          <style jsx>{`
+            @keyframes dash {
+              to {
+                stroke-dashoffset: 0;
+              }
+            }
+          `}</style>
+        </div>
+      )}
     </div>
   );
 };

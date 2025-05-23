@@ -5,7 +5,7 @@ import Headers from "@/components/Headers";
 import Loading from "@/components/Loading";
 import { useGetApplicationsQuery, useGetAuthUserQuery } from "@/state/api";
 import { CircleCheckBig, Clock, Download, XCircle } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 const Applications = () => {
   const { data: authUser } = useGetAuthUserQuery();
@@ -18,8 +18,16 @@ const Applications = () => {
     userType: "tenant",
   });
 
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
+
   if (isLoading) return <Loading />;
   if (isError || !applications) return <div>Error fetching applications</div>;
+
+  const sortedApplications = applications.slice().sort((a, b) => {
+    const dateA = new Date(a.applicationDate).getTime();
+    const dateB = new Date(b.applicationDate).getTime();
+    return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+  });
 
   return (
     <div className="dashboard-container">
@@ -27,8 +35,28 @@ const Applications = () => {
         title="Applications"
         subtitle="Track and manage your property rental applications"
       />
+
+      {/* Sort Dropdown aligned right */}
+      <div className="flex justify-end mt-4 mb-6">
+        <label
+          htmlFor="sortOrder"
+          className="font-medium text-gray-700 mr-3 self-center"
+        >
+          Sort by Time:
+        </label>
+        <select
+          id="sortOrder"
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
+          className="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-primary-500"
+        >
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+        </select>
+      </div>
+
       <div className="w-full">
-        {applications?.map((application) => (
+        {sortedApplications.map((application) => (
           <ApplicationCard
             key={application.id}
             application={application}

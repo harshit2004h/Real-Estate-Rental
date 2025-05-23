@@ -108,6 +108,11 @@ const FiltersFull = () => {
                   location: e.target.value,
                 }))
               }
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleLocationSearch();
+                }
+              }}
               className="rounded-l-xl rounded-r-none border-r-0"
             />
             <Button
