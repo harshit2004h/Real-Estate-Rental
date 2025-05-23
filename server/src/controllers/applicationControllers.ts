@@ -9,13 +9,12 @@ export const listApplications = async (
 ): Promise<void> => {
   try {
     const { userId, userType } = req.query;
+
     let whereClause = {};
 
     if (userId && userType) {
       if (userType === "tenant") {
-        whereClause = {
-          tenantCognitoId: String(userId),
-        };
+        whereClause = { tenantCognitoId: String(userId) };
       } else if (userType === "manager") {
         whereClause = {
           property: {
@@ -40,11 +39,11 @@ export const listApplications = async (
 
     function calculateNextPaymentDate(startDate: Date): Date {
       const today = new Date();
-      const nextPayemntDate = new Date(startDate);
-      while (nextPayemntDate <= today) {
-        nextPayemntDate.setMonth(nextPayemntDate.getMonth() + 1);
+      const nextPaymentDate = new Date(startDate);
+      while (nextPaymentDate <= today) {
+        nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1);
       }
-      return nextPayemntDate;
+      return nextPaymentDate;
     }
 
     const formattedApplications = await Promise.all(
@@ -80,7 +79,7 @@ export const listApplications = async (
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: `Error retrieving applications: , ${error.message}` });
+      .json({ message: `Error retrieving applications: ${error.message}` });
   }
 };
 
@@ -162,7 +161,7 @@ export const createApplication = async (
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: `Error retrieving lease payments: , ${error.message}` });
+      .json({ message: `Error creating application: ${error.message}` });
   }
 };
 
@@ -244,8 +243,6 @@ export const updateApplicationStatus = async (
   } catch (error: any) {
     res
       .status(500)
-      .json({
-        message: `Error updating application status: , ${error.message}`,
-      });
+      .json({ message: `Error updating application status: ${error.message}` });
   }
 };

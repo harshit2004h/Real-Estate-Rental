@@ -1,4 +1,5 @@
 "use client";
+import ApplicationModal from "@/components/searchId/ApplicationModal";
 import ContactWidget from "@/components/searchId/ContactWidget";
 import ImagePreviews from "@/components/searchId/ImagePreviews";
 import PropertyDetails from "@/components/searchId/PropertyDetails";
@@ -33,6 +34,14 @@ const SingleListing = () => {
         </div>{" "}
         <PropertyLocation propertyId={properyId} />
       </div>
+
+      {authUser && (
+        <ApplicationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          propertyId={properyId}
+        />
+      )}
     </div>
   );
 };
