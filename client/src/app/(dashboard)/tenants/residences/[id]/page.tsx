@@ -251,8 +251,6 @@ const Residence = () => {
   );
 
 
-
-
   const {
     data: payments,
     isLoading: paymentsLoading,

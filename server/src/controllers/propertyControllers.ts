@@ -520,3 +520,39 @@ export const getPropertyPayment = async (
     });
   }
 };
+
+// src/controllers/propertyController.ts
+
+export const getPropertyPayment = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const payments = await prisma.payment.findMany({
+      where: {
+        lease: {
+          propertyId: Number(id),
+        },
+      },
+      include: {
+        lease: {
+          include: {
+            property: true,
+            tenant: true,
+          },
+        },
+      },
+      orderBy: {
+        dueDate: "desc",
+      },
+    });
+
+    res.json(payments);
+  } catch (error: any) {
+    res.status(500).json({
+      message: `Error getting property payments: ${error.message}`,
+    });
+  }
+};
