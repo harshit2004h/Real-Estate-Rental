@@ -117,7 +117,7 @@ const PropertyLeases = () => {
                 No leases found
               </h3>
               <p className="text-gray-500">
-                This property doesn't have any active leases yet.
+                This property doesn&apos;t have any active leases yet.
               </p>
             </div>
           ) : (
