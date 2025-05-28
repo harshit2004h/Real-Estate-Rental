@@ -70,15 +70,17 @@ const ApplicationCard = ({
           </div>
           <div className="flex justify-between">
             <span className="text-gray-500">Start Date:</span>{" "}
-            {new Date(application.lease?.startDate).toLocaleDateString()}
+            {new Date(application.lease?.startDate).toLocaleDateString("en-GB")}
           </div>
           <div className="flex justify-between">
             <span className="text-gray-500">End Date:</span>{" "}
-            {new Date(application.lease?.endDate).toLocaleDateString()}
+            {new Date(application.lease?.endDate).toLocaleDateString("en-GB")}
           </div>
           <div className="flex justify-between">
             <span className="text-gray-500">Next Payment:</span>{" "}
-            {new Date(application.lease?.nextPaymentDate).toLocaleDateString()}
+            {new Date(application.lease?.nextPaymentDate).toLocaleDateString(
+              "en-GB"
+            )}
           </div>
         </div>
 

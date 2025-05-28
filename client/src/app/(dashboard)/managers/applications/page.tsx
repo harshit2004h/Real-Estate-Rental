@@ -115,7 +115,7 @@ const Applications = () => {
                         Application submitted on{" "}
                         {new Date(
                           application.applicationDate
-                        ).toLocaleDateString()}
+                        ).toLocaleDateString("en-GB")}
                         .
                       </span>
                       <CircleCheckBig className="w-5 h-5 mr-2 flex-shrink-0" />
