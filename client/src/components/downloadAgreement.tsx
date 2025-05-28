@@ -24,7 +24,7 @@ export function downloadAgreement(application: Application) {
 
   // Add watermark logo with low opacity
   if (doc.setGState) {
-    doc.setGState(new doc.GState({ opacity: 0.1 }));
+    doc.setGState({ opacity: 0.1 });
     const logoSize = 150;
     doc.addImage(
       logoBase64,
@@ -34,7 +34,7 @@ export function downloadAgreement(application: Application) {
       logoSize,
       logoSize
     );
-    doc.setGState(new doc.GState({ opacity: 1 }));
+    doc.setGState({ opacity: 1 });
   }
 
   let y = margin + 10; // Starting position
