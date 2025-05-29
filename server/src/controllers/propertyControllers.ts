@@ -1,15 +1,11 @@
 import { Request, Response } from "express";
-import { Prisma, PrismaClient, Location } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
-import { S3Client } from "@aws-sdk/client-s3";
-import { Upload } from "@aws-sdk/lib-storage";
+import { v2 as cloudinary } from "cloudinary";
+import streamifier from "streamifier";
 import axios from "axios";
 
 const prisma = new PrismaClient();
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
-});
-
 export const getProperties = async (
   req: Request,
   res: Response
@@ -217,30 +213,38 @@ export const createProperty = async (
     });
 
     // Handle photo uploads - check if files exist
-    // let photoUrls: string[] = [];
-    // if (files && files.length > 0) {
-    //   console.log(`Uploading ${files.length} photos...`);
-    //   photoUrls = await Promise.all(
-    //     files.map(async (file) => {
-    //       const uploadParams = {
-    //         Bucket: process.env.S3_BUCKET_NAME!,
-    //         Key: `properties/${Date.now()}-${file.originalname}`,
-    //         Body: file.buffer,
-    //         ContentType: file.mimetype,
-    //       };
+    let photoUrls: string[] = [];
 
-    //       const uploadResult = await new Upload({
-    //         client: s3Client,
-    //         params: uploadParams,
-    //       }).done();
+    if (files && files.length > 0) {
+      console.log(`Uploading ${files.length} photos...`);
 
-    //       return uploadResult.Location as string;
-    //     })
-    //   );
-    //   console.log("Photos uploaded successfully:", photoUrls.length);
-    // } else {
-    //   console.log("No photos to upload");
-    // }
+      photoUrls = await Promise.all(
+        files.map(
+          (file) =>
+            new Promise<string>((resolve, reject) => {
+              const uploadStream = cloudinary.uploader.upload_stream(
+                {
+                  folder: "properties",
+                  resource_type: "image",
+                },
+                (error, result) => {
+                  if (error) {
+                    reject(error);
+                  } else {
+                    resolve(result!.secure_url);
+                  }
+                }
+              );
+
+              streamifier.createReadStream(file.buffer).pipe(uploadStream);
+            })
+        )
+      );
+
+      console.log("Photos uploaded successfully:", photoUrls.length);
+    } else {
+      console.log("No photos to upload");
+    }
 
     // Geocoding - Method 1: Combined query
     const geocodingUrl1 = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
@@ -356,7 +360,7 @@ export const createProperty = async (
     console.log("Preparing property data...");
     const propertyCreateData = {
       ...propertyData,
-      // photoUrls,
+      photoUrls,
       locationId: location.id,
       managerCognitoId,
       amenities:
@@ -406,10 +410,10 @@ export const createProperty = async (
       }
     });
 
-    // console.log("Property data prepared:", {
-    //   ...propertyCreateData,
-    //   photoUrls: `${photoUrls.length} photos`,
-    // });
+    console.log("Property data prepared:", {
+      ...propertyCreateData,
+      photoUrls: `${photoUrls.length} photos`,
+    });
 
     // Create property
     console.log("Creating property...");
