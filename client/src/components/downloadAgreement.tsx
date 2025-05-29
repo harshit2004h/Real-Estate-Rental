@@ -1,4 +1,4 @@
-import jsPDF from "jspdf";
+import jsPDF, { GState } from "jspdf";
 import logoBase64 from "@/lib/logoBase64";
 import { Application } from "@/types/prismaTypes";
 
@@ -22,19 +22,24 @@ export function downloadAgreement(application: Application) {
   doc.setLineWidth(0.7);
   doc.rect(margin, margin, contentWidth, pageHeight - margin * 2, "S");
 
-  // Add logo as header (compatible with all jsPDF versions)
+  // Add watermark logo with low opacity
   try {
-    const logoSize = 25;
+    doc.saveGraphicsState();
+    const gState = new GState({ opacity: 0.1 });
+    doc.setGState(gState);
+    const logoSize = 150;
     doc.addImage(
       logoBase64,
       "PNG",
-      pageWidth - margin - logoSize - 5,
-      margin + 5,
+      pageWidth / 2 - logoSize / 2,
+      pageHeight / 2 - logoSize / 2,
       logoSize,
       logoSize
     );
+    doc.restoreGraphicsState();
   } catch (error) {
-    console.warn("Could not add logo:", error);
+    console.error("Error adding watermark:", error);
+    // Continue with PDF generation even if watermark fails
   }
 
   let y = margin + 10; // Starting position
