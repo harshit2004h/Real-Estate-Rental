@@ -22,19 +22,19 @@ export function downloadAgreement(application: Application) {
   doc.setLineWidth(0.7);
   doc.rect(margin, margin, contentWidth, pageHeight - margin * 2, "S");
 
-  // Add watermark logo with low opacity
-  if (doc.setGState) {
-    doc.setGState(new doc.GState({ opacity: 0.1 }));
-    const logoSize = 150;
+  // Add logo as header (compatible with all jsPDF versions)
+  try {
+    const logoSize = 25;
     doc.addImage(
       logoBase64,
       "PNG",
-      pageWidth / 2 - logoSize / 2,
-      pageHeight / 2 - logoSize / 2,
+      pageWidth - margin - logoSize - 5,
+      margin + 5,
       logoSize,
       logoSize
     );
-    doc.setGState(new doc.GState({ opacity: 1 }));
+  } catch (error) {
+    console.warn("Could not add logo:", error);
   }
 
   let y = margin + 10; // Starting position
