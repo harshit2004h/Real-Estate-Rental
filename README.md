@@ -17,7 +17,8 @@ SwiftStay is a modern real estate rental platform built with Node.js, AWS (EC2, 
 
 ## 🌍 Live Demo
 
-Coming Soon...
+client-> https://swiftstay-rental.vercel.app [HOSTED ON VERCEL]<br/>
+server-> https://real-estate-rental-nw85.onrender.com [HOSTED ON RENDER]
 
 ## 📸 Screenshots
 
