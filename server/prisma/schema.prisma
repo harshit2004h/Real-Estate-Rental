@@ -141,6 +141,7 @@ model Application {
   email           String
   phoneNumber     String
   message         String?
+  durationMonths  Int               @default(12)
   leaseId         Int?              @unique
 
   property Property @relation(fields: [propertyId], references: [id])
@@ -148,14 +149,21 @@ model Application {
   lease    Lease?   @relation(fields: [leaseId], references: [id])
 }
 
+enum LeaseStatus {
+  ACTIVE
+  ENDED
+}
+
 model Lease {
-  id              Int      @id @default(autoincrement())
-  startDate       DateTime
-  endDate         DateTime
-  rent            Float
-  deposit         Float
-  propertyId      Int
-  tenantCognitoId String
+  id                     Int         @id @default(autoincrement())
+  startDate              DateTime
+  endDate                DateTime
+  durationMonths         Int         @default(12)
+  propertyId             Int
+  tenantCognitoId        String
+  status                 LeaseStatus
+  razorpaySubscriptionId String
+  razorpayPlanId         String
 
   property    Property     @relation(fields: [propertyId], references: [id])
   tenant      Tenant       @relation(fields: [tenantCognitoId], references: [cognitoId])
@@ -166,10 +174,10 @@ model Lease {
 model Payment {
   id            Int           @id @default(autoincrement())
   amountDue     Float
-  amountPaid    Float
   dueDate       DateTime
   paymentDate   DateTime
   paymentStatus PaymentStatus
+  transactionId String?
   leaseId       Int
 
   lease Lease @relation(fields: [leaseId], references: [id])

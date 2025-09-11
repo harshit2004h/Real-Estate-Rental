@@ -97,6 +97,7 @@ export const createApplication = async (
       email,
       phoneNumber,
       message,
+      durationMonths
     } = req.body;
 
     const property = await prisma.property.findUnique({
