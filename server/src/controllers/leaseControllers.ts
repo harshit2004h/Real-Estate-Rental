@@ -19,6 +19,32 @@ export const getLeases = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+export const getLeaseById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const lease = await prisma.lease.findUnique({
+      where: { id: Number(id) },
+      include: {
+        tenant: true,
+        property: true,
+      },
+    });
+
+    if (lease) {
+      res.json(lease);
+    } else {
+      res.status(404).json({ message: "Lease not found" });
+    }
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: `Error retrieving lease: , ${error.message}` });
+  }
+};
+
 export const getLeasePayements = async (
   req: Request,
   res: Response

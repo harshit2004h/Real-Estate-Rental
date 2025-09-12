@@ -37,27 +37,8 @@ export const listApplications = async (
       },
     });
 
-    function calculateNextPaymentDate(startDate: Date): Date {
-      const today = new Date();
-      const nextPaymentDate = new Date(startDate);
-      while (nextPaymentDate <= today) {
-        nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1);
-      }
-      return nextPaymentDate;
-    }
-
     const formattedApplications = await Promise.all(
       applications.map(async (app) => {
-        const lease = await prisma.lease.findFirst({
-          where: {
-            tenant: {
-              cognitoId: app.tenantCognitoId,
-            },
-            propertyId: app.propertyId,
-          },
-          orderBy: { startDate: "desc" },
-        });
-
         return {
           ...app,
           property: {
@@ -65,12 +46,6 @@ export const listApplications = async (
             address: app.property.location.address,
           },
           manager: app.property.manager,
-          lease: lease
-            ? {
-                ...lease,
-                nextPaymentDate: calculateNextPaymentDate(lease.startDate),
-              }
-            : null,
         };
       })
     );
@@ -83,86 +58,28 @@ export const listApplications = async (
   }
 };
 
-export const createApplication = async (
+export const getApplicationById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const {
-      applicationDate,
-      status,
-      propertyId,
-      tenantCognitoId,
-      name,
-      email,
-      phoneNumber,
-      message,
-      durationMonths
-    } = req.body;
-
-    const property = await prisma.property.findUnique({
-      where: { id: propertyId },
-      select: { pricePerMonth: true, securityDeposit: true },
+    const { id } = req.params;
+    const application = await prisma.application.findUnique({
+      where: { id: Number(id) },
+      include: {
+        property: true,
+        tenant: true,
+      },
     });
-
-    if (!property) {
-      res.status(404).json({ message: "Property not found" });
+    if (!application) {
+      res.status(404).json({ message: "Application not found." });
       return;
     }
-
-    const newApplication = await prisma.$transaction(async (prisma) => {
-      // Create lease first
-      const lease = await prisma.lease.create({
-        data: {
-          startDate: new Date(), // Today
-          endDate: new Date(
-            new Date().setFullYear(new Date().getFullYear() + 1)
-          ), // 1 year from today
-          rent: property.pricePerMonth,
-          deposit: property.securityDeposit,
-          property: {
-            connect: { id: propertyId },
-          },
-          tenant: {
-            connect: { cognitoId: tenantCognitoId },
-          },
-        },
-      });
-
-      // Then create application with lease connection
-      const application = await prisma.application.create({
-        data: {
-          applicationDate: new Date(applicationDate),
-          status,
-          name,
-          email,
-          phoneNumber,
-          message,
-          property: {
-            connect: { id: propertyId },
-          },
-          tenant: {
-            connect: { cognitoId: tenantCognitoId },
-          },
-          lease: {
-            connect: { id: lease.id },
-          },
-        },
-        include: {
-          property: true,
-          tenant: true,
-          lease: true,
-        },
-      });
-
-      return application;
-    });
-
-    res.status(201).json(newApplication);
+    res.json(application);
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: `Error creating application: ${error.message}` });
+      .json({ message: `Error retrieving application: ${error.message}` });
   }
 };
 
@@ -189,38 +106,10 @@ export const updateApplicationStatus = async (
     }
 
     if (status === "Approved") {
-      const newLease = await prisma.lease.create({
-        data: {
-          startDate: new Date(),
-          endDate: new Date(
-            new Date().setFullYear(new Date().getFullYear() + 1)
-          ),
-          rent: application.property.pricePerMonth,
-          deposit: application.property.securityDeposit,
-          propertyId: application.propertyId,
-          tenantCognitoId: application.tenantCognitoId,
-        },
-      });
-
-      // Update the property to connect the tenant
-      await prisma.property.update({
-        where: { id: application.propertyId },
-        data: {
-          tenants: {
-            connect: { cognitoId: application.tenantCognitoId },
-          },
-        },
-      });
-
-      // Update the application with the new lease ID
+      //change application status to Approved
       await prisma.application.update({
         where: { id: Number(id) },
-        data: { status, leaseId: newLease.id },
-        include: {
-          property: true,
-          tenant: true,
-          lease: true,
-        },
+        data: { status },
       });
     } else {
       // Update the application status (for both "Denied" and other statuses)
@@ -236,7 +125,6 @@ export const updateApplicationStatus = async (
       include: {
         property: true,
         tenant: true,
-        lease: true,
       },
     });
 

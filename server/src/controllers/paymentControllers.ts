@@ -6,12 +6,16 @@ import crypto from "crypto";
 const prisma = new PrismaClient();
 
 var instance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY,
-  key_secret: process.env.RAZORPAY_SECRET,
+  key_id: process.env.RAZORPAY_KEY as string,
+  key_secret: process.env.RAZORPAY_SECRET as string,
 });
 
-//for application fees
-export const capturePayment1 = async (req: Request, res: Response) => {
+if (!process.env.RAZORPAY_KEY || !process.env.RAZORPAY_SECRET) {
+  throw new Error("Razorpay credentials are not configured properly");
+}
+
+// for application fees
+export const capturePayment1 = async (req: Request, res: Response): Promise<void> => {
   try {
     const { propertyId, tenantCognitoId } = req.body;
 
@@ -54,6 +58,26 @@ export const capturePayment1 = async (req: Request, res: Response) => {
       return;
     }
 
+    //check if application already exists
+    try {
+      let application = await prisma.application.findFirst({
+        where: {
+          propertyId: Number(propertyId),
+          tenantCognitoId: tenantCognitoId,
+        },
+      });
+
+      if (application) {
+        res
+          .status(400)
+          .json({ message: "Application already exists for this property" });
+        return;
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Error checking existing application" });
+      return;
+    }
+
     const amount = property.applicationFee * 100;
     const currency = "USD";
     const options = {
@@ -66,13 +90,13 @@ export const capturePayment1 = async (req: Request, res: Response) => {
         purchaseType: "APPLICATION_FEE",
         purchaseDateTime: new Date().toISOString(),
       },
-    };
+    } as any; // Type assertion to fix Razorpay type issues
 
     try {
       //initiate razorpay payment
       const order = await instance.orders.create(options);
       console.log(order);
-      res.status(200).json(options);
+      res.status(200).json(order);
     } catch (error) {
       res.status(500).json({ message: "Error creating payment order 1" });
     }
@@ -81,16 +105,19 @@ export const capturePayment1 = async (req: Request, res: Response) => {
   }
 };
 
-export const verifyPayment1 = async (req: Request, res: Response) => {
+// verifying for application fees
+export const verifyPayment1 = async (req: Request, res: Response): Promise<void> => {
   try {
-    const razorpay_order_id = req.body?.razorpay_order_id;
-    const razorpay_payment_id = req.body?.razorpay_payment_id;
-    const razorpay_signature = req.body?.razorpay_signature;
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      applicationData,
+    } = req.body;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res
-        .status(200)
-        .json({ success: false, message: "Payment Failed" });
+      res.status(200).json({ success: false, message: "Payment Failed" });
+      return;
     }
 
     let body = razorpay_order_id + "|" + razorpay_payment_id;
@@ -100,15 +127,47 @@ export const verifyPayment1 = async (req: Request, res: Response) => {
       .digest("hex");
 
     if (expectedSignature === razorpay_signature) {
-      res.status(200).json({ success: true, message: "Payment Verified 1" });
+      const {
+        propertyId,
+        tenantCognitoId,
+        name,
+        email,
+        phoneNumber,
+        message,
+        durationMonths,
+      } = applicationData;
+
+      // create application
+      const newApplication = await prisma.application.create({
+        data: {
+          applicationDate: new Date(),
+          status: "Pending",
+          name,
+          email,
+          phoneNumber,
+          message,
+          durationMonths,
+          property: { connect: { id: Number(propertyId) } },
+          tenant: { connect: { cognitoId: tenantCognitoId } },
+        },
+        include: { property: true, tenant: true },
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Payment Verified & Application Created",
+        application: newApplication,
+      });
+    } else {
+      res.status(200).json({ success: false, message: "Payment verification failed" });
     }
   } catch (error) {
     res.status(500).json({ message: "Error verifying payment 1" });
   }
 };
 
-//for security deposit and first month rent and plan, subscription from next month
-export const capturePayment2 = async (req: Request, res: Response) => {
+// for security deposit and first month rent and plan, subscription from next month
+export const capturePayment2 = async (req: Request, res: Response): Promise<void> => {
   try {
     const { propertyId, tenantCognitoId } = req.body;
 
@@ -127,8 +186,14 @@ export const capturePayment2 = async (req: Request, res: Response) => {
           select: { managerCognitoId: true },
         })
         .then((property) => property?.managerCognitoId);
+        
+      if (!managerCognitoId) {
+        res.status(404).json({ message: "Property manager not found" });
+        return;
+      }
     } catch (error) {
       res.status(500).json({ message: "Error retrieving property manager" });
+      return;
     }
 
     let property;
@@ -161,6 +226,7 @@ export const capturePayment2 = async (req: Request, res: Response) => {
       }
     } catch (error) {
       res.status(500).json({ message: "Error retrieving property" });
+      return;
     }
 
     const amount =
@@ -177,13 +243,13 @@ export const capturePayment2 = async (req: Request, res: Response) => {
         purchaseType: "SECURITY_AND_FIRST_MONTH",
         purchaseDateTime: new Date().toISOString(),
       },
-    };
+    } as any; // Type assertion to fix Razorpay type issues
 
     try {
       //initiate razorpay payment
       const order = await instance.orders.create(options);
       console.log(order);
-      res.status(200).json(options);
+      res.status(200).json(order);
     } catch (error) {
       res.status(500).json({ message: "Error creating payment order" });
     }
@@ -192,16 +258,16 @@ export const capturePayment2 = async (req: Request, res: Response) => {
   }
 };
 
-export const verifyPayment2 = async (req: Request, res: Response) => {
+// verifying for security deposit and first month rent and plan, subscription from next month
+export const verifyPayment2 = async (req: Request, res: Response): Promise<void> => {
   try {
     const razorpay_order_id = req.body?.razorpay_order_id;
     const razorpay_payment_id = req.body?.razorpay_payment_id;
     const razorpay_signature = req.body?.razorpay_signature;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res
-        .status(200)
-        .json({ success: false, message: "Payment Failed" });
+      res.status(200).json({ success: false, message: "Payment Failed" });
+      return;
     }
 
     let body = razorpay_order_id + "|" + razorpay_payment_id;
@@ -267,6 +333,16 @@ export const verifyPayment2 = async (req: Request, res: Response) => {
         },
       });
 
+      //connect property to tenant in the database
+      await prisma.property.update({
+        where: { id: Number(propertyId) },
+        data: {
+          tenants: {
+            connect: { cognitoId: tenantCognitoId },
+          },
+        },
+      });
+
       //create lease for the tenant
       const leaseStartDate = new Date();
       const endDate = new Date();
@@ -282,7 +358,7 @@ export const verifyPayment2 = async (req: Request, res: Response) => {
           tenantCognitoId: tenantCognitoId,
           status: "ACTIVE",
           razorpayPlanId: planId,
-          razorpaySubscription: subscription.id,
+          razorpaySubscriptionId: subscription.id,
         },
       });
 
@@ -293,10 +369,10 @@ export const verifyPayment2 = async (req: Request, res: Response) => {
         plan: plan,
         subscription: subscription,
       });
+    } else {
+      res.status(200).json({ success: false, message: "Payment verification failed" });
     }
   } catch (error) {
     res.status(500).json({ message: "Error verifying payment" });
   }
 };
-
-

@@ -142,11 +142,9 @@ model Application {
   phoneNumber     String
   message         String?
   durationMonths  Int               @default(12)
-  leaseId         Int?              @unique
 
   property Property @relation(fields: [propertyId], references: [id])
   tenant   Tenant   @relation(fields: [tenantCognitoId], references: [cognitoId])
-  lease    Lease?   @relation(fields: [leaseId], references: [id])
 }
 
 enum LeaseStatus {
@@ -165,10 +163,9 @@ model Lease {
   razorpaySubscriptionId String
   razorpayPlanId         String
 
-  property    Property     @relation(fields: [propertyId], references: [id])
-  tenant      Tenant       @relation(fields: [tenantCognitoId], references: [cognitoId])
-  application Application?
-  payments    Payment[]
+  property Property  @relation(fields: [propertyId], references: [id])
+  tenant   Tenant    @relation(fields: [tenantCognitoId], references: [cognitoId])
+  payments Payment[]
 }
 
 model Payment {

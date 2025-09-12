@@ -1,14 +1,14 @@
 import express from "express";
 import { AuthMiddleware } from "../middlewares/authMiddleware";
 import {
-  createApplication,
+  getApplicationById,
   listApplications,
   updateApplicationStatus,
 } from "../controllers/applicationControllers";
 
 const router = express.Router();
 
-router.post("/", AuthMiddleware(["tenant"]), createApplication);
+router.get("/:id", AuthMiddleware(["tenant"]), getApplicationById);
 router.put("/:id/status", AuthMiddleware(["manager"]), updateApplicationStatus);
 router.get("/", AuthMiddleware(["manager", "tenant"]), listApplications);
 

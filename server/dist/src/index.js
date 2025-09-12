@@ -16,6 +16,7 @@ const managerRoutes_1 = __importDefault(require("./routes/managerRoutes"));
 const propertyRoutes_1 = __importDefault(require("./routes/propertyRoutes"));
 const leaseRoutes_1 = __importDefault(require("./routes/leaseRoutes"));
 const applicationRoutes_1 = __importDefault(require("./routes/applicationRoutes"));
+const paymentRoutes_1 = __importDefault(require("./routes/paymentRoutes"));
 /*CONFIGURATION*/
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -35,6 +36,7 @@ app.use("/properties", propertyRoutes_1.default);
 app.use("/leases", leaseRoutes_1.default);
 app.use("/tenants", (0, authMiddleware_1.AuthMiddleware)(["tenant"]), tenantRoutes_1.default);
 app.use("/managers", (0, authMiddleware_1.AuthMiddleware)(["manager"]), managerRoutes_1.default);
+app.use("/payments", paymentRoutes_1.default);
 /*SERVER*/
 const PORT = Number(process.env.PORT) || 3002;
 app.listen(PORT, "0.0.0.0", () => {

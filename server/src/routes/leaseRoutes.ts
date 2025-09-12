@@ -1,6 +1,10 @@
 import express from "express";
 import { AuthMiddleware } from "../middlewares/authMiddleware";
-import { getLeasePayements, getLeases } from "../controllers/leaseControllers";
+import {
+  getLeaseById,
+  getLeasePayements,
+  getLeases,
+} from "../controllers/leaseControllers";
 
 const router = express.Router();
 
@@ -10,5 +14,5 @@ router.get(
   AuthMiddleware(["manager", "tenant"]),
   getLeasePayements
 );
-
+router.get("/:id", AuthMiddleware(["manager", "tenant"]), getLeaseById);
 export default router;
