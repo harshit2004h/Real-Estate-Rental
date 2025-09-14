@@ -79,7 +79,7 @@ export const capturePayment1 = async (req: Request, res: Response): Promise<void
     }
 
     const amount = property.applicationFee * 100;
-    const currency = "USD";
+    const currency = "INR";
     const options = {
       amount: amount,
       currency: currency,
@@ -107,6 +107,9 @@ export const capturePayment1 = async (req: Request, res: Response): Promise<void
 
 // verifying for application fees
 export const verifyPayment1 = async (req: Request, res: Response): Promise<void> => {
+  console.log("verifyPayment1 started");
+  console.log("Request body:", req.body);
+  
   try {
     const {
       razorpay_order_id,
@@ -115,7 +118,15 @@ export const verifyPayment1 = async (req: Request, res: Response): Promise<void>
       applicationData,
     } = req.body;
 
+    console.log("Extracted data:", {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      applicationData
+    });
+
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      console.log("Missing payment verification data");
       res.status(200).json({ success: false, message: "Payment Failed" });
       return;
     }
@@ -126,6 +137,12 @@ export const verifyPayment1 = async (req: Request, res: Response): Promise<void>
       .update(body.toString())
       .digest("hex");
 
+    console.log("Signature verification:", {
+      expected: expectedSignature,
+      received: razorpay_signature,
+      match: expectedSignature === razorpay_signature
+    });
+
     if (expectedSignature === razorpay_signature) {
       const {
         propertyId,
@@ -135,7 +152,17 @@ export const verifyPayment1 = async (req: Request, res: Response): Promise<void>
         phoneNumber,
         message,
         durationMonths,
-      } = applicationData;
+      } = applicationData.applicationData; // Fix: access the nested applicationData
+
+      console.log("Creating application with data:", {
+        propertyId,
+        tenantCognitoId,
+        name,
+        email,
+        phoneNumber,
+        message,
+        durationMonths,
+      });
 
       // create application
       const newApplication = await prisma.application.create({
@@ -153,15 +180,19 @@ export const verifyPayment1 = async (req: Request, res: Response): Promise<void>
         include: { property: true, tenant: true },
       });
 
+      console.log("Application created successfully:", newApplication);
+
       res.status(200).json({
         success: true,
         message: "Payment Verified & Application Created",
         application: newApplication,
       });
     } else {
+      console.log("Payment verification failed - signature mismatch");
       res.status(200).json({ success: false, message: "Payment verification failed" });
     }
   } catch (error) {
+    console.log("Error in verifyPayment1:", error);
     res.status(500).json({ message: "Error verifying payment 1" });
   }
 };
@@ -231,7 +262,7 @@ export const capturePayment2 = async (req: Request, res: Response): Promise<void
 
     const amount =
       property!.pricePerMonth * 100 + property!.securityDeposit * 100;
-    const currency = "USD";
+    const currency = "INR";
     const options = {
       amount: amount,
       currency: currency,
@@ -300,7 +331,7 @@ export const verifyPayment2 = async (req: Request, res: Response): Promise<void>
         item: {
           name: `Monthly Rent for Property ID: ${propertyId}`,
           amount: amount,
-          currency: "USD",
+          currency: "INR",
           description: `Monthly rent for property ID: ${propertyId} for tenant ${tenantCognitoId}`,
         },
         notes: {

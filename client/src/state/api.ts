@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cleanParams, createNewUserInDatabase, withToast } from "@/lib/utils";
 import {
   Application,
@@ -11,6 +10,22 @@ import {
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
 import { FiltersState } from ".";
+import { toast } from "react-hot-toast";
+
+const loadScript = (src: string): Promise<boolean> => {
+  return new Promise((resolve) => {
+    // Prevent loading the script twice
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
@@ -318,7 +333,7 @@ export const api = createApi({
     }),
 
     updateApplicationStatus: build.mutation<
-      Application & { lease?: Lease },
+      Application,
       { id: number; status: string }
     >({
       query: ({ id, status }) => ({
@@ -326,7 +341,7 @@ export const api = createApi({
         method: "PUT",
         body: { status },
       }),
-      invalidatesTags: ["Applications", "Leases"],
+      invalidatesTags: ["Applications"],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
           success: "Application status updated successfully!",
@@ -335,18 +350,112 @@ export const api = createApi({
       },
     }),
 
-    createApplication: build.mutation<Application, Partial<Application>>({
-      query: (body) => ({
-        url: `applications`,
-        method: "POST",
-        body: body,
+    getApplicationById: build.query<Application, { id: number }>({
+      query: ({ id }) => ({
+        url: `applications/${id}`,
+        method: "GET",
       }),
-      invalidatesTags: ["Applications"],
+      providesTags: ["Applications"],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
-          success: "Application created successfully!",
-          error: "Failed to create applications.",
+          error: "Failed to fetch application details.",
         });
+      },
+    }),
+
+    createApplicationPayment: build.mutation<RazorpayOrder, StartPaymentArgs>({
+      query: (body) => ({
+        url: `payments/capture1`,
+        method: "POST",
+        body: {
+          propertyId: body.applicationData.propertyId,
+          tenantCognitoId: body.applicationData.tenantCognitoId,
+        },
+      }),
+
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          // 1. Wait for the backend to create the Razorpay order
+          const { data: order } = await queryFulfilled;
+
+          // 2. Load the Razorpay checkout script
+          const scriptLoaded = await loadScript(
+            "https://checkout.razorpay.com/v1/checkout.js"
+          );
+          if (!scriptLoaded) {
+            toast.error("Could not load payment script. Please try again.");
+            return;
+          }
+
+          // 3. Configure and open the Razorpay checkout modal
+          const options = {
+            key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Ensure this is NEXT_PUBLIC for client-side access
+            amount: order.amount,
+            currency: order.currency,
+            name: "SwiftStay-Rental",
+            description:
+              "Thank you for applying! We will let you know the status soon.",
+            image: "/Logo.png",
+            order_id: order.id,
+            handler: function (response: {
+              razorpay_payment_id: string;
+              razorpay_order_id: string;
+              razorpay_signature: string;
+            }) {
+              toast.success("Payment successful! Verifying...");
+              // 4. Dispatch the verification mutation to your backend
+              dispatch(
+                api.endpoints.verifyApplicationPayment.initiate({
+                  ...response,
+                  applicationData: args, // 'args' contains the complete form data
+                  onSuccess: args.onSuccess,
+                })
+              );
+            },
+            prefill: {
+              name: args.applicationData.name,
+              email: args.applicationData.email,
+              contact: args.applicationData.phoneNumber,
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+
+          // `window.Razorpay` is available after the script loads
+          const paymentObject = new (window as any).Razorpay(options);
+          paymentObject.open();
+
+          paymentObject.on("payment.failed", (response: any) => {
+            toast.error("Oops! Payment Failed.");
+            console.error("Payment failed:", response.error);
+          });
+        } catch (error) {
+          console.error("Failed to create payment order:", error);
+          toast.error("Could not initiate payment. Please try again.");
+        }
+      },
+    }),
+
+    verifyApplicationPayment: build.mutation<
+      { success: boolean; message: string; application: Application },
+      VerifyPaymentArgs
+    >({
+      query: (body) => ({
+        url: `payments/verify1`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Applications"],
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Application submitted successfully!");
+          // Execute the navigation callback
+          args.onSuccess?.();
+        } catch {
+          toast.error("Payment verification failed. Please contact support.");
+        }
       },
     }),
   }),
@@ -369,5 +478,7 @@ export const {
   useGetPaymentsQuery,
   useGetApplicationsQuery,
   useUpdateApplicationStatusMutation,
-  useCreateApplicationMutation,
+  useGetApplicationByIdQuery,
+  useCreateApplicationPaymentMutation,
+  useVerifyApplicationPaymentMutation,
 } = api;

@@ -135,6 +135,44 @@ declare global {
     userInfo: Tenant | Manager;
     userRole: JsonObject | JsonPrimitive | JsonArray;
   }
+
+  interface ApplicationData {
+    propertyId: number;
+    tenantCognitoId: string;
+    name: string;
+    email: string;
+    phoneNumber: string;
+    message: string;
+    durationMonths: number;
+  }
+
+  interface StartPaymentArgs {
+    applicationData: ApplicationData;
+    onSuccess?: () => void; // The optional success callback for navigation
+  }
+
+  interface RazorpayOrder {
+    id: string;
+    entity: string;
+    amount: number;
+    amount_paid: number;
+    amount_due: number;
+    currency: string;
+    offer_id: string | null;
+    receipt: string | null;
+    status: "created" | "attempted" | "paid";
+    attempts: number;
+    notes: Record<string, string>;
+    created_at: number;
+  }
+
+  interface VerifyPaymentArgs {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+    applicationData: CreatePaymentArgs;
+    onSuccess?: () => void;
+  }
 }
 
 export {};
