@@ -28,10 +28,16 @@ export const propertySchema = z.object({
 export type PropertyFormData = z.infer<typeof propertySchema>;
 
 export const applicationSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
-  message: z.string().optional(),
+  name: z.string().min(2, "Name must be at least 2 characters long"),
+  email: z.string().email("Please enter a valid email address"),
+  phoneNumber: z
+    .string()
+    .regex(/^\d{10}$/, "Please enter a valid 10-digit phone number"),
+  durationMonths: z.coerce
+    .number()
+    .int()
+    .min(1, "Duration must be at least 1 month"),
+  message: z.string().min(1, "Please enter a message"),
 });
 
 export type ApplicationFormData = z.infer<typeof applicationSchema>;

@@ -67,8 +67,7 @@ const Applications = () => {
               {application.status === "Approved" ? (
                 <div className="bg-green-100 p-4 text-green-700 grow flex items-center">
                   <CircleCheckBig className="w-5 h-5 mr-2" />
-                  The property is being rented by you until{" "}
-                  {new Date(application.lease?.endDate).toLocaleDateString("en-GB")}
+                  Your application has been approved.
                 </div>
               ) : application.status === "Pending" ? (
                 <div className="bg-yellow-100 p-4 text-yellow-700 grow flex items-center">
@@ -83,13 +82,20 @@ const Applications = () => {
               )}
 
               {application.status === "Approved" ? (
+                // <button
+                //   onClick={() => downloadAgreement(application)}
+                //   className={`bg-white border border-gray-300 text-gray-700 py-2 px-4
+                //           rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50`}
+                // >
+                //   <Download className="w-5 h-5 mr-2" />
+                //   Download Agreement
+                // </button>
+
                 <button
-                  onClick={() => downloadAgreement(application)}
-                  className={`bg-white border border-gray-300 text-gray-700 py-2 px-4
-                          rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50`}
+                  className={`bg-white border border-gray-300 text-gray-700 py-2 px-4 font-semibold
+                       rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50`}
                 >
-                  <Download className="w-5 h-5 mr-2" />
-                  Download Agreement
+                  Pay Security + First Month&apos;s Rent
                 </button>
               ) : (
                 <></>
