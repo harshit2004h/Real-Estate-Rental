@@ -431,8 +431,8 @@ export const api = createApi({
             console.error("Payment failed:", response.error);
           });
         } catch (error) {
-          console.error("Failed to create payment order:", error);
           toast.error("Could not initiate payment. Please try again.");
+          // console.error("Failed to create payment order:", error);
         }
       },
     }),
@@ -451,6 +451,106 @@ export const api = createApi({
         try {
           await queryFulfilled;
           toast.success("Application submitted successfully!");
+          // Execute the navigation callback
+          args.onSuccess?.();
+        } catch {
+          toast.error("Payment verification failed. Please contact support.");
+        }
+      },
+    }),
+
+    createSecurityDepositAndFirstMonthPayment: build.mutation<
+      RazorpayOrder,
+      StartSecurityDepositPaymentArgs
+    >({
+      query: (body) => ({
+        url: `payments/capture2`,
+        method: "POST",
+        body: {
+          propertyId: body.paymentData.propertyId,
+          tenantCognitoId: body.paymentData.tenantCognitoId,
+        },
+      }),
+
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          // 1. Wait for the backend to create the Razorpay order
+          const { data: order } = await queryFulfilled;
+
+          // 2. Load the Razorpay checkout script
+          const scriptLoaded = await loadScript(
+            "https://checkout.razorpay.com/v1/checkout.js"
+          );
+          if (!scriptLoaded) {
+            toast.error("Could not load payment script. Please try again.");
+            return;
+          }
+
+          // 3. Configure and open the Razorpay checkout modal
+          const options = {
+            key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+            amount: order.amount,
+            currency: order.currency,
+            name: "SwiftStay-Rental",
+            description: "Security deposit and first month rent payment",
+            image: "/Logo.png",
+            order_id: order.id,
+            handler: function (response: {
+              razorpay_payment_id: string;
+              razorpay_order_id: string;
+              razorpay_signature: string;
+            }) {
+              toast.success("Payment successful! Verifying...");
+              // 4. Dispatch the verification mutation to your backend
+              dispatch(
+                api.endpoints.verifySecurityDepositAndFirstMonthPayment.initiate(
+                  {
+                    ...response,
+                    paymentData: args.paymentData,
+                    onSuccess: args.onSuccess,
+                  }
+                )
+              );
+            },
+            prefill: {
+              name: "", // Could be filled if you have tenant name
+              email: "", // Could be filled if you have tenant email
+              contact: "", // Could be filled if you have tenant phone
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+
+          // `window.Razorpay` is available after the script loads
+          const paymentObject = new (window as any).Razorpay(options);
+          paymentObject.open();
+
+          paymentObject.on("payment.failed", (response: any) => {
+            toast.error("Oops! Payment Failed.");
+            console.error("Payment failed:", response.error);
+          });
+        } catch (error) {
+          // console.error("Failed to create payment order:", error);
+          toast.error("Could not initiate payment. Please try again.");
+        }
+      },
+    }),
+
+    verifySecurityDepositAndFirstMonthPayment: build.mutation<
+      { success: boolean; message: string; lease: Lease },
+      VerifySecurityDepositPaymentArgs
+    >({
+      query: (body) => ({
+        url: `payments/verify2`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Leases", "Properties"],
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Payment verified and lease created successfully!");
           // Execute the navigation callback
           args.onSuccess?.();
         } catch {
@@ -481,4 +581,6 @@ export const {
   useGetApplicationByIdQuery,
   useCreateApplicationPaymentMutation,
   useVerifyApplicationPaymentMutation,
+  useCreateSecurityDepositAndFirstMonthPaymentMutation,
+  useVerifySecurityDepositAndFirstMonthPaymentMutation,
 } = api;

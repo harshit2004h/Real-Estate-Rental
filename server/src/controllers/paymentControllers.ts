@@ -15,7 +15,10 @@ if (!process.env.RAZORPAY_KEY || !process.env.RAZORPAY_SECRET) {
 }
 
 // for application fees
-export const capturePayment1 = async (req: Request, res: Response): Promise<void> => {
+export const capturePayment1 = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { propertyId, tenantCognitoId } = req.body;
 
@@ -106,10 +109,13 @@ export const capturePayment1 = async (req: Request, res: Response): Promise<void
 };
 
 // verifying for application fees
-export const verifyPayment1 = async (req: Request, res: Response): Promise<void> => {
+export const verifyPayment1 = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   console.log("verifyPayment1 started");
   console.log("Request body:", req.body);
-  
+
   try {
     const {
       razorpay_order_id,
@@ -122,7 +128,7 @@ export const verifyPayment1 = async (req: Request, res: Response): Promise<void>
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
-      applicationData
+      applicationData,
     });
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -140,7 +146,7 @@ export const verifyPayment1 = async (req: Request, res: Response): Promise<void>
     console.log("Signature verification:", {
       expected: expectedSignature,
       received: razorpay_signature,
-      match: expectedSignature === razorpay_signature
+      match: expectedSignature === razorpay_signature,
     });
 
     if (expectedSignature === razorpay_signature) {
@@ -189,7 +195,9 @@ export const verifyPayment1 = async (req: Request, res: Response): Promise<void>
       });
     } else {
       console.log("Payment verification failed - signature mismatch");
-      res.status(200).json({ success: false, message: "Payment verification failed" });
+      res
+        .status(200)
+        .json({ success: false, message: "Payment verification failed" });
     }
   } catch (error) {
     console.log("Error in verifyPayment1:", error);
@@ -198,7 +206,10 @@ export const verifyPayment1 = async (req: Request, res: Response): Promise<void>
 };
 
 // for security deposit and first month rent and plan, subscription from next month
-export const capturePayment2 = async (req: Request, res: Response): Promise<void> => {
+export const capturePayment2 = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { propertyId, tenantCognitoId } = req.body;
 
@@ -217,7 +228,7 @@ export const capturePayment2 = async (req: Request, res: Response): Promise<void
           select: { managerCognitoId: true },
         })
         .then((property) => property?.managerCognitoId);
-        
+
       if (!managerCognitoId) {
         res.status(404).json({ message: "Property manager not found" });
         return;
@@ -290,11 +301,17 @@ export const capturePayment2 = async (req: Request, res: Response): Promise<void
 };
 
 // verifying for security deposit and first month rent and plan, subscription from next month
-export const verifyPayment2 = async (req: Request, res: Response): Promise<void> => {
+export const verifyPayment2 = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const razorpay_order_id = req.body?.razorpay_order_id;
-    const razorpay_payment_id = req.body?.razorpay_payment_id;
-    const razorpay_signature = req.body?.razorpay_signature;
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      paymentData,
+    } = req.body;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       res.status(200).json({ success: false, message: "Payment Failed" });
@@ -309,9 +326,25 @@ export const verifyPayment2 = async (req: Request, res: Response): Promise<void>
       .digest("hex");
 
     if (expectedSignature === razorpay_signature) {
-      const { propertyId, tenantCognitoId, managerCognitoId } =
-        req.body.payload.payment.entity.notes;
-      const amount = req.body.payload.payment.entity.amount;
+      const { propertyId, tenantCognitoId } = paymentData;
+
+      // Get property details to retrieve manager info and calculate amounts
+      const property = await prisma.property.findUnique({
+        where: { id: Number(propertyId) },
+        select: {
+          managerCognitoId: true,
+          pricePerMonth: true,
+          securityDeposit: true,
+        },
+      });
+
+      if (!property) {
+        res.status(404).json({ success: false, message: "Property not found" });
+        return;
+      }
+
+      const managerCognitoId = property.managerCognitoId;
+      const monthlyRentAmount = property.pricePerMonth * 100; // Convert to paisa
 
       //get durationMonths from application
       const application = await prisma.application.findFirst({
@@ -330,7 +363,7 @@ export const verifyPayment2 = async (req: Request, res: Response): Promise<void>
         interval: 1,
         item: {
           name: `Monthly Rent for Property ID: ${propertyId}`,
-          amount: amount,
+          amount: monthlyRentAmount,
           currency: "INR",
           description: `Monthly rent for property ID: ${propertyId} for tenant ${tenantCognitoId}`,
         },
@@ -401,7 +434,9 @@ export const verifyPayment2 = async (req: Request, res: Response): Promise<void>
         subscription: subscription,
       });
     } else {
-      res.status(200).json({ success: false, message: "Payment verification failed" });
+      res
+        .status(200)
+        .json({ success: false, message: "Payment verification failed" });
     }
   } catch (error) {
     res.status(500).json({ message: "Error verifying payment" });

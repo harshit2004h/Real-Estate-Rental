@@ -170,7 +170,25 @@ declare global {
     razorpay_payment_id: string;
     razorpay_order_id: string;
     razorpay_signature: string;
-    applicationData: CreatePaymentArgs;
+    applicationData: StartPaymentArgs;
+    onSuccess?: () => void;
+  }
+
+  interface SecurityDepositPaymentData {
+    propertyId: number;
+    tenantCognitoId: string;
+  }
+
+  interface StartSecurityDepositPaymentArgs {
+    paymentData: SecurityDepositPaymentData;
+    onSuccess?: () => void;
+  }
+
+  interface VerifySecurityDepositPaymentArgs {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+    paymentData: SecurityDepositPaymentData;
     onSuccess?: () => void;
   }
 }

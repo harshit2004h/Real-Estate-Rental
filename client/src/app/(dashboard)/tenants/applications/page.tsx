@@ -3,12 +3,14 @@
 import ApplicationCard from "@/components/ApplicationCard";
 import Headers from "@/components/Headers";
 import Loading from "@/components/Loading";
-import { useGetApplicationsQuery, useGetAuthUserQuery } from "@/state/api";
+import { useGetApplicationsQuery, useGetAuthUserQuery, useCreateSecurityDepositAndFirstMonthPaymentMutation } from "@/state/api";
 import { CircleCheckBig, Clock, Download, XCircle } from "lucide-react";
 import React, { useState } from "react";
 import { downloadAgreement } from "@/components/downloadAgreement";
+import { useRouter } from "next/navigation";
 
 const Applications = () => {
+  const router = useRouter();
   const { data: authUser } = useGetAuthUserQuery();
   const {
     data: applications,
@@ -19,7 +21,30 @@ const Applications = () => {
     userType: "tenant",
   });
 
+  const [createSecurityDepositPayment, { isLoading: isPaymentLoading }] = useCreateSecurityDepositAndFirstMonthPaymentMutation();
+
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
+
+  const handlePaySecurityDeposit = async (application: any) => {
+    if (!authUser?.cognitoInfo?.userId) {
+      console.error("User not authenticated");
+      return;
+    }
+
+    try {
+      await createSecurityDepositPayment({
+        paymentData: {
+          propertyId: application.propertyId,
+          tenantCognitoId: authUser.cognitoInfo.userId,
+        },
+        onSuccess: () => {
+          router.push("/tenants/residences");
+        },
+      });
+    } catch (error) {
+      console.error("Payment failed:", error);
+    }
+  };
 
   if (isLoading) return <Loading />;
   if (isError || !applications) return <div>Error fetching applications</div>;
@@ -92,10 +117,13 @@ const Applications = () => {
                 // </button>
 
                 <button
+                  onClick={() => handlePaySecurityDeposit(application)}
+                  disabled={isPaymentLoading}
                   className={`bg-white border border-gray-300 text-gray-700 py-2 px-4 font-semibold
-                       rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50`}
+                       rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50
+                       disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  Pay Security + First Month&apos;s Rent
+                  {isPaymentLoading ? "Processing..." : "Pay Security + First Month's Rent"}
                 </button>
               ) : (
                 <></>
