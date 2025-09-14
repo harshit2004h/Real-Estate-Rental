@@ -442,3 +442,183 @@ export const verifyPayment2 = async (
     res.status(500).json({ message: "Error verifying payment" });
   }
 };
+
+// manually charge subscription (requires user approval)
+export const chargeSubscription = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { leaseId } = req.body;
+
+    if (!leaseId) {
+      res.status(400).json({ message: "leaseId is required" });
+      return;
+    }
+
+    // Get lease with subscription details
+    const lease = await prisma.lease.findUnique({
+      where: { id: leaseId },
+      include: { property: true }
+    });
+
+    if (!lease || !lease.razorpaySubscriptionId) {
+      res.status(404).json({ message: "Lease or subscription not found" });
+      return;
+    }
+
+    // Check if next month's payment already exists
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    const startOfMonth = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
+    const endOfMonth = new Date(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 0);
+
+    const existingPayment = await prisma.payment.findFirst({
+      where: {
+        leaseId: leaseId,
+        dueDate: {
+          gte: startOfMonth,
+          lte: endOfMonth
+        },
+        paymentStatus: "Paid"
+      }
+    });
+
+    if (existingPayment) {
+      res.status(400).json({ message: "Next month's subscription is already paid" });
+      return;
+    }
+
+    // Create a one-time payment order for the subscription amount
+    const amount = lease.property.pricePerMonth * 100; // Convert to paisa
+    const currency = "INR";
+    const options = {
+      amount: amount,
+      currency: currency,
+      receipt: `subscription_charge_${lease.id}_${Date.now()}`,
+      notes: {
+        leaseId: leaseId,
+        subscriptionId: lease.razorpaySubscriptionId,
+        propertyId: lease.propertyId,
+        tenantCognitoId: lease.tenantCognitoId,
+        purchaseType: "SUBSCRIPTION_CHARGE",
+        purchaseDateTime: new Date().toISOString(),
+        paymentMonth: `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}`
+      },
+    } as any;
+
+    const order = await instance.orders.create(options);
+    res.status(200).json(order);
+  } catch (error) {
+    console.error("Error creating subscription charge:", error);
+    res.status(500).json({ message: "Error creating subscription charge order" });
+  }
+};
+
+// verify manual subscription charge
+export const verifySubscriptionCharge = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      leaseId
+    } = req.body;
+
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !leaseId) {
+      res.status(400).json({ success: false, message: "Missing payment data" });
+      return;
+    }
+
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_SECRET!)
+      .update(body.toString())
+      .digest("hex");
+
+    if (expectedSignature === razorpay_signature) {
+      // Get lease details
+      const lease = await prisma.lease.findUnique({
+        where: { id: leaseId },
+        include: { property: true }
+      });
+
+      if (!lease) {
+        res.status(404).json({ success: false, message: "Lease not found" });
+        return;
+      }
+
+      // Calculate next month's due date
+      const nextMonth = new Date();
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      const dueDate = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
+
+      // Create payment record for subscription charge
+      const payment = await prisma.payment.create({
+        data: {
+          amountDue: lease.property.pricePerMonth,
+          dueDate: dueDate,
+          paymentDate: new Date(),
+          paymentStatus: "Paid",
+          transactionId: razorpay_payment_id,
+          leaseId: leaseId
+        }
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Subscription payment verified successfully",
+        payment: payment
+      });
+    } else {
+      res.status(400).json({ success: false, message: "Payment verification failed" });
+    }
+  } catch (error) {
+    console.error("Error verifying subscription charge:", error);
+    res.status(500).json({ message: "Error verifying subscription charge" });
+  }
+};
+
+export const checkNextMonthPayment = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { leaseId } = req.params;
+
+    if (!leaseId) {
+      res.status(400).json({ message: "leaseId is required" });
+      return;
+    }
+
+    // Calculate next month date range
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    const startOfMonth = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
+    const endOfMonth = new Date(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 0);
+
+    const existingPayment = await prisma.payment.findFirst({
+      where: {
+        leaseId: parseInt(leaseId),
+        dueDate: {
+          gte: startOfMonth,
+          lte: endOfMonth
+        },
+        paymentStatus: "Paid"
+      }
+    });
+
+    res.status(200).json({
+      nextMonthPaid: !!existingPayment,
+      nextMonthDate: `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}`,
+      payment: existingPayment
+    });
+  } catch (error) {
+    console.error("Error checking next month payment:", error);
+    res.status(500).json({ message: "Error checking payment status" });
+  }
+};
+

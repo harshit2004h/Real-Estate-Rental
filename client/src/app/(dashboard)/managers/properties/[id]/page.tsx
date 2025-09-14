@@ -14,6 +14,7 @@ import {
   useGetPaymentsQuery,
   useGetPropertyLeasesQuery,
   useGetPropertyQuery,
+  useCheckNextMonthPaymentQuery,
 } from "@/state/api";
 import {
   ArrowDownToLine,
@@ -22,10 +23,98 @@ import {
   Download,
   User,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
+
+const LeaseRow = ({
+  lease,
+  property,
+  paymentStatus,
+  leaseActive,
+  formatDate,
+}: {
+  lease: any;
+  property: any;
+  paymentStatus: string;
+  leaseActive: boolean;
+  formatDate: (date: string) => string;
+}) => {
+  const { data: nextMonthPayment, isLoading: nextMonthLoading } =
+    useCheckNextMonthPaymentQuery(lease.id);
+
+  const getNextMonthPaymentStatus = () => {
+    if (nextMonthLoading) return "Loading...";
+    if (!nextMonthPayment) return "Unknown";
+    return nextMonthPayment.nextMonthPaid ? "Paid" : "Not Paid";
+  };
+
+  const nextMonthStatus = getNextMonthPaymentStatus();
+
+  return (
+    <TableRow className="h-24">
+      <TableCell>
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+            <User className="w-5 h-5 text-gray-500" />
+          </div>
+          <div>
+            <div className="font-semibold">
+              {lease.tenant?.name || "Unknown Tenant"}
+            </div>
+            <div className="text-sm text-gray-500">
+              {lease.tenant?.email || "No email"}
+            </div>
+          </div>
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="text-sm">
+          <div>{formatDate(lease.startDate)}</div>
+          <div className="text-gray-500">to</div>
+          <div>{formatDate(lease.endDate)}</div>
+        </div>
+      </TableCell>
+      <TableCell>
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+            leaseActive
+              ? "bg-green-100 text-green-800"
+              : "bg-gray-100 text-gray-800"
+          }`}
+        >
+          {leaseActive ? "Active" : "Inactive"}
+        </span>
+      </TableCell>
+      <TableCell className="font-semibold">
+        ${property?.pricePerMonth?.toFixed(2) || "0.00"}
+      </TableCell>
+      <TableCell>
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-semibold inline-flex items-center ${
+            nextMonthStatus === "Paid"
+              ? "bg-green-100 text-green-800"
+              : nextMonthStatus === "Loading..."
+              ? "bg-gray-100 text-gray-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {nextMonthStatus === "Paid" && <Check className="w-3 h-3 mr-1" />}
+          {nextMonthStatus}
+        </span>
+      </TableCell>
+      <TableCell>
+        <div className="text-sm">{lease.tenant?.phoneNumber || "No phone"}</div>
+      </TableCell>
+      <TableCell>
+        <button className="border border-gray-300 text-gray-700 py-2 px-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-primary-700 hover:text-primary-50 transition-colors">
+          <ArrowDownToLine className="w-4 h-4 mr-1" />
+          Agreement
+        </button>
+      </TableCell>
+    </TableRow>
+  );
+};
 
 const PropertyLeases = () => {
   const { id } = useParams();
@@ -129,7 +218,7 @@ const PropertyLeases = () => {
                     <TableHead>Lease Period</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Monthly Rent</TableHead>
-                    <TableHead>Current Month Payment</TableHead>
+                    <TableHead>Next Month Payment</TableHead>
                     <TableHead>Contact</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
@@ -145,71 +234,14 @@ const PropertyLeases = () => {
                     );
 
                     return (
-                      <TableRow key={lease.id} className="h-24">
-                        <TableCell>
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                              <User className="w-5 h-5 text-gray-500" />
-                            </div>
-                            <div>
-                              <div className="font-semibold">
-                                {lease.tenant?.name || "Unknown Tenant"}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {lease.tenant?.email || "No email"}
-                              </div>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm">
-                            <div>{formatDate(lease.startDate)}</div>
-                            <div className="text-gray-500">to</div>
-                            <div>{formatDate(lease.endDate)}</div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                              leaseActive
-                                ? "bg-green-100 text-green-800"
-                                : "bg-gray-100 text-gray-800"
-                            }`}
-                          >
-                            {leaseActive ? "Active" : "Inactive"}
-                          </span>
-                        </TableCell>
-                        <TableCell className="font-semibold">
-                          ${lease.rent?.toFixed(2) || "0.00"}
-                        </TableCell>
-                        <TableCell>
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-semibold inline-flex items-center ${
-                              paymentStatus === "Paid"
-                                ? "bg-green-100 text-green-800"
-                                : paymentStatus === "Pending"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {paymentStatus === "Paid" && (
-                              <Check className="w-3 h-3 mr-1" />
-                            )}
-                            {paymentStatus}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm">
-                            {lease.tenant?.phoneNumber || "No phone"}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <button className="border border-gray-300 text-gray-700 py-2 px-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-primary-700 hover:text-primary-50 transition-colors">
-                            <ArrowDownToLine className="w-4 h-4 mr-1" />
-                            Agreement
-                          </button>
-                        </TableCell>
-                      </TableRow>
+                      <LeaseRow
+                        key={lease.id}
+                        lease={lease}
+                        property={property}
+                        paymentStatus={paymentStatus}
+                        leaseActive={leaseActive}
+                        formatDate={formatDate}
+                      />
                     );
                   })}
                 </TableBody>

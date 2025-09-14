@@ -558,6 +558,102 @@ export const api = createApi({
         }
       },
     }),
+
+    chargeSubscription: build.mutation<RazorpayOrder, { leaseId: number }>({
+      query: (body) => ({
+        url: `payments/charge-subscription`,
+        method: "POST",
+        body,
+      }),
+
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          const { data: order } = await queryFulfilled;
+
+          const scriptLoaded = await loadScript(
+            "https://checkout.razorpay.com/v1/checkout.js"
+          );
+          if (!scriptLoaded) {
+            toast.error("Could not load payment script. Please try again.");
+            return;
+          }
+
+          const options = {
+            key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+            amount: order.amount,
+            currency: order.currency,
+            name: "SwiftStay-Rental",
+            description: "Monthly subscription payment",
+            image: "/Logo.png",
+            order_id: order.id,
+            handler: function (response: {
+              razorpay_payment_id: string;
+              razorpay_order_id: string;
+              razorpay_signature: string;
+            }) {
+              toast.success("Payment successful! Verifying...");
+              dispatch(
+                api.endpoints.verifySubscriptionCharge.initiate({
+                  ...response,
+                  leaseId: args.leaseId,
+                })
+              );
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+
+          const paymentObject = new (window as any).Razorpay(options);
+          paymentObject.open();
+
+          paymentObject.on("payment.failed", (response: any) => {
+            toast.error("Payment failed. Please try again.");
+            console.error("Payment failed:", response.error);
+          });
+        } catch (error) {
+          toast.error("Could not initiate payment. Please try again.");
+        }
+      },
+    }),
+
+    verifySubscriptionCharge: build.mutation<
+      { success: boolean; message: string; payment: Payment },
+      {
+        razorpay_payment_id: string;
+        razorpay_order_id: string;
+        razorpay_signature: string;
+        leaseId: number;
+      }
+    >({
+      query: (body) => ({
+        url: `payments/verify-subscription`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Payments"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Subscription payment successful!");
+        } catch {
+          toast.error("Payment verification failed. Please contact support.");
+        }
+      },
+    }),
+
+    checkNextMonthPayment: build.query<
+      { nextMonthPaid: boolean; nextMonthDate: string; payment?: Payment },
+      number
+    >({
+      query: (leaseId) => `payments/check-next-month/${leaseId}`,
+      providesTags: ["Payments"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to check payment status.",
+        });
+      },
+    }),
   }),
 });
 
@@ -583,4 +679,7 @@ export const {
   useVerifyApplicationPaymentMutation,
   useCreateSecurityDepositAndFirstMonthPaymentMutation,
   useVerifySecurityDepositAndFirstMonthPaymentMutation,
+  useChargeSubscriptionMutation,
+  useVerifySubscriptionChargeMutation,
+  useCheckNextMonthPaymentQuery,
 } = api;

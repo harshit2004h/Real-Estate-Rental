@@ -155,6 +155,7 @@ export const getProperty = async (
       },
       include: {
         location: true,
+        manager: true,
       },
     });
 

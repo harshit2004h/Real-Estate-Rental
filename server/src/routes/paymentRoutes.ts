@@ -5,6 +5,9 @@ import {
   verifyPayment1,
   capturePayment2,
   verifyPayment2,
+  chargeSubscription,
+  verifySubscriptionCharge,
+  checkNextMonthPayment,
 } from "../controllers/paymentControllers";
 
 const router = express.Router();
@@ -13,5 +16,7 @@ router.post("/capture1", AuthMiddleware(["tenant"]), capturePayment1);
 router.post("/verify1", AuthMiddleware(["tenant"]), verifyPayment1);
 router.post("/capture2", AuthMiddleware(["tenant"]), capturePayment2);
 router.post("/verify2", AuthMiddleware(["tenant"]), verifyPayment2);
-
+router.post("/charge-subscription", AuthMiddleware(["tenant"]), chargeSubscription);
+router.post("/verify-subscription", AuthMiddleware(["tenant"]), verifySubscriptionCharge);
+router.get("/check-next-month/:leaseId", AuthMiddleware(["tenant", "manager"]), checkNextMonthPayment);
 export default router;
