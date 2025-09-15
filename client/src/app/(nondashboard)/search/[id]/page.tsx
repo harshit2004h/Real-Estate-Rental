@@ -6,6 +6,7 @@ import ImagePreviews from "@/components/searchId/ImagePreviews";
 import PropertyDetails from "@/components/searchId/PropertyDetails";
 import PropertyLocation from "@/components/searchId/PropertyLocation";
 import PropertyOverview from "@/components/searchId/PropertyOverview";
+import PropertyReviews from "@/components/searchId/PropertyReviews";
 import { useGetAuthUserQuery, useGetPropertyQuery } from "@/state/api";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
@@ -42,10 +43,15 @@ const SingleListing = () => {
           </div>
 
           <div className="order-1 md:order-2">
-            <ContactWidget onOpenModal={() => setIsModalOpen(true)} />
+            <ContactWidget
+              onOpenModal={() => setIsModalOpen(true)}
+              propertyId={properyId}
+            />
           </div>
         </div>{" "}
         <PropertyLocation propertyId={properyId} />
+        {/* Reviews and Rating Section */}
+        <PropertyReviews propertyId={properyId} />
       </div>
 
       {authUser && (

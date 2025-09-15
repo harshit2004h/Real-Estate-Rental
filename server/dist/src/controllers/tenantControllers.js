@@ -212,6 +212,22 @@ const giveReviewToProperty = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 reviewDate: new Date(),
             },
         });
+        //put average rating and count in property table
+        const reviews = yield prisma.review.findMany({
+            where: {
+                propertyId: Number(propertyId),
+            },
+        });
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        const averageRating = totalRating / reviews.length;
+        const numberOfReviews = reviews.length;
+        yield prisma.property.update({
+            where: { id: Number(propertyId) },
+            data: {
+                averageRating: averageRating,
+                numberOfReviews: numberOfReviews,
+            },
+        });
         res.status(201).json(newReview);
     }
     catch (error) {

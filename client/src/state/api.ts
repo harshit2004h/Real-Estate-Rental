@@ -731,7 +731,7 @@ export const api = createApi({
       { propertyId: number; cognitoId: string }
     >({
       query: ({ propertyId, cognitoId }) => ({
-        url: `/${cognitoId}/paymentsHistory/${propertyId}`,
+        url: `tenants/${cognitoId}/paymentsHistory/${propertyId}`,
         method: "GET",
       }),
       providesTags: ["Tenants"],

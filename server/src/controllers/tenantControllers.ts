@@ -234,6 +234,26 @@ export const giveReviewToProperty = async (
         reviewDate: new Date(),
       },
     });
+
+    //put average rating and count in property table
+    const reviews = await prisma.review.findMany({
+      where: {
+        propertyId: Number(propertyId),
+      },
+    });
+
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating = totalRating / reviews.length;
+    const numberOfReviews = reviews.length;
+
+    await prisma.property.update({
+      where: { id: Number(propertyId) },
+      data: {
+        averageRating: averageRating,
+        numberOfReviews: numberOfReviews,
+      },
+    });
+
     res.status(201).json(newReview);
   } catch (error: any) {
     res

@@ -2,6 +2,9 @@ import { Bath, Bed, Heart, House, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import RateDialog from "./RateDialog";
+import { Button } from "./ui/button";
+import { useGetAuthUserQuery } from "@/state/api";
 
 const CardCompact = ({
   property,
@@ -13,6 +16,10 @@ const CardCompact = ({
   const [imgSrc, setImgSrc] = useState(
     property.photoUrls?.[0] || "/placeholder.jpg"
   );
+  const [isRateDialogOpen, setIsRateDialogOpen] = useState(false);
+
+  const { data: authUser } = useGetAuthUserQuery();
+  const userCognitoId = authUser?.cognitoInfo?.userId;
 
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-lg w-full flex h-40 mb-5">
@@ -106,7 +113,36 @@ const CardCompact = ({
             <span className="text-gray-600 text-xs font-normal"> /mo</span>
           </p>
         </div>
+        
+        {/* Rate Button */}
+        {userCognitoId && (
+          <div className="mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full text-xs py-1 h-8"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setIsRateDialogOpen(true);
+              }}
+            >
+              <Star className="w-3 h-3 mr-1" />
+              Rate
+            </Button>
+          </div>
+        )}
       </div>
+
+      {/* Rate Dialog */}
+      {userCognitoId && (
+        <RateDialog
+          isOpen={isRateDialogOpen}
+          onClose={() => setIsRateDialogOpen(false)}
+          property={property}
+          userCognitoId={userCognitoId}
+        />
+      )}
     </div>
   );
 };

@@ -21,12 +21,12 @@ import {
 import {
   useGetAuthUserQuery,
   useGetLeasesQuery,
-  useGetPaymentsQuery,
   useGetPropertyQuery,
   useChargeSubscriptionMutation,
   useCheckNextMonthPaymentQuery,
+  useGetPaymentHistoryByPropertyQuery,
 } from "@/state/api";
-import { Lease, Payment, Property } from "@/types/prismaTypes";
+import { Lease, PaymentHistory, Property } from "@/types/prismaTypes";
 import {
   ArrowDownToLineIcon,
   Check,
@@ -45,17 +45,18 @@ import React from "react";
 const PaymentMethod = ({ currentLease }: { currentLease?: Lease }) => {
   const nextPaymentDate = new Date();
   nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1);
-  
-  const [chargeSubscription, { isLoading: isPaymentLoading }] = useChargeSubscriptionMutation();
-  
-  const { data: paymentStatus, refetch: refetchPaymentStatus } = useCheckNextMonthPaymentQuery(
-    currentLease?.id || 0,
-    { skip: !currentLease?.id }
-  );
-  
+
+  const [chargeSubscription, { isLoading: isPaymentLoading }] =
+    useChargeSubscriptionMutation();
+
+  const { data: paymentStatus, refetch: refetchPaymentStatus } =
+    useCheckNextMonthPaymentQuery(currentLease?.id || 0, {
+      skip: !currentLease?.id,
+    });
+
   const handlePaySubscription = async () => {
     if (!currentLease?.id) return;
-    
+
     try {
       await chargeSubscription({ leaseId: currentLease.id }).unwrap();
       // Refetch payment status after successful payment
@@ -64,39 +65,51 @@ const PaymentMethod = ({ currentLease }: { currentLease?: Lease }) => {
       console.error("Subscription payment failed:", error);
     }
   };
-  
+
   const isNextMonthPaid = paymentStatus?.nextMonthPaid || false;
-  
+
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden p-6 mt-10 md:mt-0 flex-1">
       <h2 className="text-2xl font-bold mb-4">Subscription Payment</h2>
-      <p className="mb-4">Monthly subscription with manual approval required.</p>
+      <p className="mb-4">
+        Monthly subscription with manual approval required.
+      </p>
       <div className="border rounded-lg p-6">
         <div>
           {/* Subscription Status Info */}
           <div className="flex gap-10">
-            <div className={`w-36 h-20 flex items-center justify-center rounded-md ${
-              isNextMonthPaid ? 'bg-green-600' : 'bg-blue-600'
-            }`}>
+            <div
+              className={`w-36 h-20 flex items-center justify-center rounded-md ${
+                isNextMonthPaid ? "bg-green-600" : "bg-blue-600"
+              }`}
+            >
               <span className="text-white text-lg font-bold">
-                {isNextMonthPaid ? 'PAID' : 'SUB'}
+                {isNextMonthPaid ? "PAID" : "SUB"}
               </span>
             </div>
             <div className="flex flex-col justify-between">
               <div>
                 <div className="flex items-start gap-5">
                   <h3 className="text-lg font-semibold">Active Subscription</h3>
-                  <span className={`text-sm font-medium border px-3 py-1 rounded-full ${
-                    isNextMonthPaid 
-                      ? 'border-green-700 text-green-700' 
-                      : 'border-blue-700 text-blue-700'
-                  }`}>
-                    {isNextMonthPaid ? 'Next Month Paid' : 'Payment Required'}
+                  <span
+                    className={`text-sm font-medium border px-3 py-1 rounded-full ${
+                      isNextMonthPaid
+                        ? "border-green-700 text-green-700"
+                        : "border-blue-700 text-blue-700"
+                    }`}
+                  >
+                    {isNextMonthPaid ? "Next Month Paid" : "Payment Required"}
                   </span>
                 </div>
                 <div className="text-sm text-gray-500 flex items-center">
                   <CreditCard className="w-4 h-4 mr-1" />
-                  <span>Subscription payment for • {new Date().toLocaleDateString("en-GB", { month: 'long', year: 'numeric' })}</span>
+                  <span>
+                    Subscription payment for •{" "}
+                    {new Date(new Date().setMonth(new Date().getMonth() + 1)).toLocaleDateString("en-GB", {
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
                 </div>
               </div>
               <div className="text-sm text-gray-500 flex items-center">
@@ -113,21 +126,20 @@ const PaymentMethod = ({ currentLease }: { currentLease?: Lease }) => {
               disabled={isNextMonthPaid || isPaymentLoading}
               className={`py-2 px-4 rounded-md flex items-center justify-center border transition-colors ${
                 isNextMonthPaid || isPaymentLoading
-                  ? 'bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed'
-                  : 'bg-white border-gray-300 text-gray-700 hover:bg-primary-700 hover:text-primary-50'
+                  ? "bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed"
+                  : "bg-white border-gray-300 text-gray-700 hover:bg-primary-700 hover:text-primary-50"
               }`}
             >
               <CreditCard className="w-5 h-5 mr-2" />
               <span>
-                {isPaymentLoading 
-                  ? 'Processing...' 
-                  : isNextMonthPaid 
-                    ? 'Next Month Paid' 
-                    : 'Pay Subscription'
-                }
+                {isPaymentLoading
+                  ? "Processing..."
+                  : isNextMonthPaid
+                  ? "Next Month Paid"
+                  : "Pay Subscription"}
               </span>
             </button>
-            
+
             <Dialog>
               <DialogTrigger asChild>
                 <button className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50">
@@ -139,20 +151,21 @@ const PaymentMethod = ({ currentLease }: { currentLease?: Lease }) => {
                 <DialogHeader>
                   <DialogTitle>Subscription Details</DialogTitle>
                   <DialogDescription>
-                    View your active subscription. Manual approval is required for each payment.
+                    View your active subscription. Manual approval is required
+                    for each payment.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-3 items-center gap-4">
                     <span className="font-medium">Subscription ID:</span>
                     <span className="col-span-2 text-sm text-gray-600">
-                      {currentLease?.razorpaySubscriptionId || 'N/A'}
+                      {currentLease?.razorpaySubscriptionId || "N/A"}
                     </span>
                   </div>
                   <div className="grid grid-cols-3 items-center gap-4">
                     <span className="font-medium">Plan ID:</span>
                     <span className="col-span-2 text-sm text-gray-600">
-                      {currentLease?.razorpayPlanId || 'N/A'}
+                      {currentLease?.razorpayPlanId || "N/A"}
                     </span>
                   </div>
                   <div className="grid grid-cols-3 items-center gap-4">
@@ -166,7 +179,7 @@ const PaymentMethod = ({ currentLease }: { currentLease?: Lease }) => {
                   <div className="grid grid-cols-3 items-center gap-4">
                     <span className="font-medium">Current Payment:</span>
                     <span className="col-span-2 text-sm text-gray-600">
-                      {isNextMonthPaid ? 'Next Month Paid' : 'Pending Approval'}
+                      {isNextMonthPaid ? "Next Month Paid" : "Pending Approval"}
                     </span>
                   </div>
                   <div className="grid grid-cols-3 items-center gap-4">
@@ -184,13 +197,21 @@ const PaymentMethod = ({ currentLease }: { currentLease?: Lease }) => {
                   <div className="grid grid-cols-3 items-center gap-4">
                     <span className="font-medium">Start Date:</span>
                     <span className="col-span-2 text-sm text-gray-600">
-                      {currentLease ? new Date(currentLease.startDate).toLocaleDateString("en-GB") : 'N/A'}
+                      {currentLease
+                        ? new Date(currentLease.startDate).toLocaleDateString(
+                            "en-GB"
+                          )
+                        : "N/A"}
                     </span>
                   </div>
                   <div className="grid grid-cols-3 items-center gap-4">
                     <span className="font-medium">End Date:</span>
                     <span className="col-span-2 text-sm text-gray-600">
-                      {currentLease ? new Date(currentLease.endDate).toLocaleDateString("en-GB") : 'N/A'}
+                      {currentLease
+                        ? new Date(currentLease.endDate).toLocaleDateString(
+                            "en-GB"
+                          )
+                        : "N/A"}
                     </span>
                   </div>
                 </div>
@@ -274,7 +295,7 @@ const ResidenceCard = ({
             </button>
           </ManagerDetailsDialog>
         ) : (
-          <button 
+          <button
             className="bg-gray-100 border border-gray-300 text-gray-400 py-2 px-4 rounded-md flex items-center justify-center cursor-not-allowed"
             disabled
           >
@@ -291,7 +312,40 @@ const ResidenceCard = ({
   );
 };
 
-const BillingHistory = ({ payments }: { payments: Payment[] }) => {
+const BillingHistory = ({
+  paymentHistory,
+}: {
+  paymentHistory: PaymentHistory[];
+}) => {
+  const formatPaymentType = (type: string) => {
+    switch (type) {
+      case "RENT":
+        return "Monthly Rent";
+      case "SECURITY_DEPOSIT":
+        return "Security Deposit";
+      case "APPLICATION_FEE":
+        return "Application Fee";
+      case "OTHER":
+        return "Other";
+      default:
+        return type;
+    }
+  };
+
+  const getPaymentTypeColor = (type: string) => {
+    switch (type) {
+      case "RENT":
+        return "bg-blue-100 text-blue-800 border-blue-300";
+      case "SECURITY_DEPOSIT":
+        return "bg-purple-100 text-purple-800 border-purple-300";
+      case "APPLICATION_FEE":
+        return "bg-orange-100 text-orange-800 border-orange-300";
+      case "OTHER":
+        return "bg-gray-100 text-gray-800 border-gray-300";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-300";
+    }
+  };
   return (
     <div className="mt-8 bg-white rounded-xl shadow-md overflow-hidden p-6">
       {/* Header */}
@@ -315,6 +369,7 @@ const BillingHistory = ({ payments }: { payments: Payment[] }) => {
           <TableHeader>
             <TableRow>
               <TableHead>Invoice</TableHead>
+              <TableHead>Type</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Billing Date</TableHead>
               <TableHead>Amount</TableHead>
@@ -322,40 +377,44 @@ const BillingHistory = ({ payments }: { payments: Payment[] }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {payments.map((payment) => (
+            {paymentHistory.map((payment: PaymentHistory) => (
               <TableRow key={payment.id} className="h-16">
                 <TableCell className="font-medium">
-                    <div className="flex items-center">
+                  <div className="flex items-center">
                     <FileText className="w-4 h-4 mr-2" />
                     Invoice #{payment.id} -{" "}
                     {(() => {
-                      const nextMonth = new Date(payment.paymentDate);
-                      nextMonth.setMonth(nextMonth.getMonth() + 1);
-                      return nextMonth.toLocaleString("default", {
-                      month: "short",
-                      year: "numeric",
+                      const paymentMonth = new Date(payment.paymentDate);
+                      return paymentMonth.toLocaleString("default", {
+                        month: "short",
+                        year: "numeric",
                       });
                     })()}
-                    </div>
+                  </div>
                 </TableCell>
                 <TableCell>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-semibold border ${
-                      payment.paymentStatus === "Paid"
-                        ? "bg-green-100 text-green-800 border-green-300"
-                        : "bg-yellow-100 text-yellow-800 border-yellow-300"
-                    }`}
+                    className={`px-2 py-1 rounded-full text-xs font-semibold border ${getPaymentTypeColor(
+                      payment.type
+                    )}`}
                   >
-                    {payment.paymentStatus === "Paid" ? (
-                      <Check className="w-4 h-4 inline-block mr-1" />
-                    ) : null}
-                    {payment.paymentStatus}
+                    {formatPaymentType(payment.type) == "Security Deposit"
+                      ? "Security & First Month Deposit"
+                      : formatPaymentType(payment.type)}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold border bg-green-100 text-green-800 border-green-300`}
+                  >
+                    <Check className="w-4 h-4 inline-block mr-1" />
+                    Paid
                   </span>
                 </TableCell>
                 <TableCell>
                   {new Date(payment.paymentDate).toLocaleDateString("en-GB")}
                 </TableCell>
-                <TableCell>${payment.amountDue.toFixed(2)}</TableCell>
+                <TableCell>${payment.amount.toFixed(2)}</TableCell>
                 <TableCell>
                   <button className="border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center font-semibold hover:bg-primary-700 hover:text-primary-50">
                     <ArrowDownToLineIcon className="w-4 h-4 mr-1" />
@@ -384,17 +443,23 @@ const Residence = () => {
     parseInt(authUser?.cognitoInfo?.userId || "0"),
     { skip: !authUser?.cognitoInfo?.userId }
   );
-  const { data: payments, isLoading: paymentsLoading } = useGetPaymentsQuery(
-    leases?.[0]?.id || 0,
-    { skip: !leases?.[0]?.id }
-  );
-
-  if (propertyLoading || leasesLoading || paymentsLoading) return <Loading />;
-  if (!property || propertyError) return <div>Error loading property</div>;
 
   const currentLease = leases?.find(
-    (lease) => lease.propertyId === property.id
+    (lease) => lease.propertyId === property?.id
   );
+
+  const { data: paymentHistory, isLoading: paymentHistoryLoading } =
+    useGetPaymentHistoryByPropertyQuery(
+      {
+        propertyId: Number(id),
+        cognitoId: authUser?.cognitoInfo?.userId || "",
+      },
+      { skip: !authUser?.cognitoInfo?.userId || !id }
+    );
+
+  if (propertyLoading || leasesLoading || paymentHistoryLoading)
+    return <Loading />;
+  if (!property || propertyError) return <div>Error loading property</div>;
 
   return (
     <div className="dashboard-container">
@@ -405,7 +470,7 @@ const Residence = () => {
           )}
           <PaymentMethod currentLease={currentLease} />
         </div>
-        <BillingHistory payments={payments || []} />
+        <BillingHistory paymentHistory={paymentHistory || []} />
       </div>
     </div>
   );
