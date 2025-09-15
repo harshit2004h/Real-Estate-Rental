@@ -195,3 +195,97 @@ export const removeFavoriteProperty = async (
     });
   }
 };
+
+export const getPaymentHistory = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { cognitoId } = req.params;
+    const paymentHistory = await prisma.paymentHistory.findMany({
+      where: {
+        tenantCognitoId: cognitoId,
+      },
+      orderBy: {
+        paymentDate: "desc",
+      },
+    });
+    res.status(200).json(paymentHistory);
+  } catch (error: any) {
+    res.status(500).json({
+      message: `Error retrieving payment history: , ${error.message}`,
+    });
+  }
+};
+
+export const giveReviewToProperty = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { propertyId, cognitoId } = req.params;
+    const { rating, comment } = req.body;
+    const newReview = await prisma.review.create({
+      data: {
+        tenantCognitoId: cognitoId,
+        propertyId: Number(propertyId),
+        rating: rating,
+        comment: comment,
+        reviewDate: new Date(),
+      },
+    });
+    res.status(201).json(newReview);
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: `Error creating review: , ${error.message}` });
+  }
+};
+
+export const getReviewsByTenant = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { cognitoId } = req.params;
+    const reviews = await prisma.review.findMany({
+      where: {
+        tenantCognitoId: cognitoId,
+      },
+      orderBy: {
+        reviewDate: "desc",
+      },
+      include: {
+        property: true,
+      },
+    });
+    res.status(200).json(reviews);
+  } catch (error: any) {
+    res.status(500).json({
+      message: `Error retrieving reviews by tenant: , ${error.message}`,
+    });
+  }
+};
+
+export const getPaymentHistoryByProperty = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { propertyId, cognitoId } = req.params;
+    const paymentHistory = await prisma.paymentHistory.findMany({
+      where: {
+        propertyId: Number(propertyId),
+        tenantCognitoId: cognitoId,
+      },
+      orderBy: {
+        paymentDate: "desc",
+      },
+    });
+    res.status(200).json(paymentHistory);
+  } catch (error: any) {
+    res.status(500).json({
+      message: `Error retrieving payment history by property: , ${error.message}`,
+    });
+  }
+};

@@ -4,6 +4,8 @@ import {
   getProperty,
   createProperty,
   getPropertyLeases,
+  getPropertyReviews,
+  getPropertyPaymentHistory,
 } from "../controllers/propertyControllers";
 import multer from "multer";
 import { AuthMiddleware } from "../middlewares/authMiddleware";
@@ -25,6 +27,12 @@ router.get(
   "/:propertyId/leases",
   AuthMiddleware(["manager"]),
   getPropertyLeases
+);
+router.get("/:propertyId/reviews", getPropertyReviews);
+router.get(
+  "/:propertyId/paymentsHistory",
+  AuthMiddleware(["manager"]),
+  getPropertyPaymentHistory
 );
 
 export default router;

@@ -4,13 +4,16 @@ import {
   Lease,
   Manager,
   Payment,
+  PaymentHistory,
   Property,
+  Review,
   Tenant,
 } from "@/types/prismaTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
 import { FiltersState } from ".";
 import { toast } from "react-hot-toast";
+import { url } from "inspector";
 
 const loadScript = (src: string): Promise<boolean> => {
   return new Promise((resolve) => {
@@ -294,16 +297,6 @@ export const api = createApi({
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
           error: "Failed to fetch property leases.",
-        });
-      },
-    }),
-
-    getPayments: build.query<Payment[], number>({
-      query: (leaseId) => `leases/${leaseId}/payments`,
-      providesTags: ["Payments"],
-      async onQueryStarted(_, { queryFulfilled }) {
-        await withToast(queryFulfilled, {
-          error: "Failed to fetch payment info.",
         });
       },
     }),
@@ -654,6 +647,100 @@ export const api = createApi({
         });
       },
     }),
+
+    getPropertiesReviews: build.query<Review[], number>({
+      query: (propertyId) => ({
+        url: `properties/${propertyId}/reviews`,
+        method: "GET",
+      }),
+      providesTags: ["Properties"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch reviews.",
+        });
+      },
+    }),
+
+    getPropertyPaymentHistory: build.query<PaymentHistory[], number>({
+      query: (propertyId) => ({
+        url: `properties/${propertyId}/paymentsHistory`,
+        method: "GET",
+      }),
+      providesTags: ["Properties"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch payment history.",
+        });
+      },
+    }),
+
+    getTenantPaymentHistory: build.query<PaymentHistory[], string>({
+      query: (cognitoId) => ({
+        url: `tenants/${cognitoId}/payments`,
+        method: "GET",
+      }),
+      providesTags: ["Tenants"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch payment history.",
+        });
+      },
+    }),
+
+    addReviewToProperty: build.mutation<
+      Review,
+      {
+        propertyId: number;
+        cognitoId: string;
+        comment: string;
+        rating?: number;
+      }
+    >({
+      query: ({ cognitoId, propertyId, comment, rating }) => ({
+        url: `tenants/${cognitoId}/reviews/${propertyId}`,
+        method: "POST",
+        body: { comment, rating },
+      }),
+      invalidatesTags: (result, error, args) => [
+        { type: "Properties", id: args.propertyId },
+        { type: "PropertyDetails", id: args.propertyId },
+      ],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          success: "Review added successfully!",
+          error: "Failed to add review.",
+        });
+      },
+    }),
+
+    getReviewsByTenant: build.query<Review[], string>({
+      query: (cognitoId) => ({
+        url: `tenants/${cognitoId}/reviews`,
+        method: "GET",
+      }),
+      providesTags: ["Tenants"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch reviews.",
+        });
+      },
+    }),
+
+    getPaymentHistoryByProperty: build.query<
+      PaymentHistory[],
+      { propertyId: number; cognitoId: string }
+    >({
+      query: ({ propertyId, cognitoId }) => ({
+        url: `/${cognitoId}/paymentsHistory/${propertyId}`,
+        method: "GET",
+      }),
+      providesTags: ["Tenants"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch payment history.",
+        });
+      },
+    }),
   }),
 });
 
@@ -671,7 +758,6 @@ export const {
   useRemoveFavoritePropertyMutation,
   useGetLeasesQuery,
   useGetPropertyLeasesQuery,
-  useGetPaymentsQuery,
   useGetApplicationsQuery,
   useUpdateApplicationStatusMutation,
   useGetApplicationByIdQuery,
@@ -682,4 +768,10 @@ export const {
   useChargeSubscriptionMutation,
   useVerifySubscriptionChargeMutation,
   useCheckNextMonthPaymentQuery,
+  useGetPropertiesReviewsQuery,
+  useGetPropertyPaymentHistoryQuery,
+  useGetTenantPaymentHistoryQuery,
+  useAddReviewToPropertyMutation,
+  useGetReviewsByTenantQuery,
+  useGetPaymentHistoryByPropertyQuery,
 } = api;

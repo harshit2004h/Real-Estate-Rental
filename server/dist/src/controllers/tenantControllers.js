@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeFavoriteProperty = exports.addFavoriteProperty = exports.getCurrentResidences = exports.updateTenant = exports.createTenant = exports.getTenant = void 0;
+exports.getPaymentHistoryByProperty = exports.getReviewsByTenant = exports.giveReviewToProperty = exports.getPaymentHistory = exports.removeFavoriteProperty = exports.addFavoriteProperty = exports.getCurrentResidences = exports.updateTenant = exports.createTenant = exports.getTenant = void 0;
 const client_1 = require("@prisma/client");
 const wkt_1 = require("@terraformer/wkt");
 const prisma = new client_1.PrismaClient();
@@ -179,3 +179,89 @@ const removeFavoriteProperty = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.removeFavoriteProperty = removeFavoriteProperty;
+const getPaymentHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { cognitoId } = req.params;
+        const paymentHistory = yield prisma.paymentHistory.findMany({
+            where: {
+                tenantCognitoId: cognitoId,
+            },
+            orderBy: {
+                paymentDate: "desc",
+            },
+        });
+        res.status(200).json(paymentHistory);
+    }
+    catch (error) {
+        res.status(500).json({
+            message: `Error retrieving payment history: , ${error.message}`,
+        });
+    }
+});
+exports.getPaymentHistory = getPaymentHistory;
+const giveReviewToProperty = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { propertyId, cognitoId } = req.params;
+        const { rating, comment } = req.body;
+        const newReview = yield prisma.review.create({
+            data: {
+                tenantCognitoId: cognitoId,
+                propertyId: Number(propertyId),
+                rating: rating,
+                comment: comment,
+                reviewDate: new Date(),
+            },
+        });
+        res.status(201).json(newReview);
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({ message: `Error creating review: , ${error.message}` });
+    }
+});
+exports.giveReviewToProperty = giveReviewToProperty;
+const getReviewsByTenant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { cognitoId } = req.params;
+        const reviews = yield prisma.review.findMany({
+            where: {
+                tenantCognitoId: cognitoId,
+            },
+            orderBy: {
+                reviewDate: "desc",
+            },
+            include: {
+                property: true,
+            },
+        });
+        res.status(200).json(reviews);
+    }
+    catch (error) {
+        res.status(500).json({
+            message: `Error retrieving reviews by tenant: , ${error.message}`,
+        });
+    }
+});
+exports.getReviewsByTenant = getReviewsByTenant;
+const getPaymentHistoryByProperty = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { propertyId, cognitoId } = req.params;
+        const paymentHistory = yield prisma.paymentHistory.findMany({
+            where: {
+                propertyId: Number(propertyId),
+                tenantCognitoId: cognitoId,
+            },
+            orderBy: {
+                paymentDate: "desc",
+            },
+        });
+        res.status(200).json(paymentHistory);
+    }
+    catch (error) {
+        res.status(500).json({
+            message: `Error retrieving payment history by property: , ${error.message}`,
+        });
+    }
+});
+exports.getPaymentHistoryByProperty = getPaymentHistoryByProperty;

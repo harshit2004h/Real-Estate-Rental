@@ -489,3 +489,54 @@ export const getPropertyLeases = async (
     });
   }
 };
+
+export const getPropertyReviews = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { propertyId } = req.params;
+    const reviews = await prisma.review.findMany({
+      where: {
+        propertyId: Number(propertyId),
+      },
+      orderBy: {
+        reviewDate: "desc",
+      },
+      include: {
+        tenant: true,
+      },
+    });
+    res.status(200).json(reviews);
+  } catch (error: any) {
+    res.status(500).json({
+      message: `Error retrieving property reviews: , ${error.message}`,
+    });
+  }
+};
+
+export const getPropertyPaymentHistory = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { propertyId } = req.params;
+    const paymentHistory = await prisma.paymentHistory.findMany({
+      where: {
+        propertyId: Number(propertyId),
+      },
+      orderBy: {
+        paymentDate: "desc",
+      },
+      include: {
+        tenant: true,
+      },
+    });
+    res.status(200).json(paymentHistory);
+  } catch (error: any) {
+    res.status(500).json({
+      message: `Error retrieving property payment history: , ${error.message}`,
+    });
+  }
+};
+

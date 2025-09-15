@@ -12,4 +12,8 @@ router.get("/:cognitoId/current-residences", tenantControllers_1.getCurrentResid
 router.post("/:cognitoId/favorites/:propertyId", tenantControllers_1.addFavoriteProperty);
 router.delete("/:cognitoId/favorites/:propertyId", tenantControllers_1.removeFavoriteProperty);
 router.post("/", tenantControllers_1.createTenant);
+router.get("/:cognitoId/payments", tenantControllers_1.getPaymentHistory);
+router.get("/:cognitoId/reviews", tenantControllers_1.getReviewsByTenant);
+router.post("/:cognitoId/reviews/:propertyId", tenantControllers_1.giveReviewToProperty);
+router.get("/:cognitoId/paymentsHistory/:propertyId", tenantControllers_1.getPaymentHistoryByProperty);
 exports.default = router;

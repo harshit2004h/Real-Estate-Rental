@@ -48,6 +48,16 @@ export type Lease = $Result.DefaultSelection<Prisma.$LeasePayload>
  * 
  */
 export type Payment = $Result.DefaultSelection<Prisma.$PaymentPayload>
+/**
+ * Model PaymentHistory
+ * 
+ */
+export type PaymentHistory = $Result.DefaultSelection<Prisma.$PaymentHistoryPayload>
+/**
+ * Model Review
+ * 
+ */
+export type Review = $Result.DefaultSelection<Prisma.$ReviewPayload>
 
 /**
  * Enums
@@ -131,6 +141,16 @@ export const LeaseStatus: {
 
 export type LeaseStatus = (typeof LeaseStatus)[keyof typeof LeaseStatus]
 
+
+export const PaymentType: {
+  RENT: 'RENT',
+  SECURITY_DEPOSIT: 'SECURITY_DEPOSIT',
+  APPLICATION_FEE: 'APPLICATION_FEE',
+  OTHER: 'OTHER'
+};
+
+export type PaymentType = (typeof PaymentType)[keyof typeof PaymentType]
+
 }
 
 export type Highlight = $Enums.Highlight
@@ -156,6 +176,10 @@ export const PaymentStatus: typeof $Enums.PaymentStatus
 export type LeaseStatus = $Enums.LeaseStatus
 
 export const LeaseStatus: typeof $Enums.LeaseStatus
+
+export type PaymentType = $Enums.PaymentType
+
+export const PaymentType: typeof $Enums.PaymentType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -351,6 +375,26 @@ export class PrismaClient<
     * ```
     */
   get payment(): Prisma.PaymentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.paymentHistory`: Exposes CRUD operations for the **PaymentHistory** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PaymentHistories
+    * const paymentHistories = await prisma.paymentHistory.findMany()
+    * ```
+    */
+  get paymentHistory(): Prisma.PaymentHistoryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.review`: Exposes CRUD operations for the **Review** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Reviews
+    * const reviews = await prisma.review.findMany()
+    * ```
+    */
+  get review(): Prisma.ReviewDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -797,7 +841,9 @@ export namespace Prisma {
     Location: 'Location',
     Application: 'Application',
     Lease: 'Lease',
-    Payment: 'Payment'
+    Payment: 'Payment',
+    PaymentHistory: 'PaymentHistory',
+    Review: 'Review'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -816,7 +862,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "property" | "manager" | "tenant" | "location" | "application" | "lease" | "payment"
+      modelProps: "property" | "manager" | "tenant" | "location" | "application" | "lease" | "payment" | "paymentHistory" | "review"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1322,6 +1368,154 @@ export namespace Prisma {
           }
         }
       }
+      PaymentHistory: {
+        payload: Prisma.$PaymentHistoryPayload<ExtArgs>
+        fields: Prisma.PaymentHistoryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PaymentHistoryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentHistoryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PaymentHistoryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentHistoryPayload>
+          }
+          findFirst: {
+            args: Prisma.PaymentHistoryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentHistoryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PaymentHistoryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentHistoryPayload>
+          }
+          findMany: {
+            args: Prisma.PaymentHistoryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentHistoryPayload>[]
+          }
+          create: {
+            args: Prisma.PaymentHistoryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentHistoryPayload>
+          }
+          createMany: {
+            args: Prisma.PaymentHistoryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PaymentHistoryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentHistoryPayload>[]
+          }
+          delete: {
+            args: Prisma.PaymentHistoryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentHistoryPayload>
+          }
+          update: {
+            args: Prisma.PaymentHistoryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentHistoryPayload>
+          }
+          deleteMany: {
+            args: Prisma.PaymentHistoryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PaymentHistoryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PaymentHistoryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentHistoryPayload>[]
+          }
+          upsert: {
+            args: Prisma.PaymentHistoryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentHistoryPayload>
+          }
+          aggregate: {
+            args: Prisma.PaymentHistoryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePaymentHistory>
+          }
+          groupBy: {
+            args: Prisma.PaymentHistoryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PaymentHistoryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PaymentHistoryCountArgs<ExtArgs>
+            result: $Utils.Optional<PaymentHistoryCountAggregateOutputType> | number
+          }
+        }
+      }
+      Review: {
+        payload: Prisma.$ReviewPayload<ExtArgs>
+        fields: Prisma.ReviewFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReviewFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReviewFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          findFirst: {
+            args: Prisma.ReviewFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReviewFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          findMany: {
+            args: Prisma.ReviewFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
+          }
+          create: {
+            args: Prisma.ReviewCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          createMany: {
+            args: Prisma.ReviewCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReviewCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
+          }
+          delete: {
+            args: Prisma.ReviewDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          update: {
+            args: Prisma.ReviewUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReviewDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReviewUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReviewUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReviewUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          aggregate: {
+            args: Prisma.ReviewAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReview>
+          }
+          groupBy: {
+            args: Prisma.ReviewGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReviewGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReviewCountArgs<ExtArgs>
+            result: $Utils.Optional<ReviewCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1413,6 +1607,8 @@ export namespace Prisma {
     application?: ApplicationOmit
     lease?: LeaseOmit
     payment?: PaymentOmit
+    paymentHistory?: PaymentHistoryOmit
+    review?: ReviewOmit
   }
 
   /* Types for Logging */
@@ -1511,6 +1707,8 @@ export namespace Prisma {
     applications: number
     favoritedBy: number
     tenants: number
+    PaymentHistory: number
+    Review: number
   }
 
   export type PropertyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1518,6 +1716,8 @@ export namespace Prisma {
     applications?: boolean | PropertyCountOutputTypeCountApplicationsArgs
     favoritedBy?: boolean | PropertyCountOutputTypeCountFavoritedByArgs
     tenants?: boolean | PropertyCountOutputTypeCountTenantsArgs
+    PaymentHistory?: boolean | PropertyCountOutputTypeCountPaymentHistoryArgs
+    Review?: boolean | PropertyCountOutputTypeCountReviewArgs
   }
 
   // Custom InputTypes
@@ -1557,6 +1757,20 @@ export namespace Prisma {
    */
   export type PropertyCountOutputTypeCountTenantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TenantWhereInput
+  }
+
+  /**
+   * PropertyCountOutputType without action
+   */
+  export type PropertyCountOutputTypeCountPaymentHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentHistoryWhereInput
+  }
+
+  /**
+   * PropertyCountOutputType without action
+   */
+  export type PropertyCountOutputTypeCountReviewArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewWhereInput
   }
 
 
@@ -1600,6 +1814,8 @@ export namespace Prisma {
     favorites: number
     applications: number
     leases: number
+    PaymentHistory: number
+    Review: number
   }
 
   export type TenantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1607,6 +1823,8 @@ export namespace Prisma {
     favorites?: boolean | TenantCountOutputTypeCountFavoritesArgs
     applications?: boolean | TenantCountOutputTypeCountApplicationsArgs
     leases?: boolean | TenantCountOutputTypeCountLeasesArgs
+    PaymentHistory?: boolean | TenantCountOutputTypeCountPaymentHistoryArgs
+    Review?: boolean | TenantCountOutputTypeCountReviewArgs
   }
 
   // Custom InputTypes
@@ -1646,6 +1864,20 @@ export namespace Prisma {
    */
   export type TenantCountOutputTypeCountLeasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LeaseWhereInput
+  }
+
+  /**
+   * TenantCountOutputType without action
+   */
+  export type TenantCountOutputTypeCountPaymentHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentHistoryWhereInput
+  }
+
+  /**
+   * TenantCountOutputType without action
+   */
+  export type TenantCountOutputTypeCountReviewArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewWhereInput
   }
 
 
@@ -2063,6 +2295,8 @@ export namespace Prisma {
     applications?: boolean | Property$applicationsArgs<ExtArgs>
     favoritedBy?: boolean | Property$favoritedByArgs<ExtArgs>
     tenants?: boolean | Property$tenantsArgs<ExtArgs>
+    PaymentHistory?: boolean | Property$PaymentHistoryArgs<ExtArgs>
+    Review?: boolean | Property$ReviewArgs<ExtArgs>
     _count?: boolean | PropertyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["property"]>
 
@@ -2147,6 +2381,8 @@ export namespace Prisma {
     applications?: boolean | Property$applicationsArgs<ExtArgs>
     favoritedBy?: boolean | Property$favoritedByArgs<ExtArgs>
     tenants?: boolean | Property$tenantsArgs<ExtArgs>
+    PaymentHistory?: boolean | Property$PaymentHistoryArgs<ExtArgs>
+    Review?: boolean | Property$ReviewArgs<ExtArgs>
     _count?: boolean | PropertyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PropertyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2167,6 +2403,8 @@ export namespace Prisma {
       applications: Prisma.$ApplicationPayload<ExtArgs>[]
       favoritedBy: Prisma.$TenantPayload<ExtArgs>[]
       tenants: Prisma.$TenantPayload<ExtArgs>[]
+      PaymentHistory: Prisma.$PaymentHistoryPayload<ExtArgs>[]
+      Review: Prisma.$ReviewPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -2589,6 +2827,8 @@ export namespace Prisma {
     applications<T extends Property$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, Property$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     favoritedBy<T extends Property$favoritedByArgs<ExtArgs> = {}>(args?: Subset<T, Property$favoritedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     tenants<T extends Property$tenantsArgs<ExtArgs> = {}>(args?: Subset<T, Property$tenantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    PaymentHistory<T extends Property$PaymentHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Property$PaymentHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Review<T extends Property$ReviewArgs<ExtArgs> = {}>(args?: Subset<T, Property$ReviewArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3127,6 +3367,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TenantScalarFieldEnum | TenantScalarFieldEnum[]
+  }
+
+  /**
+   * Property.PaymentHistory
+   */
+  export type Property$PaymentHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+    where?: PaymentHistoryWhereInput
+    orderBy?: PaymentHistoryOrderByWithRelationInput | PaymentHistoryOrderByWithRelationInput[]
+    cursor?: PaymentHistoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentHistoryScalarFieldEnum | PaymentHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * Property.Review
+   */
+  export type Property$ReviewArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    where?: ReviewWhereInput
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    cursor?: ReviewWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
   }
 
   /**
@@ -4454,6 +4742,8 @@ export namespace Prisma {
     favorites?: boolean | Tenant$favoritesArgs<ExtArgs>
     applications?: boolean | Tenant$applicationsArgs<ExtArgs>
     leases?: boolean | Tenant$leasesArgs<ExtArgs>
+    PaymentHistory?: boolean | Tenant$PaymentHistoryArgs<ExtArgs>
+    Review?: boolean | Tenant$ReviewArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
@@ -4487,6 +4777,8 @@ export namespace Prisma {
     favorites?: boolean | Tenant$favoritesArgs<ExtArgs>
     applications?: boolean | Tenant$applicationsArgs<ExtArgs>
     leases?: boolean | Tenant$leasesArgs<ExtArgs>
+    PaymentHistory?: boolean | Tenant$PaymentHistoryArgs<ExtArgs>
+    Review?: boolean | Tenant$ReviewArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TenantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4499,6 +4791,8 @@ export namespace Prisma {
       favorites: Prisma.$PropertyPayload<ExtArgs>[]
       applications: Prisma.$ApplicationPayload<ExtArgs>[]
       leases: Prisma.$LeasePayload<ExtArgs>[]
+      PaymentHistory: Prisma.$PaymentHistoryPayload<ExtArgs>[]
+      Review: Prisma.$ReviewPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -4904,6 +5198,8 @@ export namespace Prisma {
     favorites<T extends Tenant$favoritesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$favoritesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     applications<T extends Tenant$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     leases<T extends Tenant$leasesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$leasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    PaymentHistory<T extends Tenant$PaymentHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$PaymentHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Review<T extends Tenant$ReviewArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$ReviewArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5419,6 +5715,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: LeaseScalarFieldEnum | LeaseScalarFieldEnum[]
+  }
+
+  /**
+   * Tenant.PaymentHistory
+   */
+  export type Tenant$PaymentHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+    where?: PaymentHistoryWhereInput
+    orderBy?: PaymentHistoryOrderByWithRelationInput | PaymentHistoryOrderByWithRelationInput[]
+    cursor?: PaymentHistoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentHistoryScalarFieldEnum | PaymentHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * Tenant.Review
+   */
+  export type Tenant$ReviewArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    where?: ReviewWhereInput
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    cursor?: ReviewWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
   }
 
   /**
@@ -9885,6 +10229,2261 @@ export namespace Prisma {
 
 
   /**
+   * Model PaymentHistory
+   */
+
+  export type AggregatePaymentHistory = {
+    _count: PaymentHistoryCountAggregateOutputType | null
+    _avg: PaymentHistoryAvgAggregateOutputType | null
+    _sum: PaymentHistorySumAggregateOutputType | null
+    _min: PaymentHistoryMinAggregateOutputType | null
+    _max: PaymentHistoryMaxAggregateOutputType | null
+  }
+
+  export type PaymentHistoryAvgAggregateOutputType = {
+    id: number | null
+    amount: number | null
+    PropertyId: number | null
+  }
+
+  export type PaymentHistorySumAggregateOutputType = {
+    id: number | null
+    amount: number | null
+    PropertyId: number | null
+  }
+
+  export type PaymentHistoryMinAggregateOutputType = {
+    id: number | null
+    paymentDate: Date | null
+    amount: number | null
+    transactionId: string | null
+    type: $Enums.PaymentType | null
+    tenantCognitoId: string | null
+    PropertyId: number | null
+  }
+
+  export type PaymentHistoryMaxAggregateOutputType = {
+    id: number | null
+    paymentDate: Date | null
+    amount: number | null
+    transactionId: string | null
+    type: $Enums.PaymentType | null
+    tenantCognitoId: string | null
+    PropertyId: number | null
+  }
+
+  export type PaymentHistoryCountAggregateOutputType = {
+    id: number
+    paymentDate: number
+    amount: number
+    transactionId: number
+    type: number
+    tenantCognitoId: number
+    PropertyId: number
+    _all: number
+  }
+
+
+  export type PaymentHistoryAvgAggregateInputType = {
+    id?: true
+    amount?: true
+    PropertyId?: true
+  }
+
+  export type PaymentHistorySumAggregateInputType = {
+    id?: true
+    amount?: true
+    PropertyId?: true
+  }
+
+  export type PaymentHistoryMinAggregateInputType = {
+    id?: true
+    paymentDate?: true
+    amount?: true
+    transactionId?: true
+    type?: true
+    tenantCognitoId?: true
+    PropertyId?: true
+  }
+
+  export type PaymentHistoryMaxAggregateInputType = {
+    id?: true
+    paymentDate?: true
+    amount?: true
+    transactionId?: true
+    type?: true
+    tenantCognitoId?: true
+    PropertyId?: true
+  }
+
+  export type PaymentHistoryCountAggregateInputType = {
+    id?: true
+    paymentDate?: true
+    amount?: true
+    transactionId?: true
+    type?: true
+    tenantCognitoId?: true
+    PropertyId?: true
+    _all?: true
+  }
+
+  export type PaymentHistoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentHistory to aggregate.
+     */
+    where?: PaymentHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentHistories to fetch.
+     */
+    orderBy?: PaymentHistoryOrderByWithRelationInput | PaymentHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PaymentHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentHistories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PaymentHistories
+    **/
+    _count?: true | PaymentHistoryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PaymentHistoryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PaymentHistorySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PaymentHistoryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PaymentHistoryMaxAggregateInputType
+  }
+
+  export type GetPaymentHistoryAggregateType<T extends PaymentHistoryAggregateArgs> = {
+        [P in keyof T & keyof AggregatePaymentHistory]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePaymentHistory[P]>
+      : GetScalarType<T[P], AggregatePaymentHistory[P]>
+  }
+
+
+
+
+  export type PaymentHistoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentHistoryWhereInput
+    orderBy?: PaymentHistoryOrderByWithAggregationInput | PaymentHistoryOrderByWithAggregationInput[]
+    by: PaymentHistoryScalarFieldEnum[] | PaymentHistoryScalarFieldEnum
+    having?: PaymentHistoryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PaymentHistoryCountAggregateInputType | true
+    _avg?: PaymentHistoryAvgAggregateInputType
+    _sum?: PaymentHistorySumAggregateInputType
+    _min?: PaymentHistoryMinAggregateInputType
+    _max?: PaymentHistoryMaxAggregateInputType
+  }
+
+  export type PaymentHistoryGroupByOutputType = {
+    id: number
+    paymentDate: Date
+    amount: number
+    transactionId: string
+    type: $Enums.PaymentType
+    tenantCognitoId: string
+    PropertyId: number
+    _count: PaymentHistoryCountAggregateOutputType | null
+    _avg: PaymentHistoryAvgAggregateOutputType | null
+    _sum: PaymentHistorySumAggregateOutputType | null
+    _min: PaymentHistoryMinAggregateOutputType | null
+    _max: PaymentHistoryMaxAggregateOutputType | null
+  }
+
+  type GetPaymentHistoryGroupByPayload<T extends PaymentHistoryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PaymentHistoryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PaymentHistoryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PaymentHistoryGroupByOutputType[P]>
+            : GetScalarType<T[P], PaymentHistoryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PaymentHistorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    paymentDate?: boolean
+    amount?: boolean
+    transactionId?: boolean
+    type?: boolean
+    tenantCognitoId?: boolean
+    PropertyId?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentHistory"]>
+
+  export type PaymentHistorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    paymentDate?: boolean
+    amount?: boolean
+    transactionId?: boolean
+    type?: boolean
+    tenantCognitoId?: boolean
+    PropertyId?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentHistory"]>
+
+  export type PaymentHistorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    paymentDate?: boolean
+    amount?: boolean
+    transactionId?: boolean
+    type?: boolean
+    tenantCognitoId?: boolean
+    PropertyId?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentHistory"]>
+
+  export type PaymentHistorySelectScalar = {
+    id?: boolean
+    paymentDate?: boolean
+    amount?: boolean
+    transactionId?: boolean
+    type?: boolean
+    tenantCognitoId?: boolean
+    PropertyId?: boolean
+  }
+
+  export type PaymentHistoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "paymentDate" | "amount" | "transactionId" | "type" | "tenantCognitoId" | "PropertyId", ExtArgs["result"]["paymentHistory"]>
+  export type PaymentHistoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }
+  export type PaymentHistoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }
+  export type PaymentHistoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+  }
+
+  export type $PaymentHistoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PaymentHistory"
+    objects: {
+      tenant: Prisma.$TenantPayload<ExtArgs>
+      property: Prisma.$PropertyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      paymentDate: Date
+      amount: number
+      transactionId: string
+      type: $Enums.PaymentType
+      tenantCognitoId: string
+      PropertyId: number
+    }, ExtArgs["result"]["paymentHistory"]>
+    composites: {}
+  }
+
+  type PaymentHistoryGetPayload<S extends boolean | null | undefined | PaymentHistoryDefaultArgs> = $Result.GetResult<Prisma.$PaymentHistoryPayload, S>
+
+  type PaymentHistoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PaymentHistoryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PaymentHistoryCountAggregateInputType | true
+    }
+
+  export interface PaymentHistoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PaymentHistory'], meta: { name: 'PaymentHistory' } }
+    /**
+     * Find zero or one PaymentHistory that matches the filter.
+     * @param {PaymentHistoryFindUniqueArgs} args - Arguments to find a PaymentHistory
+     * @example
+     * // Get one PaymentHistory
+     * const paymentHistory = await prisma.paymentHistory.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PaymentHistoryFindUniqueArgs>(args: SelectSubset<T, PaymentHistoryFindUniqueArgs<ExtArgs>>): Prisma__PaymentHistoryClient<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PaymentHistory that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PaymentHistoryFindUniqueOrThrowArgs} args - Arguments to find a PaymentHistory
+     * @example
+     * // Get one PaymentHistory
+     * const paymentHistory = await prisma.paymentHistory.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PaymentHistoryFindUniqueOrThrowArgs>(args: SelectSubset<T, PaymentHistoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PaymentHistoryClient<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentHistory that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentHistoryFindFirstArgs} args - Arguments to find a PaymentHistory
+     * @example
+     * // Get one PaymentHistory
+     * const paymentHistory = await prisma.paymentHistory.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PaymentHistoryFindFirstArgs>(args?: SelectSubset<T, PaymentHistoryFindFirstArgs<ExtArgs>>): Prisma__PaymentHistoryClient<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentHistory that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentHistoryFindFirstOrThrowArgs} args - Arguments to find a PaymentHistory
+     * @example
+     * // Get one PaymentHistory
+     * const paymentHistory = await prisma.paymentHistory.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PaymentHistoryFindFirstOrThrowArgs>(args?: SelectSubset<T, PaymentHistoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__PaymentHistoryClient<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PaymentHistories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentHistoryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PaymentHistories
+     * const paymentHistories = await prisma.paymentHistory.findMany()
+     * 
+     * // Get first 10 PaymentHistories
+     * const paymentHistories = await prisma.paymentHistory.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const paymentHistoryWithIdOnly = await prisma.paymentHistory.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PaymentHistoryFindManyArgs>(args?: SelectSubset<T, PaymentHistoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PaymentHistory.
+     * @param {PaymentHistoryCreateArgs} args - Arguments to create a PaymentHistory.
+     * @example
+     * // Create one PaymentHistory
+     * const PaymentHistory = await prisma.paymentHistory.create({
+     *   data: {
+     *     // ... data to create a PaymentHistory
+     *   }
+     * })
+     * 
+     */
+    create<T extends PaymentHistoryCreateArgs>(args: SelectSubset<T, PaymentHistoryCreateArgs<ExtArgs>>): Prisma__PaymentHistoryClient<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PaymentHistories.
+     * @param {PaymentHistoryCreateManyArgs} args - Arguments to create many PaymentHistories.
+     * @example
+     * // Create many PaymentHistories
+     * const paymentHistory = await prisma.paymentHistory.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PaymentHistoryCreateManyArgs>(args?: SelectSubset<T, PaymentHistoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PaymentHistories and returns the data saved in the database.
+     * @param {PaymentHistoryCreateManyAndReturnArgs} args - Arguments to create many PaymentHistories.
+     * @example
+     * // Create many PaymentHistories
+     * const paymentHistory = await prisma.paymentHistory.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PaymentHistories and only return the `id`
+     * const paymentHistoryWithIdOnly = await prisma.paymentHistory.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PaymentHistoryCreateManyAndReturnArgs>(args?: SelectSubset<T, PaymentHistoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PaymentHistory.
+     * @param {PaymentHistoryDeleteArgs} args - Arguments to delete one PaymentHistory.
+     * @example
+     * // Delete one PaymentHistory
+     * const PaymentHistory = await prisma.paymentHistory.delete({
+     *   where: {
+     *     // ... filter to delete one PaymentHistory
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PaymentHistoryDeleteArgs>(args: SelectSubset<T, PaymentHistoryDeleteArgs<ExtArgs>>): Prisma__PaymentHistoryClient<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PaymentHistory.
+     * @param {PaymentHistoryUpdateArgs} args - Arguments to update one PaymentHistory.
+     * @example
+     * // Update one PaymentHistory
+     * const paymentHistory = await prisma.paymentHistory.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PaymentHistoryUpdateArgs>(args: SelectSubset<T, PaymentHistoryUpdateArgs<ExtArgs>>): Prisma__PaymentHistoryClient<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PaymentHistories.
+     * @param {PaymentHistoryDeleteManyArgs} args - Arguments to filter PaymentHistories to delete.
+     * @example
+     * // Delete a few PaymentHistories
+     * const { count } = await prisma.paymentHistory.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PaymentHistoryDeleteManyArgs>(args?: SelectSubset<T, PaymentHistoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentHistories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentHistoryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PaymentHistories
+     * const paymentHistory = await prisma.paymentHistory.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PaymentHistoryUpdateManyArgs>(args: SelectSubset<T, PaymentHistoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentHistories and returns the data updated in the database.
+     * @param {PaymentHistoryUpdateManyAndReturnArgs} args - Arguments to update many PaymentHistories.
+     * @example
+     * // Update many PaymentHistories
+     * const paymentHistory = await prisma.paymentHistory.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PaymentHistories and only return the `id`
+     * const paymentHistoryWithIdOnly = await prisma.paymentHistory.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PaymentHistoryUpdateManyAndReturnArgs>(args: SelectSubset<T, PaymentHistoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PaymentHistory.
+     * @param {PaymentHistoryUpsertArgs} args - Arguments to update or create a PaymentHistory.
+     * @example
+     * // Update or create a PaymentHistory
+     * const paymentHistory = await prisma.paymentHistory.upsert({
+     *   create: {
+     *     // ... data to create a PaymentHistory
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PaymentHistory we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PaymentHistoryUpsertArgs>(args: SelectSubset<T, PaymentHistoryUpsertArgs<ExtArgs>>): Prisma__PaymentHistoryClient<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PaymentHistories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentHistoryCountArgs} args - Arguments to filter PaymentHistories to count.
+     * @example
+     * // Count the number of PaymentHistories
+     * const count = await prisma.paymentHistory.count({
+     *   where: {
+     *     // ... the filter for the PaymentHistories we want to count
+     *   }
+     * })
+    **/
+    count<T extends PaymentHistoryCountArgs>(
+      args?: Subset<T, PaymentHistoryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PaymentHistoryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PaymentHistory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentHistoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PaymentHistoryAggregateArgs>(args: Subset<T, PaymentHistoryAggregateArgs>): Prisma.PrismaPromise<GetPaymentHistoryAggregateType<T>>
+
+    /**
+     * Group by PaymentHistory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentHistoryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PaymentHistoryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PaymentHistoryGroupByArgs['orderBy'] }
+        : { orderBy?: PaymentHistoryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PaymentHistoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPaymentHistoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PaymentHistory model
+   */
+  readonly fields: PaymentHistoryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PaymentHistory.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PaymentHistoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    property<T extends PropertyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PropertyDefaultArgs<ExtArgs>>): Prisma__PropertyClient<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PaymentHistory model
+   */
+  interface PaymentHistoryFieldRefs {
+    readonly id: FieldRef<"PaymentHistory", 'Int'>
+    readonly paymentDate: FieldRef<"PaymentHistory", 'DateTime'>
+    readonly amount: FieldRef<"PaymentHistory", 'Float'>
+    readonly transactionId: FieldRef<"PaymentHistory", 'String'>
+    readonly type: FieldRef<"PaymentHistory", 'PaymentType'>
+    readonly tenantCognitoId: FieldRef<"PaymentHistory", 'String'>
+    readonly PropertyId: FieldRef<"PaymentHistory", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PaymentHistory findUnique
+   */
+  export type PaymentHistoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentHistory to fetch.
+     */
+    where: PaymentHistoryWhereUniqueInput
+  }
+
+  /**
+   * PaymentHistory findUniqueOrThrow
+   */
+  export type PaymentHistoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentHistory to fetch.
+     */
+    where: PaymentHistoryWhereUniqueInput
+  }
+
+  /**
+   * PaymentHistory findFirst
+   */
+  export type PaymentHistoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentHistory to fetch.
+     */
+    where?: PaymentHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentHistories to fetch.
+     */
+    orderBy?: PaymentHistoryOrderByWithRelationInput | PaymentHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentHistories.
+     */
+    cursor?: PaymentHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentHistories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentHistories.
+     */
+    distinct?: PaymentHistoryScalarFieldEnum | PaymentHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentHistory findFirstOrThrow
+   */
+  export type PaymentHistoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentHistory to fetch.
+     */
+    where?: PaymentHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentHistories to fetch.
+     */
+    orderBy?: PaymentHistoryOrderByWithRelationInput | PaymentHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentHistories.
+     */
+    cursor?: PaymentHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentHistories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentHistories.
+     */
+    distinct?: PaymentHistoryScalarFieldEnum | PaymentHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentHistory findMany
+   */
+  export type PaymentHistoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentHistories to fetch.
+     */
+    where?: PaymentHistoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentHistories to fetch.
+     */
+    orderBy?: PaymentHistoryOrderByWithRelationInput | PaymentHistoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PaymentHistories.
+     */
+    cursor?: PaymentHistoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentHistories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentHistories.
+     */
+    skip?: number
+    distinct?: PaymentHistoryScalarFieldEnum | PaymentHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentHistory create
+   */
+  export type PaymentHistoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PaymentHistory.
+     */
+    data: XOR<PaymentHistoryCreateInput, PaymentHistoryUncheckedCreateInput>
+  }
+
+  /**
+   * PaymentHistory createMany
+   */
+  export type PaymentHistoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PaymentHistories.
+     */
+    data: PaymentHistoryCreateManyInput | PaymentHistoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PaymentHistory createManyAndReturn
+   */
+  export type PaymentHistoryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * The data used to create many PaymentHistories.
+     */
+    data: PaymentHistoryCreateManyInput | PaymentHistoryCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PaymentHistory update
+   */
+  export type PaymentHistoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PaymentHistory.
+     */
+    data: XOR<PaymentHistoryUpdateInput, PaymentHistoryUncheckedUpdateInput>
+    /**
+     * Choose, which PaymentHistory to update.
+     */
+    where: PaymentHistoryWhereUniqueInput
+  }
+
+  /**
+   * PaymentHistory updateMany
+   */
+  export type PaymentHistoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PaymentHistories.
+     */
+    data: XOR<PaymentHistoryUpdateManyMutationInput, PaymentHistoryUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentHistories to update
+     */
+    where?: PaymentHistoryWhereInput
+    /**
+     * Limit how many PaymentHistories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentHistory updateManyAndReturn
+   */
+  export type PaymentHistoryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * The data used to update PaymentHistories.
+     */
+    data: XOR<PaymentHistoryUpdateManyMutationInput, PaymentHistoryUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentHistories to update
+     */
+    where?: PaymentHistoryWhereInput
+    /**
+     * Limit how many PaymentHistories to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PaymentHistory upsert
+   */
+  export type PaymentHistoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PaymentHistory to update in case it exists.
+     */
+    where: PaymentHistoryWhereUniqueInput
+    /**
+     * In case the PaymentHistory found by the `where` argument doesn't exist, create a new PaymentHistory with this data.
+     */
+    create: XOR<PaymentHistoryCreateInput, PaymentHistoryUncheckedCreateInput>
+    /**
+     * In case the PaymentHistory was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PaymentHistoryUpdateInput, PaymentHistoryUncheckedUpdateInput>
+  }
+
+  /**
+   * PaymentHistory delete
+   */
+  export type PaymentHistoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+    /**
+     * Filter which PaymentHistory to delete.
+     */
+    where: PaymentHistoryWhereUniqueInput
+  }
+
+  /**
+   * PaymentHistory deleteMany
+   */
+  export type PaymentHistoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentHistories to delete
+     */
+    where?: PaymentHistoryWhereInput
+    /**
+     * Limit how many PaymentHistories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentHistory without action
+   */
+  export type PaymentHistoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentHistory
+     */
+    select?: PaymentHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentHistory
+     */
+    omit?: PaymentHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentHistoryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Review
+   */
+
+  export type AggregateReview = {
+    _count: ReviewCountAggregateOutputType | null
+    _avg: ReviewAvgAggregateOutputType | null
+    _sum: ReviewSumAggregateOutputType | null
+    _min: ReviewMinAggregateOutputType | null
+    _max: ReviewMaxAggregateOutputType | null
+  }
+
+  export type ReviewAvgAggregateOutputType = {
+    id: number | null
+    rating: number | null
+    propertyId: number | null
+  }
+
+  export type ReviewSumAggregateOutputType = {
+    id: number | null
+    rating: number | null
+    propertyId: number | null
+  }
+
+  export type ReviewMinAggregateOutputType = {
+    id: number | null
+    rating: number | null
+    comment: string | null
+    reviewDate: Date | null
+    propertyId: number | null
+    tenantCognitoId: string | null
+  }
+
+  export type ReviewMaxAggregateOutputType = {
+    id: number | null
+    rating: number | null
+    comment: string | null
+    reviewDate: Date | null
+    propertyId: number | null
+    tenantCognitoId: string | null
+  }
+
+  export type ReviewCountAggregateOutputType = {
+    id: number
+    rating: number
+    comment: number
+    reviewDate: number
+    propertyId: number
+    tenantCognitoId: number
+    _all: number
+  }
+
+
+  export type ReviewAvgAggregateInputType = {
+    id?: true
+    rating?: true
+    propertyId?: true
+  }
+
+  export type ReviewSumAggregateInputType = {
+    id?: true
+    rating?: true
+    propertyId?: true
+  }
+
+  export type ReviewMinAggregateInputType = {
+    id?: true
+    rating?: true
+    comment?: true
+    reviewDate?: true
+    propertyId?: true
+    tenantCognitoId?: true
+  }
+
+  export type ReviewMaxAggregateInputType = {
+    id?: true
+    rating?: true
+    comment?: true
+    reviewDate?: true
+    propertyId?: true
+    tenantCognitoId?: true
+  }
+
+  export type ReviewCountAggregateInputType = {
+    id?: true
+    rating?: true
+    comment?: true
+    reviewDate?: true
+    propertyId?: true
+    tenantCognitoId?: true
+    _all?: true
+  }
+
+  export type ReviewAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Review to aggregate.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Reviews
+    **/
+    _count?: true | ReviewCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReviewAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReviewSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReviewMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReviewMaxAggregateInputType
+  }
+
+  export type GetReviewAggregateType<T extends ReviewAggregateArgs> = {
+        [P in keyof T & keyof AggregateReview]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReview[P]>
+      : GetScalarType<T[P], AggregateReview[P]>
+  }
+
+
+
+
+  export type ReviewGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewWhereInput
+    orderBy?: ReviewOrderByWithAggregationInput | ReviewOrderByWithAggregationInput[]
+    by: ReviewScalarFieldEnum[] | ReviewScalarFieldEnum
+    having?: ReviewScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReviewCountAggregateInputType | true
+    _avg?: ReviewAvgAggregateInputType
+    _sum?: ReviewSumAggregateInputType
+    _min?: ReviewMinAggregateInputType
+    _max?: ReviewMaxAggregateInputType
+  }
+
+  export type ReviewGroupByOutputType = {
+    id: number
+    rating: number
+    comment: string | null
+    reviewDate: Date
+    propertyId: number
+    tenantCognitoId: string
+    _count: ReviewCountAggregateOutputType | null
+    _avg: ReviewAvgAggregateOutputType | null
+    _sum: ReviewSumAggregateOutputType | null
+    _min: ReviewMinAggregateOutputType | null
+    _max: ReviewMaxAggregateOutputType | null
+  }
+
+  type GetReviewGroupByPayload<T extends ReviewGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReviewGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReviewGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReviewGroupByOutputType[P]>
+            : GetScalarType<T[P], ReviewGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReviewSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rating?: boolean
+    comment?: boolean
+    reviewDate?: boolean
+    propertyId?: boolean
+    tenantCognitoId?: boolean
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["review"]>
+
+  export type ReviewSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rating?: boolean
+    comment?: boolean
+    reviewDate?: boolean
+    propertyId?: boolean
+    tenantCognitoId?: boolean
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["review"]>
+
+  export type ReviewSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rating?: boolean
+    comment?: boolean
+    reviewDate?: boolean
+    propertyId?: boolean
+    tenantCognitoId?: boolean
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["review"]>
+
+  export type ReviewSelectScalar = {
+    id?: boolean
+    rating?: boolean
+    comment?: boolean
+    reviewDate?: boolean
+    propertyId?: boolean
+    tenantCognitoId?: boolean
+  }
+
+  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "rating" | "comment" | "reviewDate" | "propertyId" | "tenantCognitoId", ExtArgs["result"]["review"]>
+  export type ReviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+  export type ReviewIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+  export type ReviewIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    property?: boolean | PropertyDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+
+  export type $ReviewPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Review"
+    objects: {
+      property: Prisma.$PropertyPayload<ExtArgs>
+      tenant: Prisma.$TenantPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      rating: number
+      comment: string | null
+      reviewDate: Date
+      propertyId: number
+      tenantCognitoId: string
+    }, ExtArgs["result"]["review"]>
+    composites: {}
+  }
+
+  type ReviewGetPayload<S extends boolean | null | undefined | ReviewDefaultArgs> = $Result.GetResult<Prisma.$ReviewPayload, S>
+
+  type ReviewCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReviewFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReviewCountAggregateInputType | true
+    }
+
+  export interface ReviewDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Review'], meta: { name: 'Review' } }
+    /**
+     * Find zero or one Review that matches the filter.
+     * @param {ReviewFindUniqueArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReviewFindUniqueArgs>(args: SelectSubset<T, ReviewFindUniqueArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Review that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReviewFindUniqueOrThrowArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReviewFindUniqueOrThrowArgs>(args: SelectSubset<T, ReviewFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Review that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewFindFirstArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReviewFindFirstArgs>(args?: SelectSubset<T, ReviewFindFirstArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Review that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewFindFirstOrThrowArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReviewFindFirstOrThrowArgs>(args?: SelectSubset<T, ReviewFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Reviews that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Reviews
+     * const reviews = await prisma.review.findMany()
+     * 
+     * // Get first 10 Reviews
+     * const reviews = await prisma.review.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reviewWithIdOnly = await prisma.review.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReviewFindManyArgs>(args?: SelectSubset<T, ReviewFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Review.
+     * @param {ReviewCreateArgs} args - Arguments to create a Review.
+     * @example
+     * // Create one Review
+     * const Review = await prisma.review.create({
+     *   data: {
+     *     // ... data to create a Review
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReviewCreateArgs>(args: SelectSubset<T, ReviewCreateArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Reviews.
+     * @param {ReviewCreateManyArgs} args - Arguments to create many Reviews.
+     * @example
+     * // Create many Reviews
+     * const review = await prisma.review.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReviewCreateManyArgs>(args?: SelectSubset<T, ReviewCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Reviews and returns the data saved in the database.
+     * @param {ReviewCreateManyAndReturnArgs} args - Arguments to create many Reviews.
+     * @example
+     * // Create many Reviews
+     * const review = await prisma.review.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Reviews and only return the `id`
+     * const reviewWithIdOnly = await prisma.review.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReviewCreateManyAndReturnArgs>(args?: SelectSubset<T, ReviewCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Review.
+     * @param {ReviewDeleteArgs} args - Arguments to delete one Review.
+     * @example
+     * // Delete one Review
+     * const Review = await prisma.review.delete({
+     *   where: {
+     *     // ... filter to delete one Review
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReviewDeleteArgs>(args: SelectSubset<T, ReviewDeleteArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Review.
+     * @param {ReviewUpdateArgs} args - Arguments to update one Review.
+     * @example
+     * // Update one Review
+     * const review = await prisma.review.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReviewUpdateArgs>(args: SelectSubset<T, ReviewUpdateArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Reviews.
+     * @param {ReviewDeleteManyArgs} args - Arguments to filter Reviews to delete.
+     * @example
+     * // Delete a few Reviews
+     * const { count } = await prisma.review.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReviewDeleteManyArgs>(args?: SelectSubset<T, ReviewDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Reviews
+     * const review = await prisma.review.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReviewUpdateManyArgs>(args: SelectSubset<T, ReviewUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reviews and returns the data updated in the database.
+     * @param {ReviewUpdateManyAndReturnArgs} args - Arguments to update many Reviews.
+     * @example
+     * // Update many Reviews
+     * const review = await prisma.review.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Reviews and only return the `id`
+     * const reviewWithIdOnly = await prisma.review.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReviewUpdateManyAndReturnArgs>(args: SelectSubset<T, ReviewUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Review.
+     * @param {ReviewUpsertArgs} args - Arguments to update or create a Review.
+     * @example
+     * // Update or create a Review
+     * const review = await prisma.review.upsert({
+     *   create: {
+     *     // ... data to create a Review
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Review we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReviewUpsertArgs>(args: SelectSubset<T, ReviewUpsertArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Reviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewCountArgs} args - Arguments to filter Reviews to count.
+     * @example
+     * // Count the number of Reviews
+     * const count = await prisma.review.count({
+     *   where: {
+     *     // ... the filter for the Reviews we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReviewCountArgs>(
+      args?: Subset<T, ReviewCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReviewCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Review.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReviewAggregateArgs>(args: Subset<T, ReviewAggregateArgs>): Prisma.PrismaPromise<GetReviewAggregateType<T>>
+
+    /**
+     * Group by Review.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReviewGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReviewGroupByArgs['orderBy'] }
+        : { orderBy?: ReviewGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReviewGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReviewGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Review model
+   */
+  readonly fields: ReviewFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Review.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReviewClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    property<T extends PropertyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PropertyDefaultArgs<ExtArgs>>): Prisma__PropertyClient<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Review model
+   */
+  interface ReviewFieldRefs {
+    readonly id: FieldRef<"Review", 'Int'>
+    readonly rating: FieldRef<"Review", 'Int'>
+    readonly comment: FieldRef<"Review", 'String'>
+    readonly reviewDate: FieldRef<"Review", 'DateTime'>
+    readonly propertyId: FieldRef<"Review", 'Int'>
+    readonly tenantCognitoId: FieldRef<"Review", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Review findUnique
+   */
+  export type ReviewFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review findUniqueOrThrow
+   */
+  export type ReviewFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review findFirst
+   */
+  export type ReviewFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reviews.
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reviews.
+     */
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Review findFirstOrThrow
+   */
+  export type ReviewFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reviews.
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reviews.
+     */
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Review findMany
+   */
+  export type ReviewFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Reviews to fetch.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Reviews.
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Review create
+   */
+  export type ReviewCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Review.
+     */
+    data: XOR<ReviewCreateInput, ReviewUncheckedCreateInput>
+  }
+
+  /**
+   * Review createMany
+   */
+  export type ReviewCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Reviews.
+     */
+    data: ReviewCreateManyInput | ReviewCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Review createManyAndReturn
+   */
+  export type ReviewCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * The data used to create many Reviews.
+     */
+    data: ReviewCreateManyInput | ReviewCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Review update
+   */
+  export type ReviewUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Review.
+     */
+    data: XOR<ReviewUpdateInput, ReviewUncheckedUpdateInput>
+    /**
+     * Choose, which Review to update.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review updateMany
+   */
+  export type ReviewUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Reviews.
+     */
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyInput>
+    /**
+     * Filter which Reviews to update
+     */
+    where?: ReviewWhereInput
+    /**
+     * Limit how many Reviews to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Review updateManyAndReturn
+   */
+  export type ReviewUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * The data used to update Reviews.
+     */
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyInput>
+    /**
+     * Filter which Reviews to update
+     */
+    where?: ReviewWhereInput
+    /**
+     * Limit how many Reviews to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Review upsert
+   */
+  export type ReviewUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Review to update in case it exists.
+     */
+    where: ReviewWhereUniqueInput
+    /**
+     * In case the Review found by the `where` argument doesn't exist, create a new Review with this data.
+     */
+    create: XOR<ReviewCreateInput, ReviewUncheckedCreateInput>
+    /**
+     * In case the Review was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReviewUpdateInput, ReviewUncheckedUpdateInput>
+  }
+
+  /**
+   * Review delete
+   */
+  export type ReviewDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter which Review to delete.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review deleteMany
+   */
+  export type ReviewDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Reviews to delete
+     */
+    where?: ReviewWhereInput
+    /**
+     * Limit how many Reviews to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Review without action
+   */
+  export type ReviewDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -10000,6 +12599,31 @@ export namespace Prisma {
   };
 
   export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+  export const PaymentHistoryScalarFieldEnum: {
+    id: 'id',
+    paymentDate: 'paymentDate',
+    amount: 'amount',
+    transactionId: 'transactionId',
+    type: 'type',
+    tenantCognitoId: 'tenantCognitoId',
+    PropertyId: 'PropertyId'
+  };
+
+  export type PaymentHistoryScalarFieldEnum = (typeof PaymentHistoryScalarFieldEnum)[keyof typeof PaymentHistoryScalarFieldEnum]
+
+
+  export const ReviewScalarFieldEnum: {
+    id: 'id',
+    rating: 'rating',
+    comment: 'comment',
+    reviewDate: 'reviewDate',
+    propertyId: 'propertyId',
+    tenantCognitoId: 'tenantCognitoId'
+  };
+
+  export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -10176,6 +12800,20 @@ export namespace Prisma {
    */
   export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'PaymentType'
+   */
+  export type EnumPaymentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentType[]'
+   */
+  export type ListEnumPaymentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentType[]'>
+    
   /**
    * Deep Input Types
    */
@@ -10211,6 +12849,8 @@ export namespace Prisma {
     applications?: ApplicationListRelationFilter
     favoritedBy?: TenantListRelationFilter
     tenants?: TenantListRelationFilter
+    PaymentHistory?: PaymentHistoryListRelationFilter
+    Review?: ReviewListRelationFilter
   }
 
   export type PropertyOrderByWithRelationInput = {
@@ -10240,6 +12880,8 @@ export namespace Prisma {
     applications?: ApplicationOrderByRelationAggregateInput
     favoritedBy?: TenantOrderByRelationAggregateInput
     tenants?: TenantOrderByRelationAggregateInput
+    PaymentHistory?: PaymentHistoryOrderByRelationAggregateInput
+    Review?: ReviewOrderByRelationAggregateInput
   }
 
   export type PropertyWhereUniqueInput = Prisma.AtLeast<{
@@ -10272,6 +12914,8 @@ export namespace Prisma {
     applications?: ApplicationListRelationFilter
     favoritedBy?: TenantListRelationFilter
     tenants?: TenantListRelationFilter
+    PaymentHistory?: PaymentHistoryListRelationFilter
+    Review?: ReviewListRelationFilter
   }, "id">
 
   export type PropertyOrderByWithAggregationInput = {
@@ -10398,6 +13042,8 @@ export namespace Prisma {
     favorites?: PropertyListRelationFilter
     applications?: ApplicationListRelationFilter
     leases?: LeaseListRelationFilter
+    PaymentHistory?: PaymentHistoryListRelationFilter
+    Review?: ReviewListRelationFilter
   }
 
   export type TenantOrderByWithRelationInput = {
@@ -10410,6 +13056,8 @@ export namespace Prisma {
     favorites?: PropertyOrderByRelationAggregateInput
     applications?: ApplicationOrderByRelationAggregateInput
     leases?: LeaseOrderByRelationAggregateInput
+    PaymentHistory?: PaymentHistoryOrderByRelationAggregateInput
+    Review?: ReviewOrderByRelationAggregateInput
   }
 
   export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -10425,6 +13073,8 @@ export namespace Prisma {
     favorites?: PropertyListRelationFilter
     applications?: ApplicationListRelationFilter
     leases?: LeaseListRelationFilter
+    PaymentHistory?: PaymentHistoryListRelationFilter
+    Review?: ReviewListRelationFilter
   }, "id" | "cognitoId">
 
   export type TenantOrderByWithAggregationInput = {
@@ -10748,6 +13398,141 @@ export namespace Prisma {
     leaseId?: IntWithAggregatesFilter<"Payment"> | number
   }
 
+  export type PaymentHistoryWhereInput = {
+    AND?: PaymentHistoryWhereInput | PaymentHistoryWhereInput[]
+    OR?: PaymentHistoryWhereInput[]
+    NOT?: PaymentHistoryWhereInput | PaymentHistoryWhereInput[]
+    id?: IntFilter<"PaymentHistory"> | number
+    paymentDate?: DateTimeFilter<"PaymentHistory"> | Date | string
+    amount?: FloatFilter<"PaymentHistory"> | number
+    transactionId?: StringFilter<"PaymentHistory"> | string
+    type?: EnumPaymentTypeFilter<"PaymentHistory"> | $Enums.PaymentType
+    tenantCognitoId?: StringFilter<"PaymentHistory"> | string
+    PropertyId?: IntFilter<"PaymentHistory"> | number
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+    property?: XOR<PropertyScalarRelationFilter, PropertyWhereInput>
+  }
+
+  export type PaymentHistoryOrderByWithRelationInput = {
+    id?: SortOrder
+    paymentDate?: SortOrder
+    amount?: SortOrder
+    transactionId?: SortOrder
+    type?: SortOrder
+    tenantCognitoId?: SortOrder
+    PropertyId?: SortOrder
+    tenant?: TenantOrderByWithRelationInput
+    property?: PropertyOrderByWithRelationInput
+  }
+
+  export type PaymentHistoryWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: PaymentHistoryWhereInput | PaymentHistoryWhereInput[]
+    OR?: PaymentHistoryWhereInput[]
+    NOT?: PaymentHistoryWhereInput | PaymentHistoryWhereInput[]
+    paymentDate?: DateTimeFilter<"PaymentHistory"> | Date | string
+    amount?: FloatFilter<"PaymentHistory"> | number
+    transactionId?: StringFilter<"PaymentHistory"> | string
+    type?: EnumPaymentTypeFilter<"PaymentHistory"> | $Enums.PaymentType
+    tenantCognitoId?: StringFilter<"PaymentHistory"> | string
+    PropertyId?: IntFilter<"PaymentHistory"> | number
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+    property?: XOR<PropertyScalarRelationFilter, PropertyWhereInput>
+  }, "id">
+
+  export type PaymentHistoryOrderByWithAggregationInput = {
+    id?: SortOrder
+    paymentDate?: SortOrder
+    amount?: SortOrder
+    transactionId?: SortOrder
+    type?: SortOrder
+    tenantCognitoId?: SortOrder
+    PropertyId?: SortOrder
+    _count?: PaymentHistoryCountOrderByAggregateInput
+    _avg?: PaymentHistoryAvgOrderByAggregateInput
+    _max?: PaymentHistoryMaxOrderByAggregateInput
+    _min?: PaymentHistoryMinOrderByAggregateInput
+    _sum?: PaymentHistorySumOrderByAggregateInput
+  }
+
+  export type PaymentHistoryScalarWhereWithAggregatesInput = {
+    AND?: PaymentHistoryScalarWhereWithAggregatesInput | PaymentHistoryScalarWhereWithAggregatesInput[]
+    OR?: PaymentHistoryScalarWhereWithAggregatesInput[]
+    NOT?: PaymentHistoryScalarWhereWithAggregatesInput | PaymentHistoryScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"PaymentHistory"> | number
+    paymentDate?: DateTimeWithAggregatesFilter<"PaymentHistory"> | Date | string
+    amount?: FloatWithAggregatesFilter<"PaymentHistory"> | number
+    transactionId?: StringWithAggregatesFilter<"PaymentHistory"> | string
+    type?: EnumPaymentTypeWithAggregatesFilter<"PaymentHistory"> | $Enums.PaymentType
+    tenantCognitoId?: StringWithAggregatesFilter<"PaymentHistory"> | string
+    PropertyId?: IntWithAggregatesFilter<"PaymentHistory"> | number
+  }
+
+  export type ReviewWhereInput = {
+    AND?: ReviewWhereInput | ReviewWhereInput[]
+    OR?: ReviewWhereInput[]
+    NOT?: ReviewWhereInput | ReviewWhereInput[]
+    id?: IntFilter<"Review"> | number
+    rating?: IntFilter<"Review"> | number
+    comment?: StringNullableFilter<"Review"> | string | null
+    reviewDate?: DateTimeFilter<"Review"> | Date | string
+    propertyId?: IntFilter<"Review"> | number
+    tenantCognitoId?: StringFilter<"Review"> | string
+    property?: XOR<PropertyScalarRelationFilter, PropertyWhereInput>
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+  }
+
+  export type ReviewOrderByWithRelationInput = {
+    id?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrderInput | SortOrder
+    reviewDate?: SortOrder
+    propertyId?: SortOrder
+    tenantCognitoId?: SortOrder
+    property?: PropertyOrderByWithRelationInput
+    tenant?: TenantOrderByWithRelationInput
+  }
+
+  export type ReviewWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: ReviewWhereInput | ReviewWhereInput[]
+    OR?: ReviewWhereInput[]
+    NOT?: ReviewWhereInput | ReviewWhereInput[]
+    rating?: IntFilter<"Review"> | number
+    comment?: StringNullableFilter<"Review"> | string | null
+    reviewDate?: DateTimeFilter<"Review"> | Date | string
+    propertyId?: IntFilter<"Review"> | number
+    tenantCognitoId?: StringFilter<"Review"> | string
+    property?: XOR<PropertyScalarRelationFilter, PropertyWhereInput>
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+  }, "id">
+
+  export type ReviewOrderByWithAggregationInput = {
+    id?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrderInput | SortOrder
+    reviewDate?: SortOrder
+    propertyId?: SortOrder
+    tenantCognitoId?: SortOrder
+    _count?: ReviewCountOrderByAggregateInput
+    _avg?: ReviewAvgOrderByAggregateInput
+    _max?: ReviewMaxOrderByAggregateInput
+    _min?: ReviewMinOrderByAggregateInput
+    _sum?: ReviewSumOrderByAggregateInput
+  }
+
+  export type ReviewScalarWhereWithAggregatesInput = {
+    AND?: ReviewScalarWhereWithAggregatesInput | ReviewScalarWhereWithAggregatesInput[]
+    OR?: ReviewScalarWhereWithAggregatesInput[]
+    NOT?: ReviewScalarWhereWithAggregatesInput | ReviewScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Review"> | number
+    rating?: IntWithAggregatesFilter<"Review"> | number
+    comment?: StringNullableWithAggregatesFilter<"Review"> | string | null
+    reviewDate?: DateTimeWithAggregatesFilter<"Review"> | Date | string
+    propertyId?: IntWithAggregatesFilter<"Review"> | number
+    tenantCognitoId?: StringWithAggregatesFilter<"Review"> | string
+  }
+
   export type PropertyCreateInput = {
     name: string
     description: string
@@ -10772,6 +13557,8 @@ export namespace Prisma {
     applications?: ApplicationCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantCreateNestedManyWithoutFavoritesInput
     tenants?: TenantCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutPropertyInput
+    Review?: ReviewCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateInput = {
@@ -10799,6 +13586,8 @@ export namespace Prisma {
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
     tenants?: TenantUncheckedCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutPropertyInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUpdateInput = {
@@ -10825,6 +13614,8 @@ export namespace Prisma {
     applications?: ApplicationUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateInput = {
@@ -10852,6 +13643,8 @@ export namespace Prisma {
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUncheckedUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyCreateManyInput = {
@@ -10986,6 +13779,8 @@ export namespace Prisma {
     favorites?: PropertyCreateNestedManyWithoutFavoritedByInput
     applications?: ApplicationCreateNestedManyWithoutTenantInput
     leases?: LeaseCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutTenantInput
+    Review?: ReviewCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateInput = {
@@ -10998,6 +13793,8 @@ export namespace Prisma {
     favorites?: PropertyUncheckedCreateNestedManyWithoutFavoritedByInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutTenantInput
     leases?: LeaseUncheckedCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutTenantInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUpdateInput = {
@@ -11009,6 +13806,8 @@ export namespace Prisma {
     favorites?: PropertyUpdateManyWithoutFavoritedByNestedInput
     applications?: ApplicationUpdateManyWithoutTenantNestedInput
     leases?: LeaseUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateInput = {
@@ -11021,6 +13820,8 @@ export namespace Prisma {
     favorites?: PropertyUncheckedUpdateManyWithoutFavoritedByNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutTenantNestedInput
     leases?: LeaseUncheckedUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantCreateManyInput = {
@@ -11317,6 +14118,129 @@ export namespace Prisma {
     leaseId?: IntFieldUpdateOperationsInput | number
   }
 
+  export type PaymentHistoryCreateInput = {
+    paymentDate: Date | string
+    amount: number
+    transactionId: string
+    type: $Enums.PaymentType
+    tenant: TenantCreateNestedOneWithoutPaymentHistoryInput
+    property: PropertyCreateNestedOneWithoutPaymentHistoryInput
+  }
+
+  export type PaymentHistoryUncheckedCreateInput = {
+    id?: number
+    paymentDate: Date | string
+    amount: number
+    transactionId: string
+    type: $Enums.PaymentType
+    tenantCognitoId: string
+    PropertyId: number
+  }
+
+  export type PaymentHistoryUpdateInput = {
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    transactionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    tenant?: TenantUpdateOneRequiredWithoutPaymentHistoryNestedInput
+    property?: PropertyUpdateOneRequiredWithoutPaymentHistoryNestedInput
+  }
+
+  export type PaymentHistoryUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    transactionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    tenantCognitoId?: StringFieldUpdateOperationsInput | string
+    PropertyId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type PaymentHistoryCreateManyInput = {
+    id?: number
+    paymentDate: Date | string
+    amount: number
+    transactionId: string
+    type: $Enums.PaymentType
+    tenantCognitoId: string
+    PropertyId: number
+  }
+
+  export type PaymentHistoryUpdateManyMutationInput = {
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    transactionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+  }
+
+  export type PaymentHistoryUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    transactionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    tenantCognitoId?: StringFieldUpdateOperationsInput | string
+    PropertyId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ReviewCreateInput = {
+    rating: number
+    comment?: string | null
+    reviewDate?: Date | string
+    property: PropertyCreateNestedOneWithoutReviewInput
+    tenant: TenantCreateNestedOneWithoutReviewInput
+  }
+
+  export type ReviewUncheckedCreateInput = {
+    id?: number
+    rating: number
+    comment?: string | null
+    reviewDate?: Date | string
+    propertyId: number
+    tenantCognitoId: string
+  }
+
+  export type ReviewUpdateInput = {
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    property?: PropertyUpdateOneRequiredWithoutReviewNestedInput
+    tenant?: TenantUpdateOneRequiredWithoutReviewNestedInput
+  }
+
+  export type ReviewUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    propertyId?: IntFieldUpdateOperationsInput | number
+    tenantCognitoId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ReviewCreateManyInput = {
+    id?: number
+    rating: number
+    comment?: string | null
+    reviewDate?: Date | string
+    propertyId: number
+    tenantCognitoId: string
+  }
+
+  export type ReviewUpdateManyMutationInput = {
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    propertyId?: IntFieldUpdateOperationsInput | number
+    tenantCognitoId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -11451,6 +14375,18 @@ export namespace Prisma {
     none?: TenantWhereInput
   }
 
+  export type PaymentHistoryListRelationFilter = {
+    every?: PaymentHistoryWhereInput
+    some?: PaymentHistoryWhereInput
+    none?: PaymentHistoryWhereInput
+  }
+
+  export type ReviewListRelationFilter = {
+    every?: ReviewWhereInput
+    some?: ReviewWhereInput
+    none?: ReviewWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -11465,6 +14401,14 @@ export namespace Prisma {
   }
 
   export type TenantOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PaymentHistoryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReviewOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -12030,6 +14974,104 @@ export namespace Prisma {
     _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
   }
 
+  export type EnumPaymentTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentType | EnumPaymentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentTypeFilter<$PrismaModel> | $Enums.PaymentType
+  }
+
+  export type PaymentHistoryCountOrderByAggregateInput = {
+    id?: SortOrder
+    paymentDate?: SortOrder
+    amount?: SortOrder
+    transactionId?: SortOrder
+    type?: SortOrder
+    tenantCognitoId?: SortOrder
+    PropertyId?: SortOrder
+  }
+
+  export type PaymentHistoryAvgOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    PropertyId?: SortOrder
+  }
+
+  export type PaymentHistoryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    paymentDate?: SortOrder
+    amount?: SortOrder
+    transactionId?: SortOrder
+    type?: SortOrder
+    tenantCognitoId?: SortOrder
+    PropertyId?: SortOrder
+  }
+
+  export type PaymentHistoryMinOrderByAggregateInput = {
+    id?: SortOrder
+    paymentDate?: SortOrder
+    amount?: SortOrder
+    transactionId?: SortOrder
+    type?: SortOrder
+    tenantCognitoId?: SortOrder
+    PropertyId?: SortOrder
+  }
+
+  export type PaymentHistorySumOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    PropertyId?: SortOrder
+  }
+
+  export type EnumPaymentTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentType | EnumPaymentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentTypeWithAggregatesFilter<$PrismaModel> | $Enums.PaymentType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentTypeFilter<$PrismaModel>
+    _max?: NestedEnumPaymentTypeFilter<$PrismaModel>
+  }
+
+  export type ReviewCountOrderByAggregateInput = {
+    id?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    reviewDate?: SortOrder
+    propertyId?: SortOrder
+    tenantCognitoId?: SortOrder
+  }
+
+  export type ReviewAvgOrderByAggregateInput = {
+    id?: SortOrder
+    rating?: SortOrder
+    propertyId?: SortOrder
+  }
+
+  export type ReviewMaxOrderByAggregateInput = {
+    id?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    reviewDate?: SortOrder
+    propertyId?: SortOrder
+    tenantCognitoId?: SortOrder
+  }
+
+  export type ReviewMinOrderByAggregateInput = {
+    id?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    reviewDate?: SortOrder
+    propertyId?: SortOrder
+    tenantCognitoId?: SortOrder
+  }
+
+  export type ReviewSumOrderByAggregateInput = {
+    id?: SortOrder
+    rating?: SortOrder
+    propertyId?: SortOrder
+  }
+
   export type PropertyCreatephotoUrlsInput = {
     set: string[]
   }
@@ -12078,6 +15120,20 @@ export namespace Prisma {
     connect?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
   }
 
+  export type PaymentHistoryCreateNestedManyWithoutPropertyInput = {
+    create?: XOR<PaymentHistoryCreateWithoutPropertyInput, PaymentHistoryUncheckedCreateWithoutPropertyInput> | PaymentHistoryCreateWithoutPropertyInput[] | PaymentHistoryUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: PaymentHistoryCreateOrConnectWithoutPropertyInput | PaymentHistoryCreateOrConnectWithoutPropertyInput[]
+    createMany?: PaymentHistoryCreateManyPropertyInputEnvelope
+    connect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+  }
+
+  export type ReviewCreateNestedManyWithoutPropertyInput = {
+    create?: XOR<ReviewCreateWithoutPropertyInput, ReviewUncheckedCreateWithoutPropertyInput> | ReviewCreateWithoutPropertyInput[] | ReviewUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutPropertyInput | ReviewCreateOrConnectWithoutPropertyInput[]
+    createMany?: ReviewCreateManyPropertyInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
   export type LeaseUncheckedCreateNestedManyWithoutPropertyInput = {
     create?: XOR<LeaseCreateWithoutPropertyInput, LeaseUncheckedCreateWithoutPropertyInput> | LeaseCreateWithoutPropertyInput[] | LeaseUncheckedCreateWithoutPropertyInput[]
     connectOrCreate?: LeaseCreateOrConnectWithoutPropertyInput | LeaseCreateOrConnectWithoutPropertyInput[]
@@ -12102,6 +15158,20 @@ export namespace Prisma {
     create?: XOR<TenantCreateWithoutPropertiesInput, TenantUncheckedCreateWithoutPropertiesInput> | TenantCreateWithoutPropertiesInput[] | TenantUncheckedCreateWithoutPropertiesInput[]
     connectOrCreate?: TenantCreateOrConnectWithoutPropertiesInput | TenantCreateOrConnectWithoutPropertiesInput[]
     connect?: TenantWhereUniqueInput | TenantWhereUniqueInput[]
+  }
+
+  export type PaymentHistoryUncheckedCreateNestedManyWithoutPropertyInput = {
+    create?: XOR<PaymentHistoryCreateWithoutPropertyInput, PaymentHistoryUncheckedCreateWithoutPropertyInput> | PaymentHistoryCreateWithoutPropertyInput[] | PaymentHistoryUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: PaymentHistoryCreateOrConnectWithoutPropertyInput | PaymentHistoryCreateOrConnectWithoutPropertyInput[]
+    createMany?: PaymentHistoryCreateManyPropertyInputEnvelope
+    connect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+  }
+
+  export type ReviewUncheckedCreateNestedManyWithoutPropertyInput = {
+    create?: XOR<ReviewCreateWithoutPropertyInput, ReviewUncheckedCreateWithoutPropertyInput> | ReviewCreateWithoutPropertyInput[] | ReviewUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutPropertyInput | ReviewCreateOrConnectWithoutPropertyInput[]
+    createMany?: ReviewCreateManyPropertyInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -12234,6 +15304,34 @@ export namespace Prisma {
     deleteMany?: TenantScalarWhereInput | TenantScalarWhereInput[]
   }
 
+  export type PaymentHistoryUpdateManyWithoutPropertyNestedInput = {
+    create?: XOR<PaymentHistoryCreateWithoutPropertyInput, PaymentHistoryUncheckedCreateWithoutPropertyInput> | PaymentHistoryCreateWithoutPropertyInput[] | PaymentHistoryUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: PaymentHistoryCreateOrConnectWithoutPropertyInput | PaymentHistoryCreateOrConnectWithoutPropertyInput[]
+    upsert?: PaymentHistoryUpsertWithWhereUniqueWithoutPropertyInput | PaymentHistoryUpsertWithWhereUniqueWithoutPropertyInput[]
+    createMany?: PaymentHistoryCreateManyPropertyInputEnvelope
+    set?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    disconnect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    delete?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    connect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    update?: PaymentHistoryUpdateWithWhereUniqueWithoutPropertyInput | PaymentHistoryUpdateWithWhereUniqueWithoutPropertyInput[]
+    updateMany?: PaymentHistoryUpdateManyWithWhereWithoutPropertyInput | PaymentHistoryUpdateManyWithWhereWithoutPropertyInput[]
+    deleteMany?: PaymentHistoryScalarWhereInput | PaymentHistoryScalarWhereInput[]
+  }
+
+  export type ReviewUpdateManyWithoutPropertyNestedInput = {
+    create?: XOR<ReviewCreateWithoutPropertyInput, ReviewUncheckedCreateWithoutPropertyInput> | ReviewCreateWithoutPropertyInput[] | ReviewUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutPropertyInput | ReviewCreateOrConnectWithoutPropertyInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutPropertyInput | ReviewUpsertWithWhereUniqueWithoutPropertyInput[]
+    createMany?: ReviewCreateManyPropertyInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutPropertyInput | ReviewUpdateWithWhereUniqueWithoutPropertyInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutPropertyInput | ReviewUpdateManyWithWhereWithoutPropertyInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
   export type LeaseUncheckedUpdateManyWithoutPropertyNestedInput = {
     create?: XOR<LeaseCreateWithoutPropertyInput, LeaseUncheckedCreateWithoutPropertyInput> | LeaseCreateWithoutPropertyInput[] | LeaseUncheckedCreateWithoutPropertyInput[]
     connectOrCreate?: LeaseCreateOrConnectWithoutPropertyInput | LeaseCreateOrConnectWithoutPropertyInput[]
@@ -12286,6 +15384,34 @@ export namespace Prisma {
     update?: TenantUpdateWithWhereUniqueWithoutPropertiesInput | TenantUpdateWithWhereUniqueWithoutPropertiesInput[]
     updateMany?: TenantUpdateManyWithWhereWithoutPropertiesInput | TenantUpdateManyWithWhereWithoutPropertiesInput[]
     deleteMany?: TenantScalarWhereInput | TenantScalarWhereInput[]
+  }
+
+  export type PaymentHistoryUncheckedUpdateManyWithoutPropertyNestedInput = {
+    create?: XOR<PaymentHistoryCreateWithoutPropertyInput, PaymentHistoryUncheckedCreateWithoutPropertyInput> | PaymentHistoryCreateWithoutPropertyInput[] | PaymentHistoryUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: PaymentHistoryCreateOrConnectWithoutPropertyInput | PaymentHistoryCreateOrConnectWithoutPropertyInput[]
+    upsert?: PaymentHistoryUpsertWithWhereUniqueWithoutPropertyInput | PaymentHistoryUpsertWithWhereUniqueWithoutPropertyInput[]
+    createMany?: PaymentHistoryCreateManyPropertyInputEnvelope
+    set?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    disconnect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    delete?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    connect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    update?: PaymentHistoryUpdateWithWhereUniqueWithoutPropertyInput | PaymentHistoryUpdateWithWhereUniqueWithoutPropertyInput[]
+    updateMany?: PaymentHistoryUpdateManyWithWhereWithoutPropertyInput | PaymentHistoryUpdateManyWithWhereWithoutPropertyInput[]
+    deleteMany?: PaymentHistoryScalarWhereInput | PaymentHistoryScalarWhereInput[]
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutPropertyNestedInput = {
+    create?: XOR<ReviewCreateWithoutPropertyInput, ReviewUncheckedCreateWithoutPropertyInput> | ReviewCreateWithoutPropertyInput[] | ReviewUncheckedCreateWithoutPropertyInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutPropertyInput | ReviewCreateOrConnectWithoutPropertyInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutPropertyInput | ReviewUpsertWithWhereUniqueWithoutPropertyInput[]
+    createMany?: ReviewCreateManyPropertyInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutPropertyInput | ReviewUpdateWithWhereUniqueWithoutPropertyInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutPropertyInput | ReviewUpdateManyWithWhereWithoutPropertyInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
   }
 
   export type PropertyCreateNestedManyWithoutManagerInput = {
@@ -12356,6 +15482,20 @@ export namespace Prisma {
     connect?: LeaseWhereUniqueInput | LeaseWhereUniqueInput[]
   }
 
+  export type PaymentHistoryCreateNestedManyWithoutTenantInput = {
+    create?: XOR<PaymentHistoryCreateWithoutTenantInput, PaymentHistoryUncheckedCreateWithoutTenantInput> | PaymentHistoryCreateWithoutTenantInput[] | PaymentHistoryUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PaymentHistoryCreateOrConnectWithoutTenantInput | PaymentHistoryCreateOrConnectWithoutTenantInput[]
+    createMany?: PaymentHistoryCreateManyTenantInputEnvelope
+    connect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+  }
+
+  export type ReviewCreateNestedManyWithoutTenantInput = {
+    create?: XOR<ReviewCreateWithoutTenantInput, ReviewUncheckedCreateWithoutTenantInput> | ReviewCreateWithoutTenantInput[] | ReviewUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutTenantInput | ReviewCreateOrConnectWithoutTenantInput[]
+    createMany?: ReviewCreateManyTenantInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
   export type PropertyUncheckedCreateNestedManyWithoutTenantsInput = {
     create?: XOR<PropertyCreateWithoutTenantsInput, PropertyUncheckedCreateWithoutTenantsInput> | PropertyCreateWithoutTenantsInput[] | PropertyUncheckedCreateWithoutTenantsInput[]
     connectOrCreate?: PropertyCreateOrConnectWithoutTenantsInput | PropertyCreateOrConnectWithoutTenantsInput[]
@@ -12380,6 +15520,20 @@ export namespace Prisma {
     connectOrCreate?: LeaseCreateOrConnectWithoutTenantInput | LeaseCreateOrConnectWithoutTenantInput[]
     createMany?: LeaseCreateManyTenantInputEnvelope
     connect?: LeaseWhereUniqueInput | LeaseWhereUniqueInput[]
+  }
+
+  export type PaymentHistoryUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<PaymentHistoryCreateWithoutTenantInput, PaymentHistoryUncheckedCreateWithoutTenantInput> | PaymentHistoryCreateWithoutTenantInput[] | PaymentHistoryUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PaymentHistoryCreateOrConnectWithoutTenantInput | PaymentHistoryCreateOrConnectWithoutTenantInput[]
+    createMany?: PaymentHistoryCreateManyTenantInputEnvelope
+    connect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+  }
+
+  export type ReviewUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<ReviewCreateWithoutTenantInput, ReviewUncheckedCreateWithoutTenantInput> | ReviewCreateWithoutTenantInput[] | ReviewUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutTenantInput | ReviewCreateOrConnectWithoutTenantInput[]
+    createMany?: ReviewCreateManyTenantInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
   }
 
   export type PropertyUpdateManyWithoutTenantsNestedInput = {
@@ -12436,6 +15590,34 @@ export namespace Prisma {
     deleteMany?: LeaseScalarWhereInput | LeaseScalarWhereInput[]
   }
 
+  export type PaymentHistoryUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<PaymentHistoryCreateWithoutTenantInput, PaymentHistoryUncheckedCreateWithoutTenantInput> | PaymentHistoryCreateWithoutTenantInput[] | PaymentHistoryUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PaymentHistoryCreateOrConnectWithoutTenantInput | PaymentHistoryCreateOrConnectWithoutTenantInput[]
+    upsert?: PaymentHistoryUpsertWithWhereUniqueWithoutTenantInput | PaymentHistoryUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: PaymentHistoryCreateManyTenantInputEnvelope
+    set?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    disconnect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    delete?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    connect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    update?: PaymentHistoryUpdateWithWhereUniqueWithoutTenantInput | PaymentHistoryUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: PaymentHistoryUpdateManyWithWhereWithoutTenantInput | PaymentHistoryUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: PaymentHistoryScalarWhereInput | PaymentHistoryScalarWhereInput[]
+  }
+
+  export type ReviewUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<ReviewCreateWithoutTenantInput, ReviewUncheckedCreateWithoutTenantInput> | ReviewCreateWithoutTenantInput[] | ReviewUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutTenantInput | ReviewCreateOrConnectWithoutTenantInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutTenantInput | ReviewUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: ReviewCreateManyTenantInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutTenantInput | ReviewUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutTenantInput | ReviewUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
   export type PropertyUncheckedUpdateManyWithoutTenantsNestedInput = {
     create?: XOR<PropertyCreateWithoutTenantsInput, PropertyUncheckedCreateWithoutTenantsInput> | PropertyCreateWithoutTenantsInput[] | PropertyUncheckedCreateWithoutTenantsInput[]
     connectOrCreate?: PropertyCreateOrConnectWithoutTenantsInput | PropertyCreateOrConnectWithoutTenantsInput[]
@@ -12488,6 +15670,34 @@ export namespace Prisma {
     update?: LeaseUpdateWithWhereUniqueWithoutTenantInput | LeaseUpdateWithWhereUniqueWithoutTenantInput[]
     updateMany?: LeaseUpdateManyWithWhereWithoutTenantInput | LeaseUpdateManyWithWhereWithoutTenantInput[]
     deleteMany?: LeaseScalarWhereInput | LeaseScalarWhereInput[]
+  }
+
+  export type PaymentHistoryUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<PaymentHistoryCreateWithoutTenantInput, PaymentHistoryUncheckedCreateWithoutTenantInput> | PaymentHistoryCreateWithoutTenantInput[] | PaymentHistoryUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: PaymentHistoryCreateOrConnectWithoutTenantInput | PaymentHistoryCreateOrConnectWithoutTenantInput[]
+    upsert?: PaymentHistoryUpsertWithWhereUniqueWithoutTenantInput | PaymentHistoryUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: PaymentHistoryCreateManyTenantInputEnvelope
+    set?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    disconnect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    delete?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    connect?: PaymentHistoryWhereUniqueInput | PaymentHistoryWhereUniqueInput[]
+    update?: PaymentHistoryUpdateWithWhereUniqueWithoutTenantInput | PaymentHistoryUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: PaymentHistoryUpdateManyWithWhereWithoutTenantInput | PaymentHistoryUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: PaymentHistoryScalarWhereInput | PaymentHistoryScalarWhereInput[]
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<ReviewCreateWithoutTenantInput, ReviewUncheckedCreateWithoutTenantInput> | ReviewCreateWithoutTenantInput[] | ReviewUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutTenantInput | ReviewCreateOrConnectWithoutTenantInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutTenantInput | ReviewUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: ReviewCreateManyTenantInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutTenantInput | ReviewUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutTenantInput | ReviewUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
   }
 
   export type PropertyUpdateManyWithoutLocationNestedInput = {
@@ -12644,6 +15854,66 @@ export namespace Prisma {
     upsert?: LeaseUpsertWithoutPaymentsInput
     connect?: LeaseWhereUniqueInput
     update?: XOR<XOR<LeaseUpdateToOneWithWhereWithoutPaymentsInput, LeaseUpdateWithoutPaymentsInput>, LeaseUncheckedUpdateWithoutPaymentsInput>
+  }
+
+  export type TenantCreateNestedOneWithoutPaymentHistoryInput = {
+    create?: XOR<TenantCreateWithoutPaymentHistoryInput, TenantUncheckedCreateWithoutPaymentHistoryInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutPaymentHistoryInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type PropertyCreateNestedOneWithoutPaymentHistoryInput = {
+    create?: XOR<PropertyCreateWithoutPaymentHistoryInput, PropertyUncheckedCreateWithoutPaymentHistoryInput>
+    connectOrCreate?: PropertyCreateOrConnectWithoutPaymentHistoryInput
+    connect?: PropertyWhereUniqueInput
+  }
+
+  export type EnumPaymentTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentType
+  }
+
+  export type TenantUpdateOneRequiredWithoutPaymentHistoryNestedInput = {
+    create?: XOR<TenantCreateWithoutPaymentHistoryInput, TenantUncheckedCreateWithoutPaymentHistoryInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutPaymentHistoryInput
+    upsert?: TenantUpsertWithoutPaymentHistoryInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutPaymentHistoryInput, TenantUpdateWithoutPaymentHistoryInput>, TenantUncheckedUpdateWithoutPaymentHistoryInput>
+  }
+
+  export type PropertyUpdateOneRequiredWithoutPaymentHistoryNestedInput = {
+    create?: XOR<PropertyCreateWithoutPaymentHistoryInput, PropertyUncheckedCreateWithoutPaymentHistoryInput>
+    connectOrCreate?: PropertyCreateOrConnectWithoutPaymentHistoryInput
+    upsert?: PropertyUpsertWithoutPaymentHistoryInput
+    connect?: PropertyWhereUniqueInput
+    update?: XOR<XOR<PropertyUpdateToOneWithWhereWithoutPaymentHistoryInput, PropertyUpdateWithoutPaymentHistoryInput>, PropertyUncheckedUpdateWithoutPaymentHistoryInput>
+  }
+
+  export type PropertyCreateNestedOneWithoutReviewInput = {
+    create?: XOR<PropertyCreateWithoutReviewInput, PropertyUncheckedCreateWithoutReviewInput>
+    connectOrCreate?: PropertyCreateOrConnectWithoutReviewInput
+    connect?: PropertyWhereUniqueInput
+  }
+
+  export type TenantCreateNestedOneWithoutReviewInput = {
+    create?: XOR<TenantCreateWithoutReviewInput, TenantUncheckedCreateWithoutReviewInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutReviewInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type PropertyUpdateOneRequiredWithoutReviewNestedInput = {
+    create?: XOR<PropertyCreateWithoutReviewInput, PropertyUncheckedCreateWithoutReviewInput>
+    connectOrCreate?: PropertyCreateOrConnectWithoutReviewInput
+    upsert?: PropertyUpsertWithoutReviewInput
+    connect?: PropertyWhereUniqueInput
+    update?: XOR<XOR<PropertyUpdateToOneWithWhereWithoutReviewInput, PropertyUpdateWithoutReviewInput>, PropertyUncheckedUpdateWithoutReviewInput>
+  }
+
+  export type TenantUpdateOneRequiredWithoutReviewNestedInput = {
+    create?: XOR<TenantCreateWithoutReviewInput, TenantUncheckedCreateWithoutReviewInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutReviewInput
+    upsert?: TenantUpsertWithoutReviewInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutReviewInput, TenantUpdateWithoutReviewInput>, TenantUncheckedUpdateWithoutReviewInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -12922,6 +16192,23 @@ export namespace Prisma {
     _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumPaymentTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentType | EnumPaymentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentTypeFilter<$PrismaModel> | $Enums.PaymentType
+  }
+
+  export type NestedEnumPaymentTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentType | EnumPaymentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentTypeWithAggregatesFilter<$PrismaModel> | $Enums.PaymentType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentTypeFilter<$PrismaModel>
+    _max?: NestedEnumPaymentTypeFilter<$PrismaModel>
+  }
+
   export type ManagerCreateWithoutManagedPropertiesInput = {
     cognitoId: string
     name: string
@@ -13016,6 +16303,8 @@ export namespace Prisma {
     properties?: PropertyCreateNestedManyWithoutTenantsInput
     applications?: ApplicationCreateNestedManyWithoutTenantInput
     leases?: LeaseCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutTenantInput
+    Review?: ReviewCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutFavoritesInput = {
@@ -13027,6 +16316,8 @@ export namespace Prisma {
     properties?: PropertyUncheckedCreateNestedManyWithoutTenantsInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutTenantInput
     leases?: LeaseUncheckedCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutTenantInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutFavoritesInput = {
@@ -13042,6 +16333,8 @@ export namespace Prisma {
     favorites?: PropertyCreateNestedManyWithoutFavoritedByInput
     applications?: ApplicationCreateNestedManyWithoutTenantInput
     leases?: LeaseCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutTenantInput
+    Review?: ReviewCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutPropertiesInput = {
@@ -13053,11 +16346,65 @@ export namespace Prisma {
     favorites?: PropertyUncheckedCreateNestedManyWithoutFavoritedByInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutTenantInput
     leases?: LeaseUncheckedCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutTenantInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutPropertiesInput = {
     where: TenantWhereUniqueInput
     create: XOR<TenantCreateWithoutPropertiesInput, TenantUncheckedCreateWithoutPropertiesInput>
+  }
+
+  export type PaymentHistoryCreateWithoutPropertyInput = {
+    paymentDate: Date | string
+    amount: number
+    transactionId: string
+    type: $Enums.PaymentType
+    tenant: TenantCreateNestedOneWithoutPaymentHistoryInput
+  }
+
+  export type PaymentHistoryUncheckedCreateWithoutPropertyInput = {
+    id?: number
+    paymentDate: Date | string
+    amount: number
+    transactionId: string
+    type: $Enums.PaymentType
+    tenantCognitoId: string
+  }
+
+  export type PaymentHistoryCreateOrConnectWithoutPropertyInput = {
+    where: PaymentHistoryWhereUniqueInput
+    create: XOR<PaymentHistoryCreateWithoutPropertyInput, PaymentHistoryUncheckedCreateWithoutPropertyInput>
+  }
+
+  export type PaymentHistoryCreateManyPropertyInputEnvelope = {
+    data: PaymentHistoryCreateManyPropertyInput | PaymentHistoryCreateManyPropertyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReviewCreateWithoutPropertyInput = {
+    rating: number
+    comment?: string | null
+    reviewDate?: Date | string
+    tenant: TenantCreateNestedOneWithoutReviewInput
+  }
+
+  export type ReviewUncheckedCreateWithoutPropertyInput = {
+    id?: number
+    rating: number
+    comment?: string | null
+    reviewDate?: Date | string
+    tenantCognitoId: string
+  }
+
+  export type ReviewCreateOrConnectWithoutPropertyInput = {
+    where: ReviewWhereUniqueInput
+    create: XOR<ReviewCreateWithoutPropertyInput, ReviewUncheckedCreateWithoutPropertyInput>
+  }
+
+  export type ReviewCreateManyPropertyInputEnvelope = {
+    data: ReviewCreateManyPropertyInput | ReviewCreateManyPropertyInput[]
+    skipDuplicates?: boolean
   }
 
   export type LocationUpdateToOneWithWhereWithoutPropertiesInput = {
@@ -13214,6 +16561,63 @@ export namespace Prisma {
     data: XOR<TenantUpdateManyMutationInput, TenantUncheckedUpdateManyWithoutPropertiesInput>
   }
 
+  export type PaymentHistoryUpsertWithWhereUniqueWithoutPropertyInput = {
+    where: PaymentHistoryWhereUniqueInput
+    update: XOR<PaymentHistoryUpdateWithoutPropertyInput, PaymentHistoryUncheckedUpdateWithoutPropertyInput>
+    create: XOR<PaymentHistoryCreateWithoutPropertyInput, PaymentHistoryUncheckedCreateWithoutPropertyInput>
+  }
+
+  export type PaymentHistoryUpdateWithWhereUniqueWithoutPropertyInput = {
+    where: PaymentHistoryWhereUniqueInput
+    data: XOR<PaymentHistoryUpdateWithoutPropertyInput, PaymentHistoryUncheckedUpdateWithoutPropertyInput>
+  }
+
+  export type PaymentHistoryUpdateManyWithWhereWithoutPropertyInput = {
+    where: PaymentHistoryScalarWhereInput
+    data: XOR<PaymentHistoryUpdateManyMutationInput, PaymentHistoryUncheckedUpdateManyWithoutPropertyInput>
+  }
+
+  export type PaymentHistoryScalarWhereInput = {
+    AND?: PaymentHistoryScalarWhereInput | PaymentHistoryScalarWhereInput[]
+    OR?: PaymentHistoryScalarWhereInput[]
+    NOT?: PaymentHistoryScalarWhereInput | PaymentHistoryScalarWhereInput[]
+    id?: IntFilter<"PaymentHistory"> | number
+    paymentDate?: DateTimeFilter<"PaymentHistory"> | Date | string
+    amount?: FloatFilter<"PaymentHistory"> | number
+    transactionId?: StringFilter<"PaymentHistory"> | string
+    type?: EnumPaymentTypeFilter<"PaymentHistory"> | $Enums.PaymentType
+    tenantCognitoId?: StringFilter<"PaymentHistory"> | string
+    PropertyId?: IntFilter<"PaymentHistory"> | number
+  }
+
+  export type ReviewUpsertWithWhereUniqueWithoutPropertyInput = {
+    where: ReviewWhereUniqueInput
+    update: XOR<ReviewUpdateWithoutPropertyInput, ReviewUncheckedUpdateWithoutPropertyInput>
+    create: XOR<ReviewCreateWithoutPropertyInput, ReviewUncheckedCreateWithoutPropertyInput>
+  }
+
+  export type ReviewUpdateWithWhereUniqueWithoutPropertyInput = {
+    where: ReviewWhereUniqueInput
+    data: XOR<ReviewUpdateWithoutPropertyInput, ReviewUncheckedUpdateWithoutPropertyInput>
+  }
+
+  export type ReviewUpdateManyWithWhereWithoutPropertyInput = {
+    where: ReviewScalarWhereInput
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutPropertyInput>
+  }
+
+  export type ReviewScalarWhereInput = {
+    AND?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+    OR?: ReviewScalarWhereInput[]
+    NOT?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+    id?: IntFilter<"Review"> | number
+    rating?: IntFilter<"Review"> | number
+    comment?: StringNullableFilter<"Review"> | string | null
+    reviewDate?: DateTimeFilter<"Review"> | Date | string
+    propertyId?: IntFilter<"Review"> | number
+    tenantCognitoId?: StringFilter<"Review"> | string
+  }
+
   export type PropertyCreateWithoutManagerInput = {
     name: string
     description: string
@@ -13237,6 +16641,8 @@ export namespace Prisma {
     applications?: ApplicationCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantCreateNestedManyWithoutFavoritesInput
     tenants?: TenantCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutPropertyInput
+    Review?: ReviewCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateWithoutManagerInput = {
@@ -13263,6 +16669,8 @@ export namespace Prisma {
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
     tenants?: TenantUncheckedCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutPropertyInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyCreateOrConnectWithoutManagerInput = {
@@ -13340,6 +16748,8 @@ export namespace Prisma {
     leases?: LeaseCreateNestedManyWithoutPropertyInput
     applications?: ApplicationCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantCreateNestedManyWithoutFavoritesInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutPropertyInput
+    Review?: ReviewCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateWithoutTenantsInput = {
@@ -13366,6 +16776,8 @@ export namespace Prisma {
     leases?: LeaseUncheckedCreateNestedManyWithoutPropertyInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutPropertyInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyCreateOrConnectWithoutTenantsInput = {
@@ -13396,6 +16808,8 @@ export namespace Prisma {
     leases?: LeaseCreateNestedManyWithoutPropertyInput
     applications?: ApplicationCreateNestedManyWithoutPropertyInput
     tenants?: TenantCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutPropertyInput
+    Review?: ReviewCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateWithoutFavoritedByInput = {
@@ -13422,6 +16836,8 @@ export namespace Prisma {
     leases?: LeaseUncheckedCreateNestedManyWithoutPropertyInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     tenants?: TenantUncheckedCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutPropertyInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyCreateOrConnectWithoutFavoritedByInput = {
@@ -13495,6 +16911,58 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PaymentHistoryCreateWithoutTenantInput = {
+    paymentDate: Date | string
+    amount: number
+    transactionId: string
+    type: $Enums.PaymentType
+    property: PropertyCreateNestedOneWithoutPaymentHistoryInput
+  }
+
+  export type PaymentHistoryUncheckedCreateWithoutTenantInput = {
+    id?: number
+    paymentDate: Date | string
+    amount: number
+    transactionId: string
+    type: $Enums.PaymentType
+    PropertyId: number
+  }
+
+  export type PaymentHistoryCreateOrConnectWithoutTenantInput = {
+    where: PaymentHistoryWhereUniqueInput
+    create: XOR<PaymentHistoryCreateWithoutTenantInput, PaymentHistoryUncheckedCreateWithoutTenantInput>
+  }
+
+  export type PaymentHistoryCreateManyTenantInputEnvelope = {
+    data: PaymentHistoryCreateManyTenantInput | PaymentHistoryCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReviewCreateWithoutTenantInput = {
+    rating: number
+    comment?: string | null
+    reviewDate?: Date | string
+    property: PropertyCreateNestedOneWithoutReviewInput
+  }
+
+  export type ReviewUncheckedCreateWithoutTenantInput = {
+    id?: number
+    rating: number
+    comment?: string | null
+    reviewDate?: Date | string
+    propertyId: number
+  }
+
+  export type ReviewCreateOrConnectWithoutTenantInput = {
+    where: ReviewWhereUniqueInput
+    create: XOR<ReviewCreateWithoutTenantInput, ReviewUncheckedCreateWithoutTenantInput>
+  }
+
+  export type ReviewCreateManyTenantInputEnvelope = {
+    data: ReviewCreateManyTenantInput | ReviewCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
   export type PropertyUpsertWithWhereUniqueWithoutTenantsInput = {
     where: PropertyWhereUniqueInput
     update: XOR<PropertyUpdateWithoutTenantsInput, PropertyUncheckedUpdateWithoutTenantsInput>
@@ -13559,6 +17027,38 @@ export namespace Prisma {
     data: XOR<LeaseUpdateManyMutationInput, LeaseUncheckedUpdateManyWithoutTenantInput>
   }
 
+  export type PaymentHistoryUpsertWithWhereUniqueWithoutTenantInput = {
+    where: PaymentHistoryWhereUniqueInput
+    update: XOR<PaymentHistoryUpdateWithoutTenantInput, PaymentHistoryUncheckedUpdateWithoutTenantInput>
+    create: XOR<PaymentHistoryCreateWithoutTenantInput, PaymentHistoryUncheckedCreateWithoutTenantInput>
+  }
+
+  export type PaymentHistoryUpdateWithWhereUniqueWithoutTenantInput = {
+    where: PaymentHistoryWhereUniqueInput
+    data: XOR<PaymentHistoryUpdateWithoutTenantInput, PaymentHistoryUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type PaymentHistoryUpdateManyWithWhereWithoutTenantInput = {
+    where: PaymentHistoryScalarWhereInput
+    data: XOR<PaymentHistoryUpdateManyMutationInput, PaymentHistoryUncheckedUpdateManyWithoutTenantInput>
+  }
+
+  export type ReviewUpsertWithWhereUniqueWithoutTenantInput = {
+    where: ReviewWhereUniqueInput
+    update: XOR<ReviewUpdateWithoutTenantInput, ReviewUncheckedUpdateWithoutTenantInput>
+    create: XOR<ReviewCreateWithoutTenantInput, ReviewUncheckedCreateWithoutTenantInput>
+  }
+
+  export type ReviewUpdateWithWhereUniqueWithoutTenantInput = {
+    where: ReviewWhereUniqueInput
+    data: XOR<ReviewUpdateWithoutTenantInput, ReviewUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type ReviewUpdateManyWithWhereWithoutTenantInput = {
+    where: ReviewScalarWhereInput
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutTenantInput>
+  }
+
   export type PropertyCreateWithoutLocationInput = {
     name: string
     description: string
@@ -13582,6 +17082,8 @@ export namespace Prisma {
     applications?: ApplicationCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantCreateNestedManyWithoutFavoritesInput
     tenants?: TenantCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutPropertyInput
+    Review?: ReviewCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateWithoutLocationInput = {
@@ -13608,6 +17110,8 @@ export namespace Prisma {
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
     tenants?: TenantUncheckedCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutPropertyInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyCreateOrConnectWithoutLocationInput = {
@@ -13659,6 +17163,8 @@ export namespace Prisma {
     leases?: LeaseCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantCreateNestedManyWithoutFavoritesInput
     tenants?: TenantCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutPropertyInput
+    Review?: ReviewCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateWithoutApplicationsInput = {
@@ -13685,6 +17191,8 @@ export namespace Prisma {
     leases?: LeaseUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
     tenants?: TenantUncheckedCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutPropertyInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyCreateOrConnectWithoutApplicationsInput = {
@@ -13700,6 +17208,8 @@ export namespace Prisma {
     properties?: PropertyCreateNestedManyWithoutTenantsInput
     favorites?: PropertyCreateNestedManyWithoutFavoritedByInput
     leases?: LeaseCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutTenantInput
+    Review?: ReviewCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutApplicationsInput = {
@@ -13711,6 +17221,8 @@ export namespace Prisma {
     properties?: PropertyUncheckedCreateNestedManyWithoutTenantsInput
     favorites?: PropertyUncheckedCreateNestedManyWithoutFavoritedByInput
     leases?: LeaseUncheckedCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutTenantInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutApplicationsInput = {
@@ -13752,6 +17264,8 @@ export namespace Prisma {
     leases?: LeaseUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateWithoutApplicationsInput = {
@@ -13778,6 +17292,8 @@ export namespace Prisma {
     leases?: LeaseUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUncheckedUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type TenantUpsertWithoutApplicationsInput = {
@@ -13799,6 +17315,8 @@ export namespace Prisma {
     properties?: PropertyUpdateManyWithoutTenantsNestedInput
     favorites?: PropertyUpdateManyWithoutFavoritedByNestedInput
     leases?: LeaseUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutApplicationsInput = {
@@ -13810,6 +17328,8 @@ export namespace Prisma {
     properties?: PropertyUncheckedUpdateManyWithoutTenantsNestedInput
     favorites?: PropertyUncheckedUpdateManyWithoutFavoritedByNestedInput
     leases?: LeaseUncheckedUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type PropertyCreateWithoutLeasesInput = {
@@ -13835,6 +17355,8 @@ export namespace Prisma {
     applications?: ApplicationCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantCreateNestedManyWithoutFavoritesInput
     tenants?: TenantCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutPropertyInput
+    Review?: ReviewCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyUncheckedCreateWithoutLeasesInput = {
@@ -13861,6 +17383,8 @@ export namespace Prisma {
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
     tenants?: TenantUncheckedCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutPropertyInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutPropertyInput
   }
 
   export type PropertyCreateOrConnectWithoutLeasesInput = {
@@ -13876,6 +17400,8 @@ export namespace Prisma {
     properties?: PropertyCreateNestedManyWithoutTenantsInput
     favorites?: PropertyCreateNestedManyWithoutFavoritedByInput
     applications?: ApplicationCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutTenantInput
+    Review?: ReviewCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutLeasesInput = {
@@ -13887,6 +17413,8 @@ export namespace Prisma {
     properties?: PropertyUncheckedCreateNestedManyWithoutTenantsInput
     favorites?: PropertyUncheckedCreateNestedManyWithoutFavoritedByInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutTenantInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutLeasesInput = {
@@ -13955,6 +17483,8 @@ export namespace Prisma {
     applications?: ApplicationUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateWithoutLeasesInput = {
@@ -13981,6 +17511,8 @@ export namespace Prisma {
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUncheckedUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type TenantUpsertWithoutLeasesInput = {
@@ -14002,6 +17534,8 @@ export namespace Prisma {
     properties?: PropertyUpdateManyWithoutTenantsNestedInput
     favorites?: PropertyUpdateManyWithoutFavoritedByNestedInput
     applications?: ApplicationUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutLeasesInput = {
@@ -14013,6 +17547,8 @@ export namespace Prisma {
     properties?: PropertyUncheckedUpdateManyWithoutTenantsNestedInput
     favorites?: PropertyUncheckedUpdateManyWithoutFavoritedByNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type PaymentUpsertWithWhereUniqueWithoutLeaseInput = {
@@ -14106,6 +17642,390 @@ export namespace Prisma {
     razorpayPlanId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type TenantCreateWithoutPaymentHistoryInput = {
+    cognitoId: string
+    name: string
+    email: string
+    phoneNumber: string
+    properties?: PropertyCreateNestedManyWithoutTenantsInput
+    favorites?: PropertyCreateNestedManyWithoutFavoritedByInput
+    applications?: ApplicationCreateNestedManyWithoutTenantInput
+    leases?: LeaseCreateNestedManyWithoutTenantInput
+    Review?: ReviewCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutPaymentHistoryInput = {
+    id?: number
+    cognitoId: string
+    name: string
+    email: string
+    phoneNumber: string
+    properties?: PropertyUncheckedCreateNestedManyWithoutTenantsInput
+    favorites?: PropertyUncheckedCreateNestedManyWithoutFavoritedByInput
+    applications?: ApplicationUncheckedCreateNestedManyWithoutTenantInput
+    leases?: LeaseUncheckedCreateNestedManyWithoutTenantInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutPaymentHistoryInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutPaymentHistoryInput, TenantUncheckedCreateWithoutPaymentHistoryInput>
+  }
+
+  export type PropertyCreateWithoutPaymentHistoryInput = {
+    name: string
+    description: string
+    pricePerMonth: number
+    securityDeposit: number
+    applicationFee: number
+    photoUrls?: PropertyCreatephotoUrlsInput | string[]
+    amenities?: PropertyCreateamenitiesInput | $Enums.Amenity[]
+    highlights?: PropertyCreatehighlightsInput | $Enums.Highlight[]
+    isPetsAllowed?: boolean
+    isParkingIncluded?: boolean
+    beds: number
+    baths: number
+    squareFeet: number
+    propertyType: $Enums.PropertyType
+    postedDate?: Date | string
+    averageRating?: number | null
+    numberOfReviews?: number | null
+    location: LocationCreateNestedOneWithoutPropertiesInput
+    manager: ManagerCreateNestedOneWithoutManagedPropertiesInput
+    leases?: LeaseCreateNestedManyWithoutPropertyInput
+    applications?: ApplicationCreateNestedManyWithoutPropertyInput
+    favoritedBy?: TenantCreateNestedManyWithoutFavoritesInput
+    tenants?: TenantCreateNestedManyWithoutPropertiesInput
+    Review?: ReviewCreateNestedManyWithoutPropertyInput
+  }
+
+  export type PropertyUncheckedCreateWithoutPaymentHistoryInput = {
+    id?: number
+    name: string
+    description: string
+    pricePerMonth: number
+    securityDeposit: number
+    applicationFee: number
+    photoUrls?: PropertyCreatephotoUrlsInput | string[]
+    amenities?: PropertyCreateamenitiesInput | $Enums.Amenity[]
+    highlights?: PropertyCreatehighlightsInput | $Enums.Highlight[]
+    isPetsAllowed?: boolean
+    isParkingIncluded?: boolean
+    beds: number
+    baths: number
+    squareFeet: number
+    propertyType: $Enums.PropertyType
+    postedDate?: Date | string
+    averageRating?: number | null
+    numberOfReviews?: number | null
+    locationId: number
+    managerCognitoId: string
+    leases?: LeaseUncheckedCreateNestedManyWithoutPropertyInput
+    applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
+    favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
+    tenants?: TenantUncheckedCreateNestedManyWithoutPropertiesInput
+    Review?: ReviewUncheckedCreateNestedManyWithoutPropertyInput
+  }
+
+  export type PropertyCreateOrConnectWithoutPaymentHistoryInput = {
+    where: PropertyWhereUniqueInput
+    create: XOR<PropertyCreateWithoutPaymentHistoryInput, PropertyUncheckedCreateWithoutPaymentHistoryInput>
+  }
+
+  export type TenantUpsertWithoutPaymentHistoryInput = {
+    update: XOR<TenantUpdateWithoutPaymentHistoryInput, TenantUncheckedUpdateWithoutPaymentHistoryInput>
+    create: XOR<TenantCreateWithoutPaymentHistoryInput, TenantUncheckedCreateWithoutPaymentHistoryInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutPaymentHistoryInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutPaymentHistoryInput, TenantUncheckedUpdateWithoutPaymentHistoryInput>
+  }
+
+  export type TenantUpdateWithoutPaymentHistoryInput = {
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    properties?: PropertyUpdateManyWithoutTenantsNestedInput
+    favorites?: PropertyUpdateManyWithoutFavoritedByNestedInput
+    applications?: ApplicationUpdateManyWithoutTenantNestedInput
+    leases?: LeaseUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutPaymentHistoryInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    properties?: PropertyUncheckedUpdateManyWithoutTenantsNestedInput
+    favorites?: PropertyUncheckedUpdateManyWithoutFavoritedByNestedInput
+    applications?: ApplicationUncheckedUpdateManyWithoutTenantNestedInput
+    leases?: LeaseUncheckedUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type PropertyUpsertWithoutPaymentHistoryInput = {
+    update: XOR<PropertyUpdateWithoutPaymentHistoryInput, PropertyUncheckedUpdateWithoutPaymentHistoryInput>
+    create: XOR<PropertyCreateWithoutPaymentHistoryInput, PropertyUncheckedCreateWithoutPaymentHistoryInput>
+    where?: PropertyWhereInput
+  }
+
+  export type PropertyUpdateToOneWithWhereWithoutPaymentHistoryInput = {
+    where?: PropertyWhereInput
+    data: XOR<PropertyUpdateWithoutPaymentHistoryInput, PropertyUncheckedUpdateWithoutPaymentHistoryInput>
+  }
+
+  export type PropertyUpdateWithoutPaymentHistoryInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    pricePerMonth?: FloatFieldUpdateOperationsInput | number
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    photoUrls?: PropertyUpdatephotoUrlsInput | string[]
+    amenities?: PropertyUpdateamenitiesInput | $Enums.Amenity[]
+    highlights?: PropertyUpdatehighlightsInput | $Enums.Highlight[]
+    isPetsAllowed?: BoolFieldUpdateOperationsInput | boolean
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
+    beds?: IntFieldUpdateOperationsInput | number
+    baths?: FloatFieldUpdateOperationsInput | number
+    squareFeet?: IntFieldUpdateOperationsInput | number
+    propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+    postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    location?: LocationUpdateOneRequiredWithoutPropertiesNestedInput
+    manager?: ManagerUpdateOneRequiredWithoutManagedPropertiesNestedInput
+    leases?: LeaseUpdateManyWithoutPropertyNestedInput
+    applications?: ApplicationUpdateManyWithoutPropertyNestedInput
+    favoritedBy?: TenantUpdateManyWithoutFavoritesNestedInput
+    tenants?: TenantUpdateManyWithoutPropertiesNestedInput
+    Review?: ReviewUpdateManyWithoutPropertyNestedInput
+  }
+
+  export type PropertyUncheckedUpdateWithoutPaymentHistoryInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    pricePerMonth?: FloatFieldUpdateOperationsInput | number
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    photoUrls?: PropertyUpdatephotoUrlsInput | string[]
+    amenities?: PropertyUpdateamenitiesInput | $Enums.Amenity[]
+    highlights?: PropertyUpdatehighlightsInput | $Enums.Highlight[]
+    isPetsAllowed?: BoolFieldUpdateOperationsInput | boolean
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
+    beds?: IntFieldUpdateOperationsInput | number
+    baths?: FloatFieldUpdateOperationsInput | number
+    squareFeet?: IntFieldUpdateOperationsInput | number
+    propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+    postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    locationId?: IntFieldUpdateOperationsInput | number
+    managerCognitoId?: StringFieldUpdateOperationsInput | string
+    leases?: LeaseUncheckedUpdateManyWithoutPropertyNestedInput
+    applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
+    favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
+    tenants?: TenantUncheckedUpdateManyWithoutPropertiesNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutPropertyNestedInput
+  }
+
+  export type PropertyCreateWithoutReviewInput = {
+    name: string
+    description: string
+    pricePerMonth: number
+    securityDeposit: number
+    applicationFee: number
+    photoUrls?: PropertyCreatephotoUrlsInput | string[]
+    amenities?: PropertyCreateamenitiesInput | $Enums.Amenity[]
+    highlights?: PropertyCreatehighlightsInput | $Enums.Highlight[]
+    isPetsAllowed?: boolean
+    isParkingIncluded?: boolean
+    beds: number
+    baths: number
+    squareFeet: number
+    propertyType: $Enums.PropertyType
+    postedDate?: Date | string
+    averageRating?: number | null
+    numberOfReviews?: number | null
+    location: LocationCreateNestedOneWithoutPropertiesInput
+    manager: ManagerCreateNestedOneWithoutManagedPropertiesInput
+    leases?: LeaseCreateNestedManyWithoutPropertyInput
+    applications?: ApplicationCreateNestedManyWithoutPropertyInput
+    favoritedBy?: TenantCreateNestedManyWithoutFavoritesInput
+    tenants?: TenantCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutPropertyInput
+  }
+
+  export type PropertyUncheckedCreateWithoutReviewInput = {
+    id?: number
+    name: string
+    description: string
+    pricePerMonth: number
+    securityDeposit: number
+    applicationFee: number
+    photoUrls?: PropertyCreatephotoUrlsInput | string[]
+    amenities?: PropertyCreateamenitiesInput | $Enums.Amenity[]
+    highlights?: PropertyCreatehighlightsInput | $Enums.Highlight[]
+    isPetsAllowed?: boolean
+    isParkingIncluded?: boolean
+    beds: number
+    baths: number
+    squareFeet: number
+    propertyType: $Enums.PropertyType
+    postedDate?: Date | string
+    averageRating?: number | null
+    numberOfReviews?: number | null
+    locationId: number
+    managerCognitoId: string
+    leases?: LeaseUncheckedCreateNestedManyWithoutPropertyInput
+    applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
+    favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
+    tenants?: TenantUncheckedCreateNestedManyWithoutPropertiesInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutPropertyInput
+  }
+
+  export type PropertyCreateOrConnectWithoutReviewInput = {
+    where: PropertyWhereUniqueInput
+    create: XOR<PropertyCreateWithoutReviewInput, PropertyUncheckedCreateWithoutReviewInput>
+  }
+
+  export type TenantCreateWithoutReviewInput = {
+    cognitoId: string
+    name: string
+    email: string
+    phoneNumber: string
+    properties?: PropertyCreateNestedManyWithoutTenantsInput
+    favorites?: PropertyCreateNestedManyWithoutFavoritedByInput
+    applications?: ApplicationCreateNestedManyWithoutTenantInput
+    leases?: LeaseCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutReviewInput = {
+    id?: number
+    cognitoId: string
+    name: string
+    email: string
+    phoneNumber: string
+    properties?: PropertyUncheckedCreateNestedManyWithoutTenantsInput
+    favorites?: PropertyUncheckedCreateNestedManyWithoutFavoritedByInput
+    applications?: ApplicationUncheckedCreateNestedManyWithoutTenantInput
+    leases?: LeaseUncheckedCreateNestedManyWithoutTenantInput
+    PaymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutReviewInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutReviewInput, TenantUncheckedCreateWithoutReviewInput>
+  }
+
+  export type PropertyUpsertWithoutReviewInput = {
+    update: XOR<PropertyUpdateWithoutReviewInput, PropertyUncheckedUpdateWithoutReviewInput>
+    create: XOR<PropertyCreateWithoutReviewInput, PropertyUncheckedCreateWithoutReviewInput>
+    where?: PropertyWhereInput
+  }
+
+  export type PropertyUpdateToOneWithWhereWithoutReviewInput = {
+    where?: PropertyWhereInput
+    data: XOR<PropertyUpdateWithoutReviewInput, PropertyUncheckedUpdateWithoutReviewInput>
+  }
+
+  export type PropertyUpdateWithoutReviewInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    pricePerMonth?: FloatFieldUpdateOperationsInput | number
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    photoUrls?: PropertyUpdatephotoUrlsInput | string[]
+    amenities?: PropertyUpdateamenitiesInput | $Enums.Amenity[]
+    highlights?: PropertyUpdatehighlightsInput | $Enums.Highlight[]
+    isPetsAllowed?: BoolFieldUpdateOperationsInput | boolean
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
+    beds?: IntFieldUpdateOperationsInput | number
+    baths?: FloatFieldUpdateOperationsInput | number
+    squareFeet?: IntFieldUpdateOperationsInput | number
+    propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+    postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    location?: LocationUpdateOneRequiredWithoutPropertiesNestedInput
+    manager?: ManagerUpdateOneRequiredWithoutManagedPropertiesNestedInput
+    leases?: LeaseUpdateManyWithoutPropertyNestedInput
+    applications?: ApplicationUpdateManyWithoutPropertyNestedInput
+    favoritedBy?: TenantUpdateManyWithoutFavoritesNestedInput
+    tenants?: TenantUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutPropertyNestedInput
+  }
+
+  export type PropertyUncheckedUpdateWithoutReviewInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    pricePerMonth?: FloatFieldUpdateOperationsInput | number
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    photoUrls?: PropertyUpdatephotoUrlsInput | string[]
+    amenities?: PropertyUpdateamenitiesInput | $Enums.Amenity[]
+    highlights?: PropertyUpdatehighlightsInput | $Enums.Highlight[]
+    isPetsAllowed?: BoolFieldUpdateOperationsInput | boolean
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
+    beds?: IntFieldUpdateOperationsInput | number
+    baths?: FloatFieldUpdateOperationsInput | number
+    squareFeet?: IntFieldUpdateOperationsInput | number
+    propertyType?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+    postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    locationId?: IntFieldUpdateOperationsInput | number
+    managerCognitoId?: StringFieldUpdateOperationsInput | string
+    leases?: LeaseUncheckedUpdateManyWithoutPropertyNestedInput
+    applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
+    favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
+    tenants?: TenantUncheckedUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutPropertyNestedInput
+  }
+
+  export type TenantUpsertWithoutReviewInput = {
+    update: XOR<TenantUpdateWithoutReviewInput, TenantUncheckedUpdateWithoutReviewInput>
+    create: XOR<TenantCreateWithoutReviewInput, TenantUncheckedCreateWithoutReviewInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutReviewInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutReviewInput, TenantUncheckedUpdateWithoutReviewInput>
+  }
+
+  export type TenantUpdateWithoutReviewInput = {
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    properties?: PropertyUpdateManyWithoutTenantsNestedInput
+    favorites?: PropertyUpdateManyWithoutFavoritedByNestedInput
+    applications?: ApplicationUpdateManyWithoutTenantNestedInput
+    leases?: LeaseUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutReviewInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    cognitoId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    properties?: PropertyUncheckedUpdateManyWithoutTenantsNestedInput
+    favorites?: PropertyUncheckedUpdateManyWithoutFavoritedByNestedInput
+    applications?: ApplicationUncheckedUpdateManyWithoutTenantNestedInput
+    leases?: LeaseUncheckedUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
   export type LeaseCreateManyPropertyInput = {
     id?: number
     startDate: Date | string
@@ -14127,6 +18047,23 @@ export namespace Prisma {
     phoneNumber: string
     message?: string | null
     durationMonths?: number
+  }
+
+  export type PaymentHistoryCreateManyPropertyInput = {
+    id?: number
+    paymentDate: Date | string
+    amount: number
+    transactionId: string
+    type: $Enums.PaymentType
+    tenantCognitoId: string
+  }
+
+  export type ReviewCreateManyPropertyInput = {
+    id?: number
+    rating: number
+    comment?: string | null
+    reviewDate?: Date | string
+    tenantCognitoId: string
   }
 
   export type LeaseUpdateWithoutPropertyInput = {
@@ -14206,6 +18143,8 @@ export namespace Prisma {
     properties?: PropertyUpdateManyWithoutTenantsNestedInput
     applications?: ApplicationUpdateManyWithoutTenantNestedInput
     leases?: LeaseUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutFavoritesInput = {
@@ -14217,6 +18156,8 @@ export namespace Prisma {
     properties?: PropertyUncheckedUpdateManyWithoutTenantsNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutTenantNestedInput
     leases?: LeaseUncheckedUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateManyWithoutFavoritesInput = {
@@ -14235,6 +18176,8 @@ export namespace Prisma {
     favorites?: PropertyUpdateManyWithoutFavoritedByNestedInput
     applications?: ApplicationUpdateManyWithoutTenantNestedInput
     leases?: LeaseUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutPropertiesInput = {
@@ -14246,6 +18189,8 @@ export namespace Prisma {
     favorites?: PropertyUncheckedUpdateManyWithoutFavoritedByNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutTenantNestedInput
     leases?: LeaseUncheckedUpdateManyWithoutTenantNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutTenantNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateManyWithoutPropertiesInput = {
@@ -14254,6 +18199,55 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PaymentHistoryUpdateWithoutPropertyInput = {
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    transactionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    tenant?: TenantUpdateOneRequiredWithoutPaymentHistoryNestedInput
+  }
+
+  export type PaymentHistoryUncheckedUpdateWithoutPropertyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    transactionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    tenantCognitoId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PaymentHistoryUncheckedUpdateManyWithoutPropertyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    transactionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    tenantCognitoId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ReviewUpdateWithoutPropertyInput = {
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutReviewNestedInput
+  }
+
+  export type ReviewUncheckedUpdateWithoutPropertyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantCognitoId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutPropertyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenantCognitoId?: StringFieldUpdateOperationsInput | string
   }
 
   export type PropertyCreateManyManagerInput = {
@@ -14301,6 +18295,8 @@ export namespace Prisma {
     applications?: ApplicationUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateWithoutManagerInput = {
@@ -14327,6 +18323,8 @@ export namespace Prisma {
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUncheckedUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateManyWithoutManagerInput = {
@@ -14374,6 +18372,23 @@ export namespace Prisma {
     razorpayPlanId: string
   }
 
+  export type PaymentHistoryCreateManyTenantInput = {
+    id?: number
+    paymentDate: Date | string
+    amount: number
+    transactionId: string
+    type: $Enums.PaymentType
+    PropertyId: number
+  }
+
+  export type ReviewCreateManyTenantInput = {
+    id?: number
+    rating: number
+    comment?: string | null
+    reviewDate?: Date | string
+    propertyId: number
+  }
+
   export type PropertyUpdateWithoutTenantsInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
@@ -14397,6 +18412,8 @@ export namespace Prisma {
     leases?: LeaseUpdateManyWithoutPropertyNestedInput
     applications?: ApplicationUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUpdateManyWithoutFavoritesNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateWithoutTenantsInput = {
@@ -14423,6 +18440,8 @@ export namespace Prisma {
     leases?: LeaseUncheckedUpdateManyWithoutPropertyNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateManyWithoutTenantsInput = {
@@ -14471,6 +18490,8 @@ export namespace Prisma {
     leases?: LeaseUpdateManyWithoutPropertyNestedInput
     applications?: ApplicationUpdateManyWithoutPropertyNestedInput
     tenants?: TenantUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateWithoutFavoritedByInput = {
@@ -14497,6 +18518,8 @@ export namespace Prisma {
     leases?: LeaseUncheckedUpdateManyWithoutPropertyNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     tenants?: TenantUncheckedUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateManyWithoutFavoritedByInput = {
@@ -14591,6 +18614,55 @@ export namespace Prisma {
     razorpayPlanId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type PaymentHistoryUpdateWithoutTenantInput = {
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    transactionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    property?: PropertyUpdateOneRequiredWithoutPaymentHistoryNestedInput
+  }
+
+  export type PaymentHistoryUncheckedUpdateWithoutTenantInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    transactionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    PropertyId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type PaymentHistoryUncheckedUpdateManyWithoutTenantInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    transactionId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    PropertyId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ReviewUpdateWithoutTenantInput = {
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    property?: PropertyUpdateOneRequiredWithoutReviewNestedInput
+  }
+
+  export type ReviewUncheckedUpdateWithoutTenantInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    propertyId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutTenantInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    propertyId?: IntFieldUpdateOperationsInput | number
+  }
+
   export type PropertyUpdateWithoutLocationInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
@@ -14614,6 +18686,8 @@ export namespace Prisma {
     applications?: ApplicationUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyUncheckedUpdateWithoutLocationInput = {
@@ -14640,6 +18714,8 @@ export namespace Prisma {
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUncheckedUpdateManyWithoutPropertiesNestedInput
+    PaymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutPropertyNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutPropertyNestedInput
   }
 
   export type PropertyCreateManyLocationInput = {

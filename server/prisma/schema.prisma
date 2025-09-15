@@ -88,12 +88,15 @@ model Property {
   locationId        Int
   managerCognitoId  String
 
-  location     Location      @relation(fields: [locationId], references: [id])
-  manager      Manager       @relation(fields: [managerCognitoId], references: [cognitoId])
-  leases       Lease[]
-  applications Application[]
-  favoritedBy  Tenant[]      @relation("TenantFavorites")
-  tenants      Tenant[]      @relation("TenantProperties")
+  location       Location         @relation(fields: [locationId], references: [id])
+  manager        Manager          @relation(fields: [managerCognitoId], references: [cognitoId])
+  leases         Lease[]
+  applications   Application[]
+  favoritedBy    Tenant[]         @relation("TenantFavorites")
+  tenants        Tenant[]         @relation("TenantProperties")
+  PaymentHistory PaymentHistory[]
+
+  Review Review[]
 }
 
 model Manager {
@@ -117,6 +120,10 @@ model Tenant {
   favorites    Property[]    @relation("TenantFavorites")
   applications Application[]
   leases       Lease[]
+
+  PaymentHistory PaymentHistory[]
+
+  Review Review[]
 }
 
 model Location {
@@ -178,4 +185,36 @@ model Payment {
   leaseId       Int
 
   lease Lease @relation(fields: [leaseId], references: [id])
+}
+
+enum PaymentType {
+  RENT
+  SECURITY_DEPOSIT
+  APPLICATION_FEE
+  OTHER
+}
+
+model PaymentHistory {
+  id              Int         @id @default(autoincrement())
+  paymentDate     DateTime
+  amount          Float
+  transactionId   String
+  type            PaymentType
+  tenantCognitoId String
+  propertyId      Int
+
+  tenant   Tenant   @relation(fields: [tenantCognitoId], references: [cognitoId])
+  property Property @relation(fields: [propertyId], references: [id])
+}
+
+model Review {
+  id              Int      @id @default(autoincrement())
+  rating          Int
+  comment         String?
+  reviewDate      DateTime @default(now())
+  propertyId      Int
+  tenantCognitoId String
+
+  property Property @relation(fields: [propertyId], references: [id])
+  tenant   Tenant   @relation(fields: [tenantCognitoId], references: [cognitoId])
 }

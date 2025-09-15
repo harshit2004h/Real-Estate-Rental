@@ -188,6 +188,18 @@ export const verifyPayment1 = async (
 
       console.log("Application created successfully:", newApplication);
 
+      //add to payment history
+      await prisma.paymentHistory.create({
+        data: {
+          amount: newApplication.property.applicationFee,
+          paymentDate: new Date(),
+          type: "APPLICATION_FEE",
+          transactionId: razorpay_payment_id,
+          property: { connect: { id: Number(propertyId) } },
+          tenant: { connect: { cognitoId: tenantCognitoId } },
+        },
+      });
+
       res.status(200).json({
         success: true,
         message: "Payment Verified & Application Created",
@@ -426,6 +438,18 @@ export const verifyPayment2 = async (
         },
       });
 
+      // add to payment history
+      await prisma.paymentHistory.create({
+        data: {
+          amount: property.pricePerMonth + property.securityDeposit,
+          paymentDate: new Date(),
+          type: "SECURITY_DEPOSIT",
+          transactionId: razorpay_payment_id,
+          property: { connect: { id: Number(propertyId) } },
+          tenant: { connect: { cognitoId: tenantCognitoId } },
+        },
+      });
+
       res.status(200).json({
         success: true,
         message: "Payment Verified and Subscription Created",
@@ -459,7 +483,7 @@ export const chargeSubscription = async (
     // Get lease with subscription details
     const lease = await prisma.lease.findUnique({
       where: { id: leaseId },
-      include: { property: true }
+      include: { property: true },
     });
 
     if (!lease || !lease.razorpaySubscriptionId) {
@@ -470,22 +494,32 @@ export const chargeSubscription = async (
     // Check if next month's payment already exists
     const nextMonth = new Date();
     nextMonth.setMonth(nextMonth.getMonth() + 1);
-    const startOfMonth = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
-    const endOfMonth = new Date(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 0);
+    const startOfMonth = new Date(
+      nextMonth.getFullYear(),
+      nextMonth.getMonth(),
+      1
+    );
+    const endOfMonth = new Date(
+      nextMonth.getFullYear(),
+      nextMonth.getMonth() + 1,
+      0
+    );
 
     const existingPayment = await prisma.payment.findFirst({
       where: {
         leaseId: leaseId,
         dueDate: {
           gte: startOfMonth,
-          lte: endOfMonth
+          lte: endOfMonth,
         },
-        paymentStatus: "Paid"
-      }
+        paymentStatus: "Paid",
+      },
     });
 
     if (existingPayment) {
-      res.status(400).json({ message: "Next month's subscription is already paid" });
+      res
+        .status(400)
+        .json({ message: "Next month's subscription is already paid" });
       return;
     }
 
@@ -503,7 +537,9 @@ export const chargeSubscription = async (
         tenantCognitoId: lease.tenantCognitoId,
         purchaseType: "SUBSCRIPTION_CHARGE",
         purchaseDateTime: new Date().toISOString(),
-        paymentMonth: `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}`
+        paymentMonth: `${nextMonth.getFullYear()}-${String(
+          nextMonth.getMonth() + 1
+        ).padStart(2, "0")}`,
       },
     } as any;
 
@@ -511,7 +547,9 @@ export const chargeSubscription = async (
     res.status(200).json(order);
   } catch (error) {
     console.error("Error creating subscription charge:", error);
-    res.status(500).json({ message: "Error creating subscription charge order" });
+    res
+      .status(500)
+      .json({ message: "Error creating subscription charge order" });
   }
 };
 
@@ -525,10 +563,15 @@ export const verifySubscriptionCharge = async (
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
-      leaseId
+      leaseId,
     } = req.body;
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !leaseId) {
+    if (
+      !razorpay_order_id ||
+      !razorpay_payment_id ||
+      !razorpay_signature ||
+      !leaseId
+    ) {
       res.status(400).json({ success: false, message: "Missing payment data" });
       return;
     }
@@ -543,7 +586,7 @@ export const verifySubscriptionCharge = async (
       // Get lease details
       const lease = await prisma.lease.findUnique({
         where: { id: leaseId },
-        include: { property: true }
+        include: { property: true },
       });
 
       if (!lease) {
@@ -554,7 +597,11 @@ export const verifySubscriptionCharge = async (
       // Calculate next month's due date
       const nextMonth = new Date();
       nextMonth.setMonth(nextMonth.getMonth() + 1);
-      const dueDate = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
+      const dueDate = new Date(
+        nextMonth.getFullYear(),
+        nextMonth.getMonth(),
+        1
+      );
 
       // Create payment record for subscription charge
       const payment = await prisma.payment.create({
@@ -564,17 +611,31 @@ export const verifySubscriptionCharge = async (
           paymentDate: new Date(),
           paymentStatus: "Paid",
           transactionId: razorpay_payment_id,
-          leaseId: leaseId
-        }
+          leaseId: leaseId,
+        },
+      });
+
+      // Add to payment history
+      await prisma.paymentHistory.create({
+        data: {
+          amount: lease.property.pricePerMonth,
+          paymentDate: new Date(),
+          type: "RENT",
+          transactionId: razorpay_payment_id,
+          property: { connect: { id: lease.propertyId } },
+          tenant: { connect: { cognitoId: lease.tenantCognitoId } },
+        },
       });
 
       res.status(200).json({
         success: true,
         message: "Subscription payment verified successfully",
-        payment: payment
+        payment: payment,
       });
     } else {
-      res.status(400).json({ success: false, message: "Payment verification failed" });
+      res
+        .status(400)
+        .json({ success: false, message: "Payment verification failed" });
     }
   } catch (error) {
     console.error("Error verifying subscription charge:", error);
@@ -597,28 +658,37 @@ export const checkNextMonthPayment = async (
     // Calculate next month date range
     const nextMonth = new Date();
     nextMonth.setMonth(nextMonth.getMonth() + 1);
-    const startOfMonth = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
-    const endOfMonth = new Date(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 0);
+    const startOfMonth = new Date(
+      nextMonth.getFullYear(),
+      nextMonth.getMonth(),
+      1
+    );
+    const endOfMonth = new Date(
+      nextMonth.getFullYear(),
+      nextMonth.getMonth() + 1,
+      0
+    );
 
     const existingPayment = await prisma.payment.findFirst({
       where: {
         leaseId: parseInt(leaseId),
         dueDate: {
           gte: startOfMonth,
-          lte: endOfMonth
+          lte: endOfMonth,
         },
-        paymentStatus: "Paid"
-      }
+        paymentStatus: "Paid",
+      },
     });
 
     res.status(200).json({
       nextMonthPaid: !!existingPayment,
-      nextMonthDate: `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}`,
-      payment: existingPayment
+      nextMonthDate: `${nextMonth.getFullYear()}-${String(
+        nextMonth.getMonth() + 1
+      ).padStart(2, "0")}`,
+      payment: existingPayment,
     });
   } catch (error) {
     console.error("Error checking next month payment:", error);
     res.status(500).json({ message: "Error checking payment status" });
   }
 };
-
