@@ -28,7 +28,12 @@ import {
   useGetPaymentHistoryByPropertyQuery,
   useGetApplicationByPropertyAndTenantQuery,
 } from "@/state/api";
-import { Lease, PaymentHistory, Property, Application } from "@/types/prismaTypes";
+import {
+  Lease,
+  PaymentHistory,
+  Property,
+  Application,
+} from "@/types/prismaTypes";
 import {
   ArrowDownToLineIcon,
   Check,
@@ -107,7 +112,9 @@ const PaymentMethod = ({ currentLease }: { currentLease?: Lease }) => {
                   <CreditCard className="w-4 h-4 mr-1" />
                   <span>
                     Subscription payment for •{" "}
-                    {new Date(new Date().setMonth(new Date().getMonth() + 1)).toLocaleDateString("en-GB", {
+                    {new Date(
+                      new Date().setMonth(new Date().getMonth() + 1)
+                    ).toLocaleDateString("en-GB", {
                       month: "long",
                       year: "numeric",
                     })}
@@ -253,7 +260,7 @@ const ResidenceCard = ({
       // Create the application object with lease data for the downloadAgreement function
       const applicationWithLease = {
         ...application,
-        lease: currentLease
+        lease: currentLease,
       };
 
       downloadAgreement(applicationWithLease);
@@ -335,7 +342,7 @@ const ResidenceCard = ({
           </button>
         )}
         {application ? (
-          <button 
+          <button
             onClick={handleDownloadAgreement}
             className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50"
           >
@@ -493,7 +500,7 @@ const Residence = () => {
     (lease) => lease.propertyId === property?.id
   );
 
-  const { data: application, isLoading: applicationLoading } = 
+  const { data: application, isLoading: applicationLoading } =
     useGetApplicationByPropertyAndTenantQuery(
       {
         propertyId: Number(id),
@@ -511,7 +518,12 @@ const Residence = () => {
       { skip: !authUser?.cognitoInfo?.userId || !id }
     );
 
-  if (propertyLoading || leasesLoading || paymentHistoryLoading || applicationLoading)
+  if (
+    propertyLoading ||
+    leasesLoading ||
+    paymentHistoryLoading ||
+    applicationLoading
+  )
     return <Loading />;
   if (!property || propertyError) return <div>Error loading property</div>;
 
@@ -520,9 +532,9 @@ const Residence = () => {
       <div className="w-full mx-auto">
         <div className="md:flex gap-10">
           {currentLease && (
-            <ResidenceCard 
-              property={property} 
-              currentLease={currentLease} 
+            <ResidenceCard
+              property={property}
+              currentLease={currentLease}
               authUser={authUser}
               application={application}
             />
