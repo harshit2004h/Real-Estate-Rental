@@ -3,6 +3,7 @@
 import Loading from "@/components/Loading";
 import ManagerDetailsDialog from "@/components/ManagerDetailsDialog";
 import { downloadAgreement } from "@/components/downloadAgreement";
+import { downloadReceipt, PaymentReceiptData } from "@/components/downloadReceipt";
 import {
   Table,
   TableBody,
@@ -366,8 +367,12 @@ const ResidenceCard = ({
 
 const BillingHistory = ({
   paymentHistory,
+  property,
+  authUser,
 }: {
   paymentHistory: PaymentHistory[];
+  property: Property;
+  authUser: any;
 }) => {
   const formatPaymentType = (type: string) => {
     switch (type) {
@@ -398,6 +403,57 @@ const BillingHistory = ({
         return "bg-gray-100 text-gray-800 border-gray-300";
     }
   };
+
+  const handleDownloadReceipt = (payment: PaymentHistory) => {
+    try {
+      // Debug: Log authUser structure to see what data we have
+      console.log("AuthUser data:", authUser);
+      console.log("UserInfo:", authUser?.userInfo);
+      console.log("CognitoInfo:", authUser?.cognitoInfo);
+      
+      // Convert PaymentHistory to PaymentReceiptData format
+      const receiptData: PaymentReceiptData = {
+        payment: {
+          id: payment.id,
+          amountDue: payment.amount,
+          dueDate: payment.paymentDate,
+          paymentDate: payment.paymentDate,
+          paymentStatus: "PAID" as any, // Since it's in history, it's paid
+          transactionId: payment.transactionId,
+          leaseId: 0, // Not available in PaymentHistory
+          tenantId: authUser?.cognitoInfo?.userId ,
+        },
+        propertyName: property?.name || "N/A",
+        propertyAddress: `${property?.location?.address || ""}, ${property?.location?.city || ""}, ${property?.location?.state || ""}, ${property?.location?.country || ""} ${property?.location?.postalCode || ""}`.replace(/,\s*,/g, ",").replace(/,\s*$/g, "").trim() || "Address not available",
+        tenantName: authUser?.userInfo?.name || authUser?.cognitoInfo?.username || "N/A",
+        tenantPhone: authUser?.userInfo?.phoneNumber || "N/A",
+        amount: payment.amount || 0,
+        transactionId: payment.transactionId || "N/A",
+        paymentType: formatPaymentType(payment.type),
+        date: new Date(payment.paymentDate).toLocaleDateString("en-GB"),
+        time: new Date(payment.paymentDate).toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+
+      downloadReceipt(receiptData);
+    } catch (error) {
+      console.error("Error downloading receipt:", error);
+    }
+  };
+
+  const handleDownloadAll = () => {
+    try {
+      paymentHistory.forEach((payment, index) => {
+        setTimeout(() => {
+          handleDownloadReceipt(payment);
+        }, index * 500); // Stagger downloads by 500ms to avoid browser blocking
+      });
+    } catch (error) {
+      console.error("Error downloading all receipts:", error);
+    }
+  };
   return (
     <div className="mt-8 bg-white rounded-xl shadow-md overflow-hidden p-6">
       {/* Header */}
@@ -409,7 +465,10 @@ const BillingHistory = ({
           </p>
         </div>
         <div>
-          <button className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50">
+          <button 
+            onClick={handleDownloadAll}
+            className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50"
+          >
             <Download className="w-5 h-5 mr-2" />
             <span>Download All</span>
           </button>
@@ -468,7 +527,10 @@ const BillingHistory = ({
                 </TableCell>
                 <TableCell>${payment.amount.toFixed(2)}</TableCell>
                 <TableCell>
-                  <button className="border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center font-semibold hover:bg-primary-700 hover:text-primary-50">
+                  <button 
+                    onClick={() => handleDownloadReceipt(payment)}
+                    className="border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center font-semibold hover:bg-primary-700 hover:text-primary-50"
+                  >
                     <ArrowDownToLineIcon className="w-4 h-4 mr-1" />
                     Download
                   </button>
@@ -541,7 +603,7 @@ const Residence = () => {
           )}
           <PaymentMethod currentLease={currentLease} />
         </div>
-        <BillingHistory paymentHistory={paymentHistory || []} />
+        <BillingHistory paymentHistory={paymentHistory || []} property={property} authUser={authUser} />
       </div>
     </div>
   );
