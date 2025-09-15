@@ -201,6 +201,14 @@ export function downloadAgreement(application: Application) {
   y += 5;
   doc.setFontSize(CONTENT_FONT_SIZE);
   doc.setFont("helvetica", "normal");
+
+  // Calculate duration in months
+  const startDate = new Date(application.lease?.startDate);
+  const endDate = new Date(application.lease?.endDate);
+  const durationMonths = Math.round(
+    (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 30.44)
+  ); // Average days per month
+
   const termText = `The term of this tenancy shall begin on the ${new Date(
     application.lease?.startDate
   ).getDate()} day of ${new Date(application.lease?.startDate).toLocaleString(
@@ -208,7 +216,12 @@ export function downloadAgreement(application: Application) {
     { month: "long" }
   )}, ${new Date(
     application.lease?.startDate
-  ).getFullYear()} and shall continue on a year-to-year basis.`;
+  ).getFullYear()} and shall continue for a duration of ${durationMonths} months until ${new Date(
+    application.lease?.endDate
+  ).getDate()} day of ${new Date(application.lease?.endDate).toLocaleString(
+    "en-GB",
+    { month: "long" }
+  )}, ${new Date(application.lease?.endDate).getFullYear()}.`;
   const splitTermText = doc.splitTextToSize(termText, contentWidth - 10);
   doc.text(splitTermText, margin + 5, y);
 

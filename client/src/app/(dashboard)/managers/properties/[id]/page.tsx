@@ -2,6 +2,7 @@
 
 import Headers from "@/components/Headers";
 import Loading from "@/components/Loading";
+import { downloadAgreement } from "@/components/downloadAgreement";
 import {
   Table,
   TableBody,
@@ -15,6 +16,7 @@ import {
   useGetPropertyQuery,
   useCheckNextMonthPaymentQuery,
   useGetPropertyPaymentHistoryQuery,
+  useGetApplicationByIdQuery,
 } from "@/state/api";
 import {
   ArrowDownToLine,
@@ -26,6 +28,7 @@ import {
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
+import { toast } from "react-hot-toast";
 
 const LeaseRow = ({
   lease,
@@ -33,12 +36,14 @@ const LeaseRow = ({
   paymentStatus,
   leaseActive,
   formatDate,
+  onDownloadAgreement,
 }: {
   lease: any;
   property: any;
   paymentStatus: string;
   leaseActive: boolean;
   formatDate: (date: string) => string;
+  onDownloadAgreement: (leaseId: number) => void;
 }) => {
   const { data: nextMonthPayment, isLoading: nextMonthLoading } =
     useCheckNextMonthPaymentQuery(lease.id);
@@ -107,7 +112,10 @@ const LeaseRow = ({
         <div className="text-sm">{lease.tenant?.phoneNumber || "No phone"}</div>
       </TableCell>
       <TableCell>
-        <button className="border border-gray-300 text-gray-700 py-2 px-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-primary-700 hover:text-primary-50 transition-colors">
+        <button
+          onClick={() => onDownloadAgreement(lease.id)}
+          className="border border-gray-300 text-gray-700 py-2 px-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-primary-700 hover:text-primary-50 transition-colors"
+        >
           <ArrowDownToLine className="w-4 h-4 mr-1" />
           Agreement
         </button>
@@ -127,12 +135,10 @@ const PropertyLeases = () => {
   const { data: paymentHistory, isLoading: paymentHistoryLoading } =
     useGetPropertyPaymentHistoryQuery(propertyId);
 
-  if (propertyLoading || leasesLoading || paymentHistoryLoading) return <Loading />;
+  if (propertyLoading || leasesLoading || paymentHistoryLoading)
+    return <Loading />;
 
   const getCurrentMonthPaymentStatus = (leaseId: number) => {
-    // Since PaymentHistory doesn't have leaseId or paymentStatus fields,
-    // we'll need to use the Payment model instead for lease-specific status
-    // For now, we'll return a default status
     return "Check Payment History";
   };
 
@@ -152,6 +158,133 @@ const PropertyLeases = () => {
       month: "short",
       day: "numeric",
     });
+  };
+
+  const handleDownloadAgreement = async (leaseId: number) => {
+    try {
+      // Find the lease first
+      const lease = leases?.find((l) => l.id === leaseId);
+      if (!lease) {
+        console.error("Lease not found");
+        toast.error("Lease not found. Please try again.");
+        return;
+      }
+
+      // Check if we have all required data
+      if (!lease.tenant) {
+        console.error("Tenant data not found for this lease");
+        toast.error(
+          "Tenant information is missing. Cannot generate agreement."
+        );
+        return;
+      }
+
+      if (!property) {
+        console.error("Property data not found");
+        toast.error(
+          "Property information is missing. Cannot generate agreement."
+        );
+        return;
+      }
+
+      if (!property.manager) {
+        console.error("Manager data not found for this property");
+        toast.error(
+          "Manager information is missing. Cannot generate agreement."
+        );
+        return;
+      }
+
+      if (!property.location) {
+        console.error("Location data not found for this property");
+        toast.error(
+          "Property location information is missing. Cannot generate agreement."
+        );
+        return;
+      }
+
+      // Show loading toast
+      toast.loading("Generating rental agreement...", {
+        id: `download-${leaseId}`,
+      });
+
+      // Create the application object with all necessary data for the PDF
+      const applicationData = {
+        id: lease.id,
+        tenant: {
+          name: lease.tenant.name || "Unknown Tenant",
+          email: lease.tenant.email || "",
+          phoneNumber: lease.tenant.phoneNumber || "",
+        },
+        property: {
+          name: property.name || "Unknown Property",
+          pricePerMonth: property.pricePerMonth || 0,
+          securityDeposit: property.securityDeposit || 0,
+          location: {
+            city: property.location.city || "",
+            state: property.location.state || "",
+            country: property.location.country || "",
+            postalCode: property.location.postalCode || "",
+          },
+        },
+        manager: {
+          name: property.manager.name || "Unknown Manager",
+          email: property.manager.email || "",
+          phoneNumber: property.manager.phoneNumber || "",
+        },
+        lease: {
+          startDate: lease.startDate,
+          endDate: lease.endDate,
+        },
+        status: "Approved" as const,
+        createdAt: lease.createdAt || new Date().toISOString(),
+        updatedAt: lease.updatedAt || new Date().toISOString(),
+      };
+
+      // Call the download function
+      downloadAgreement(applicationData);
+
+      // Show success toast
+      toast.success(`Agreement downloaded for ${lease.tenant.name}`, {
+        id: `download-${leaseId}`,
+      });
+    } catch (error) {
+      console.error("Error downloading agreement:", error);
+      toast.error(
+        "An error occurred while generating the agreement. Please try again.",
+        { id: `download-${leaseId}` }
+      );
+    }
+  };
+
+  const handleDownloadAllAgreements = async () => {
+    if (!leases || leases.length === 0) {
+      toast.error("No leases found to download agreements for.");
+      return;
+    }
+
+    try {
+      toast.loading(`Generating ${leases.length} rental agreements...`, {
+        id: "download-all",
+      });
+
+      for (const lease of leases) {
+        await handleDownloadAgreement(lease.id);
+        // Add a small delay between downloads to prevent overwhelming the browser
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+
+      toast.success(
+        `Successfully downloaded ${leases.length} rental agreements!`,
+        { id: "download-all" }
+      );
+    } catch (error) {
+      console.error("Error downloading all agreements:", error);
+      toast.error(
+        "An error occurred while generating agreements. Please try again.",
+        { id: "download-all" }
+      );
+    }
   };
 
   return (
@@ -182,6 +315,7 @@ const PropertyLeases = () => {
             </div>
             <div>
               <button
+                onClick={handleDownloadAllAgreements}
                 className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50 disabled:opacity-50"
                 disabled={!leases || leases.length === 0}
               >
@@ -234,6 +368,7 @@ const PropertyLeases = () => {
                         paymentStatus={paymentStatus}
                         leaseActive={leaseActive}
                         formatDate={formatDate}
+                        onDownloadAgreement={handleDownloadAgreement}
                       />
                     );
                   })}
@@ -326,10 +461,9 @@ const PropertyLeases = () => {
                         <div className="text-sm font-mono">
                           {payment.transactionId ? (
                             <span className="bg-gray-100 px-2 py-1 rounded text-xs">
-                              {payment.transactionId.length > 16 
+                              {payment.transactionId.length > 16
                                 ? `${payment.transactionId.substring(0, 16)}...`
-                                : payment.transactionId
-                              }
+                                : payment.transactionId}
                             </span>
                           ) : (
                             "N/A"

@@ -2,6 +2,7 @@
 
 import Loading from "@/components/Loading";
 import ManagerDetailsDialog from "@/components/ManagerDetailsDialog";
+import { downloadAgreement } from "@/components/downloadAgreement";
 import {
   Table,
   TableBody,
@@ -25,8 +26,9 @@ import {
   useChargeSubscriptionMutation,
   useCheckNextMonthPaymentQuery,
   useGetPaymentHistoryByPropertyQuery,
+  useGetApplicationByPropertyAndTenantQuery,
 } from "@/state/api";
-import { Lease, PaymentHistory, Property } from "@/types/prismaTypes";
+import { Lease, PaymentHistory, Property, Application } from "@/types/prismaTypes";
 import {
   ArrowDownToLineIcon,
   Check,
@@ -227,10 +229,39 @@ const PaymentMethod = ({ currentLease }: { currentLease?: Lease }) => {
 const ResidenceCard = ({
   property,
   currentLease,
+  authUser,
+  application,
 }: {
   property: Property;
   currentLease: Lease;
+  authUser: any;
+  application?: Application | null;
 }) => {
+  const handleDownloadAgreement = () => {
+    try {
+      // Ensure we have all required data
+      if (!property || !currentLease || !authUser) {
+        console.error("Missing required data for generating agreement");
+        return;
+      }
+
+      if (!application) {
+        console.error("No application found for this property and tenant");
+        return;
+      }
+
+      // Create the application object with lease data for the downloadAgreement function
+      const applicationWithLease = {
+        ...application,
+        lease: currentLease
+      };
+
+      downloadAgreement(applicationWithLease);
+    } catch (error) {
+      console.error("Error downloading agreement:", error);
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden p-6 flex-1 flex flex-col justify-between">
       {/* Header */}
@@ -303,10 +334,24 @@ const ResidenceCard = ({
             Manager Info Unavailable
           </button>
         )}
-        <button className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50">
-          <Download className="w-5 h-5 mr-2" />
-          Download Agreement
-        </button>
+        {application ? (
+          <button 
+            onClick={handleDownloadAgreement}
+            className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50"
+          >
+            <Download className="w-5 h-5 mr-2" />
+            Download Agreement
+          </button>
+        ) : (
+          <button
+            className="bg-gray-100 border border-gray-300 text-gray-400 py-2 px-4 rounded-md flex items-center justify-center cursor-not-allowed"
+            disabled
+            title="Application data not available"
+          >
+            <Download className="w-5 h-5 mr-2" />
+            Download Agreement
+          </button>
+        )}
       </div>
     </div>
   );
@@ -448,6 +493,15 @@ const Residence = () => {
     (lease) => lease.propertyId === property?.id
   );
 
+  const { data: application, isLoading: applicationLoading } = 
+    useGetApplicationByPropertyAndTenantQuery(
+      {
+        propertyId: Number(id),
+        tenantCognitoId: authUser?.cognitoInfo?.userId || "",
+      },
+      { skip: !authUser?.cognitoInfo?.userId || !id }
+    );
+
   const { data: paymentHistory, isLoading: paymentHistoryLoading } =
     useGetPaymentHistoryByPropertyQuery(
       {
@@ -457,7 +511,7 @@ const Residence = () => {
       { skip: !authUser?.cognitoInfo?.userId || !id }
     );
 
-  if (propertyLoading || leasesLoading || paymentHistoryLoading)
+  if (propertyLoading || leasesLoading || paymentHistoryLoading || applicationLoading)
     return <Loading />;
   if (!property || propertyError) return <div>Error loading property</div>;
 
@@ -466,7 +520,12 @@ const Residence = () => {
       <div className="w-full mx-auto">
         <div className="md:flex gap-10">
           {currentLease && (
-            <ResidenceCard property={property} currentLease={currentLease} />
+            <ResidenceCard 
+              property={property} 
+              currentLease={currentLease} 
+              authUser={authUser}
+              application={application}
+            />
           )}
           <PaymentMethod currentLease={currentLease} />
         </div>

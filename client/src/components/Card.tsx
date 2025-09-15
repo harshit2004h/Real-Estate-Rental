@@ -11,6 +11,7 @@ const Card = ({
   isFavorite,
   onFavoriteToggle,
   showFavoriteButton = true,
+  showRateButton = true,
   propertyLink,
 }: CardProps) => {
   const [imgSrc, setImgSrc] = useState(
@@ -113,7 +114,7 @@ const Card = ({
         </div>
         
         {/* Rate Button */}
-        {userCognitoId && (
+        {userCognitoId && showRateButton && (
           <div className="mt-4">
             <Button
               variant="outline"
@@ -133,7 +134,7 @@ const Card = ({
       </div>
 
       {/* Rate Dialog */}
-      {userCognitoId && (
+      {userCognitoId && showRateButton && (
         <RateDialog
           isOpen={isRateDialogOpen}
           onClose={() => setIsRateDialogOpen(false)}

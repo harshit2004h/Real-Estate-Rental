@@ -1,5 +1,9 @@
-import { useGetAuthUserQuery, useGetPropertyQuery } from "@/state/api";
-import { Phone } from "lucide-react";
+import {
+  useGetAuthUserQuery,
+  useGetPropertyQuery,
+  useGetPaymentHistoryByPropertyQuery,
+} from "@/state/api";
+import { Phone, CircleCheckBig } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Button } from "../ui/button";
@@ -8,11 +12,29 @@ const ContactWidget = ({ onOpenModal, propertyId }: ContactWidgetProps) => {
   const { data: authUser } = useGetAuthUserQuery();
   const { data: property } = useGetPropertyQuery(propertyId);
 
+  // Get payment history to check if application fee has been paid
+  const { data: paymentHistory } = useGetPaymentHistoryByPropertyQuery(
+    {
+      propertyId: propertyId,
+      cognitoId: authUser?.cognitoInfo?.userId || "",
+    },
+    {
+      skip: !authUser?.cognitoInfo?.userId,
+    }
+  );
+
   const router = useRouter();
+
+  // Check if application fee has already been paid
+  const hasApplicationFeePaid =
+    paymentHistory?.some((payment) => payment.type === "APPLICATION_FEE") ||
+    false;
 
   const handleButtonClick = () => {
     if (authUser) {
-      onOpenModal();
+      if (!hasApplicationFeePaid) {
+        onOpenModal();
+      }
     } else {
       router.push("/signin");
     }
@@ -36,12 +58,20 @@ const ContactWidget = ({ onOpenModal, propertyId }: ContactWidgetProps) => {
           </div>
         </div>
       </div>
-      <Button
-        className="w-full bg-primary-700 text-white hover:bg-primary-600"
-        onClick={handleButtonClick}
-      >
-        {authUser ? "Submit Application" : "Sign In to Apply"}
-      </Button>
+
+      {authUser && hasApplicationFeePaid ? (
+        <div className="w-full bg-green-100 text-green-700 p-3 rounded-md flex items-center justify-center gap-2">
+          <CircleCheckBig className="w-5 h-5" />
+          Application already submitted
+        </div>
+      ) : (
+        <Button
+          className="w-full bg-primary-700 text-white hover:bg-primary-600"
+          onClick={handleButtonClick}
+        >
+          {authUser ? "Submit Application" : "Sign In to Apply"}
+        </Button>
+      )}
 
       <hr className="my-4" />
       <div className="text-sm">

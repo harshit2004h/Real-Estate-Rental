@@ -101,6 +101,7 @@ declare global {
     isFavorite: boolean;
     onFavoriteToggle: () => void;
     showFavoriteButton?: boolean;
+    showRateButton?: boolean;
     propertyLink?: string;
   }
 

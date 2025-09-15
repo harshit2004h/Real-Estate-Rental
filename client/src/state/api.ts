@@ -356,6 +356,27 @@ export const api = createApi({
       },
     }),
 
+    getApplicationByPropertyAndTenant: build.query<
+      Application | null,
+      { propertyId: number; tenantCognitoId: string }
+    >({
+      query: ({ tenantCognitoId }) => ({
+        url: `applications?userId=${tenantCognitoId}&userType=tenant`,
+        method: "GET",
+      }),
+      transformResponse: (response: Application[], meta, { propertyId }) => {
+        // Filter to find the application for the specific property
+        const application = response.find(app => app.propertyId === propertyId);
+        return application || null;
+      },
+      providesTags: ["Applications"],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          error: "Failed to fetch application details.",
+        });
+      },
+    }),
+
     createApplicationPayment: build.mutation<RazorpayOrder, StartPaymentArgs>({
       query: (body) => ({
         url: `payments/capture1`,
@@ -761,6 +782,7 @@ export const {
   useGetApplicationsQuery,
   useUpdateApplicationStatusMutation,
   useGetApplicationByIdQuery,
+  useGetApplicationByPropertyAndTenantQuery,
   useCreateApplicationPaymentMutation,
   useVerifyApplicationPaymentMutation,
   useCreateSecurityDepositAndFirstMonthPaymentMutation,

@@ -3,11 +3,92 @@
 import ApplicationCard from "@/components/ApplicationCard";
 import Headers from "@/components/Headers";
 import Loading from "@/components/Loading";
-import { useGetApplicationsQuery, useGetAuthUserQuery, useCreateSecurityDepositAndFirstMonthPaymentMutation } from "@/state/api";
+import {
+  useGetApplicationsQuery,
+  useGetAuthUserQuery,
+  useCreateSecurityDepositAndFirstMonthPaymentMutation,
+  useGetPaymentHistoryByPropertyQuery,
+} from "@/state/api";
 import { CircleCheckBig, Clock, Download, XCircle } from "lucide-react";
 import React, { useState } from "react";
-import { downloadAgreement } from "@/components/downloadAgreement";
 import { useRouter } from "next/navigation";
+
+// Component to handle individual application payment status
+const ApplicationWithPaymentStatus = ({
+  application,
+  authUser,
+  handlePaySecurityDeposit,
+  isPaymentLoading,
+}: {
+  application: any;
+  authUser: any;
+  handlePaySecurityDeposit: (application: any) => void;
+  isPaymentLoading: boolean;
+}) => {
+  // Get payment history for this specific application
+  const { data: paymentHistory } = useGetPaymentHistoryByPropertyQuery(
+    {
+      propertyId: application.propertyId,
+      cognitoId: authUser?.cognitoInfo?.userId || "",
+    },
+    {
+      skip: !authUser?.cognitoInfo?.userId,
+    }
+  );
+
+  // Check if security deposit has been paid
+  const hasSecurityDepositPaid =
+    paymentHistory?.some((payment) => payment.type === "SECURITY_DEPOSIT") ||
+    false;
+
+  return (
+    <ApplicationCard
+      key={application.id}
+      application={application}
+      userType="renter"
+    >
+      <div className="flex justify-between gap-5 w-full pb-4 px-4">
+        {application.status === "Approved" ? (
+          <div className="bg-green-100 p-4 text-green-700 grow flex items-center">
+            <CircleCheckBig className="w-5 h-5 mr-2" />
+            Your application has been approved.
+          </div>
+        ) : application.status === "Pending" ? (
+          <div className="bg-yellow-100 p-4 text-yellow-700 grow flex items-center">
+            <Clock className="w-5 h-5 mr-2" />
+            Your application is pending approval
+          </div>
+        ) : (
+          <div className="bg-red-100 p-4 text-red-700 grow flex items-center">
+            <XCircle className="w-5 h-5 mr-2" />
+            Your application has been denied
+          </div>
+        )}
+
+        {application.status === "Approved" && !hasSecurityDepositPaid ? (
+          <button
+            onClick={() => handlePaySecurityDeposit(application)}
+            disabled={isPaymentLoading}
+            className={`bg-white border border-gray-300 text-gray-700 py-2 px-4 font-semibold
+                 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50
+                 disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {isPaymentLoading
+              ? "Processing..."
+              : "Pay Security + First Month's Rent"}
+          </button>
+        ) : application.status === "Approved" && hasSecurityDepositPaid ? (
+          <div className="bg-blue-100 p-4 text-blue-700 flex items-center">
+            <CircleCheckBig className="w-5 h-5 mr-2" />
+            Security deposit paid
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
+    </ApplicationCard>
+  );
+};
 
 const Applications = () => {
   const router = useRouter();
@@ -21,7 +102,8 @@ const Applications = () => {
     userType: "tenant",
   });
 
-  const [createSecurityDepositPayment, { isLoading: isPaymentLoading }] = useCreateSecurityDepositAndFirstMonthPaymentMutation();
+  const [createSecurityDepositPayment, { isLoading: isPaymentLoading }] =
+    useCreateSecurityDepositAndFirstMonthPaymentMutation();
 
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
 
@@ -83,44 +165,13 @@ const Applications = () => {
 
       <div className="w-full">
         {sortedApplications.map((application) => (
-          <ApplicationCard
+          <ApplicationWithPaymentStatus
             key={application.id}
             application={application}
-            userType="renter"
-          >
-            <div className="flex justify-between gap-5 w-full pb-4 px-4">
-              {application.status === "Approved" ? (
-                <div className="bg-green-100 p-4 text-green-700 grow flex items-center">
-                  <CircleCheckBig className="w-5 h-5 mr-2" />
-                  Your application has been approved.
-                </div>
-              ) : application.status === "Pending" ? (
-                <div className="bg-yellow-100 p-4 text-yellow-700 grow flex items-center">
-                  <Clock className="w-5 h-5 mr-2" />
-                  Your application is pending approval
-                </div>
-              ) : (
-                <div className="bg-red-100 p-4 text-red-700 grow flex items-center">
-                  <XCircle className="w-5 h-5 mr-2" />
-                  Your application has been denied
-                </div>
-              )}
-
-              {application.status === "Approved"  ? (
-                <button
-                  onClick={() => handlePaySecurityDeposit(application)}
-                  disabled={isPaymentLoading}
-                  className={`bg-white border border-gray-300 text-gray-700 py-2 px-4 font-semibold
-                       rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50
-                       disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  {isPaymentLoading ? "Processing..." : "Pay Security + First Month's Rent"}
-                </button>
-              ) : (
-                <></>
-              )}
-            </div>
-          </ApplicationCard>
+            authUser={authUser}
+            handlePaySecurityDeposit={handlePaySecurityDeposit}
+            isPaymentLoading={isPaymentLoading}
+          />
         ))}
       </div>
     </div>
