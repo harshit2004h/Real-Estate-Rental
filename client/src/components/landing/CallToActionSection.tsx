@@ -4,8 +4,10 @@ import Image from "next/image";
 import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useGetAuthUserQuery } from "@/state/api";
 
 const CallToActionSection = () => {
+  const { data: authUser } = useGetAuthUserQuery();
   return (
     <div className="relative py-24">
       <Image
@@ -38,15 +40,33 @@ const CallToActionSection = () => {
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                 className="inline-block text-primary-700 bg-white rounded-lg px-6 py-3 font-semibold hover:bg-primary-500 hover:text-primary-50"
               >
-                Search
+                <Link href="/search">Search</Link>
               </button>
-              <Link
-                href="/signup"
-                className="inline-block text-white bg-secondary-500 rounded-lg px-6 py-3 font-semibold hover:bg-secondary-600"
-                scroll={false}
-              >
-                Sign Up
-              </Link>
+              {authUser ? (
+                <>
+                  <Link
+                    href={`/${
+                      authUser.userRole === "manager"
+                        ? "managers/properties"
+                        : "tenants/favorites"
+                    }`}
+                    className="inline-block text-white bg-secondary-500 rounded-lg px-6 py-3 font-semibold hover:bg-secondary-600"
+                    scroll={false}
+                  >
+                    Dashboard
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/signup"
+                    className="inline-block text-white bg-secondary-500 rounded-lg px-6 py-3 font-semibold hover:bg-secondary-600"
+                    scroll={false}
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

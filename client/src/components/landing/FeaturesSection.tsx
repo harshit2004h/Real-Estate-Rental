@@ -23,7 +23,7 @@ const FeaturesSection = () => {
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount:0.3}}
+      viewport={{ once: true, amount: 0.3 }}
       variants={containerVariants}
       className="py-24 px-6 sm:px-6 lg:px-12 xl:px-16 bg-white"
     >
@@ -54,7 +54,7 @@ const FeaturesSection = () => {
                   ][index]
                 }
                 linkText={["Explore", "Search", "Discover"][index]}
-                linkHref={["/explore", "/search", "/discover"][index]}
+                linkHref={["/search", "/search", "/search"][index]}
               />
             </motion.div>
           ))}
