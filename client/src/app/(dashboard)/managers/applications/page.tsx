@@ -168,11 +168,6 @@ const Applications = () => {
                         </button>
                       </>
                     )}
-                    {application.status === "Denied" && (
-                      <button className="bg-gray-800 text-white py-2 px-4 rounded-md flex items-center justify-center hover:bg-secondary-500 hover:text-primary-50">
-                        Contact User
-                      </button>
-                    )}
                   </div>
                 </div>
               </ApplicationCard>

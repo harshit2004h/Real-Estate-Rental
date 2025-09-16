@@ -252,7 +252,7 @@ export function downloadAgreement(application: Application) {
   y += 5;
   doc.setFontSize(CONTENT_FONT_SIZE);
   doc.setFont("helvetica", "normal");
-  const securityText = `Upon signing this Agreement, the Tenant shall provide a security deposit in the amount of $ ${application.property.securityDeposit}. This security deposit will be held by the Landlord to cover any damages to the Property beyond normal wear and tear, unpaid rent, or any other charges outlined in this Agreement.`;
+  const securityText = `Upon signing this Agreement, the Tenant shall provide a security deposit in the amount of ₹ ${application.property.securityDeposit}. This security deposit will be held by the Landlord to cover any damages to the Property beyond normal wear and tear, unpaid rent, or any other charges outlined in this Agreement.`;
   const splitSecurityText = doc.splitTextToSize(
     securityText,
     contentWidth - 10

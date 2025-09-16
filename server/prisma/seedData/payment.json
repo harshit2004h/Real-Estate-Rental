@@ -1,152 +1,137 @@
 [
   {
+    "id": 3,
     "amountDue": 1500.0,
-    "amountPaid": 1500.0,
     "dueDate": "2023-07-01T00:00:00Z",
     "paymentDate": "2023-06-28T00:00:00Z",
     "paymentStatus": "Paid",
-    "lease": {
-      "connect": { "id": 1 }
-    }
+    "transactionId": "txn_1A2b3C4d5E6f7G8h",
+    "leaseId": 3
   },
   {
+    "id": 4,
     "amountDue": 1800.0,
-    "amountPaid": 0.0,
     "dueDate": "2023-08-01T00:00:00Z",
     "paymentDate": "2023-07-28T00:00:00Z",
     "paymentStatus": "Pending",
-    "lease": {
-      "connect": { "id": 2 }
-    }
+    "transactionId": null,
+    "leaseId": 4
   },
   {
+    "id": 5,
     "amountDue": 2200.0,
-    "amountPaid": 2200.0,
     "dueDate": "2023-09-01T00:00:00Z",
     "paymentDate": "2023-08-30T00:00:00Z",
     "paymentStatus": "Paid",
-    "lease": {
-      "connect": { "id": 3 }
-    }
+    "transactionId": "txn_2B3c4D5e6F7g8H9i",
+    "leaseId": 5
   },
   {
+    "id": 6,
     "amountDue": 1700.0,
-    "amountPaid": 1700.0,
     "dueDate": "2023-07-15T00:00:00Z",
     "paymentDate": "2023-07-14T00:00:00Z",
     "paymentStatus": "Paid",
-    "lease": {
-      "connect": { "id": 4 }
-    }
+    "transactionId": "txn_3C4d5E6f7G8h9I0j",
+    "leaseId": 6
   },
   {
+    "id": 7,
     "amountDue": 2000.0,
-    "amountPaid": 0.0,
     "dueDate": "2023-08-15T00:00:00Z",
     "paymentDate": "2023-08-14T00:00:00Z",
     "paymentStatus": "Pending",
-    "lease": {
-      "connect": { "id": 5 }
-    }
+    "transactionId": null,
+    "leaseId": 7
   },
   {
+    "id": 8,
     "amountDue": 2400.0,
-    "amountPaid": 2400.0,
     "dueDate": "2023-09-15T00:00:00Z",
     "paymentDate": "2023-09-14T00:00:00Z",
     "paymentStatus": "Paid",
-    "lease": {
-      "connect": { "id": 6 }
-    }
+    "transactionId": "txn_4D5e6F7g8H9i1J2k",
+    "leaseId": 8
   },
   {
+    "id": 9,
     "amountDue": 2200.0,
-    "amountPaid": 1100.0,
     "dueDate": "2023-10-01T00:00:00Z",
     "paymentDate": "2023-09-25T00:00:00Z",
     "paymentStatus": "PartiallyPaid",
-    "lease": {
-      "connect": { "id": 7 }
-    }
+    "transactionId": "txn_5E6f7G8h9I0j2K3l",
+    "leaseId": 9
   },
   {
+    "id": 10,
     "amountDue": 5000.0,
-    "amountPaid": 5000.0,
     "dueDate": "2023-08-01T00:00:00Z",
     "paymentDate": "2023-07-30T00:00:00Z",
     "paymentStatus": "Paid",
-    "lease": {
-      "connect": { "id": 8 }
-    }
+    "transactionId": "txn_6F7g8H9i1J2k3L4m",
+    "leaseId": 10
   },
   {
+    "id": 11,
     "amountDue": 3000.0,
-    "amountPaid": 1500.0,
     "dueDate": "2023-11-01T00:00:00Z",
     "paymentDate": "2023-10-25T00:00:00Z",
     "paymentStatus": "PartiallyPaid",
-    "lease": {
-      "connect": { "id": 9 }
-    }
+    "transactionId": "txn_7G8h9I0j2K3l4M5n",
+    "leaseId": 11
   },
   {
+    "id": 12,
     "amountDue": 2000.0,
-    "amountPaid": 2000.0,
     "dueDate": "2023-08-15T00:00:00Z",
     "paymentDate": "2023-08-10T00:00:00Z",
     "paymentStatus": "Paid",
-    "lease": {
-      "connect": { "id": 10 }
-    }
+    "transactionId": "txn_8H9i1J2k3L4m5N6o",
+    "leaseId": 12
   },
   {
+    "id": 13,
     "amountDue": 1000.0,
-    "amountPaid": 0.0,
     "dueDate": "2023-09-01T00:00:00Z",
     "paymentDate": "2023-08-30T00:00:00Z",
     "paymentStatus": "Pending",
-    "lease": {
-      "connect": { "id": 11 }
-    }
+    "transactionId": null,
+    "leaseId": 13
   },
   {
+    "id": 14,
     "amountDue": 1800.0,
-    "amountPaid": 1800.0,
     "dueDate": "2023-10-01T00:00:00Z",
     "paymentDate": "2023-09-28T00:00:00Z",
     "paymentStatus": "Paid",
-    "lease": {
-      "connect": { "id": 12 }
-    }
+    "transactionId": "txn_9I0j2K3l4M5n6O7p",
+    "leaseId": 14
   },
   {
+    "id": 15,
     "amountDue": 900.0,
-    "amountPaid": 450.0,
     "dueDate": "2023-09-15T00:00:00Z",
     "paymentDate": "2023-09-10T00:00:00Z",
     "paymentStatus": "PartiallyPaid",
-    "lease": {
-      "connect": { "id": 13 }
-    }
+    "transactionId": "txn_1J2k3L4m5N6o7P8q",
+    "leaseId": 15
   },
   {
+    "id": 16,
     "amountDue": 1500.0,
-    "amountPaid": 1500.0,
     "dueDate": "2023-09-01T00:00:00Z",
     "paymentDate": "2023-08-30T00:00:00Z",
     "paymentStatus": "Paid",
-    "lease": {
-      "connect": { "id": 14 }
-    }
+    "transactionId": "txn_2K3l4M5n6O7p8Q9r",
+    "leaseId": 16
   },
   {
+    "id": 17,
     "amountDue": 2500.0,
-    "amountPaid": 0.0,
     "dueDate": "2023-10-01T00:00:00Z",
     "paymentDate": "2023-09-28T00:00:00Z",
     "paymentStatus": "Paid",
-    "lease": {
-      "connect": { "id": 15 }
-    }
+    "transactionId": "txn_3L4m5N6o7P8q9R0s",
+    "leaseId": 17
   }
 ]

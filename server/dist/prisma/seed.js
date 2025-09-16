@@ -92,6 +92,8 @@ function main() {
             "lease.json", // Depends on property and tenant
             "application.json", // Depends on property and tenant
             "payment.json", // Depends on lease
+            "paymentHistory.json", // Depends on payment
+            "review.json", // Depends on property and tenant
         ];
         // Delete all existing data
         yield deleteAllData(orderedFileNames);

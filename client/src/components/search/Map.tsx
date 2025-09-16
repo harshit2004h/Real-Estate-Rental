@@ -87,7 +87,7 @@ const Map = () => {
                 <div>
                   <a href="/search/${prop.id}" target="_blank" class="marker-popup-title">${prop.name}</a>
                   <p class="marker-popup-price">
-                    $${prop.pricePerMonth}
+                    ₹${prop.pricePerMonth}
                     <span class="marker-popup-price-unit"> / month</span>
                   </p>
                 </div>

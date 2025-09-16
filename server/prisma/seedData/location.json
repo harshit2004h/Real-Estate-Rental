@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "id": 4,
     "country": "United States",
     "city": "Pasadena",
     "state": "CA",
@@ -9,7 +9,7 @@
     "coordinates": "POINT(-118.144516 34.147785)"
   },
   {
-    "id": 2,
+    "id": 5,
     "country": "United States",
     "city": "Santa Monica",
     "state": "CA",
@@ -18,7 +18,7 @@
     "coordinates": "POINT(-118.496513 34.013654)"
   },
   {
-    "id": 3,
+    "id": 6,
     "country": "United States",
     "city": "Burbank",
     "state": "CA",
@@ -27,7 +27,7 @@
     "coordinates": "POINT(-118.328661 34.180839)"
   },
   {
-    "id": 4,
+    "id": 7,
     "country": "United States",
     "city": "Long Beach",
     "state": "CA",
@@ -36,7 +36,7 @@
     "coordinates": "POINT(-118.192604 33.766720)"
   },
   {
-    "id": 5,
+    "id": 8,
     "country": "United States",
     "city": "New York",
     "state": "NY",
@@ -45,7 +45,7 @@
     "coordinates": "POINT(-74.005941 40.712784)"
   },
   {
-    "id": 6,
+    "id": 9,
     "country": "United States",
     "city": "Malibu",
     "state": "CA",
@@ -54,7 +54,7 @@
     "coordinates": "POINT(-118.774518 34.025922)"
   },
   {
-    "id": 7,
+    "id": 10,
     "country": "United States",
     "city": "Glendale",
     "state": "CA",
@@ -63,7 +63,7 @@
     "coordinates": "POINT(-118.254708 34.142508)"
   },
   {
-    "id": 8,
+    "id": 11,
     "country": "United States",
     "city": "Torrance",
     "state": "CA",
@@ -72,7 +72,7 @@
     "coordinates": "POINT(-118.352575 33.835849)"
   },
   {
-    "id": 9,
+    "id": 12,
     "country": "United States",
     "city": "Miami",
     "state": "FL",
@@ -81,7 +81,7 @@
     "coordinates": "POINT(-80.130045 25.782551)"
   },
   {
-    "id": 10,
+    "id": 13,
     "country": "United States",
     "city": "Beverly Hills",
     "state": "CA",

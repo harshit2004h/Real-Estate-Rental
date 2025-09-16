@@ -1,0 +1,66 @@
+[
+  {
+    "id": 4,
+    "rating": 5,
+    "comment": "Absolutely loved living here! The location is perfect and the apartment gets so much sun. The manager, John, was always helpful.",
+    "reviewDate": "2024-06-15T10:00:00Z",
+    "propertyId": 4,
+    "tenantCognitoId": "us-east-2:98765432-90ab-cdef-1234-567890abcdef"
+  },
+  {
+    "id": 5,
+    "rating": 4,
+    "comment": "Great family home with a huge backyard. We had a wonderful year here. A few minor maintenance issues but they were resolved quickly.",
+    "reviewDate": "2024-07-10T14:30:00Z",
+    "propertyId": 7,
+    "tenantCognitoId": "us-east-2:65432109-90ab-cdef-1234-567890abcdef"
+  },
+  {
+    "id": 6,
+    "rating": 5,
+    "comment": "The view from this penthouse is unbeatable. Worth every penny. Sad to leave!",
+    "reviewDate": "2024-08-01T11:00:00Z",
+    "propertyId": 8,
+    "tenantCognitoId": "us-east-2:21098765-90ab-cdef-1234-567890abcdef"
+  },
+  {
+    "id": 7,
+    "rating": 3,
+    "comment": "The loft is stylish but can be a bit noisy due to the downtown location. The gym is a great plus.",
+    "reviewDate": "2024-09-02T18:00:00Z",
+    "propertyId": 6,
+    "tenantCognitoId": "817b3540-a061-707b-742a-a28391181149"
+  },
+  {
+    "id": 8,
+    "rating": 5,
+    "comment": "Perfect cabin for a quiet retreat. The mountain views are breathtaking. Highly recommend.",
+    "reviewDate": "2024-01-05T09:00:00Z",
+    "propertyId": 12,
+    "tenantCognitoId": "us-east-2:b9876543-90ab-cdef-1234-567890abcdef"
+  },
+  {
+    "id": 9,
+    "rating": 4,
+    "comment": "Living in a tiny house was a unique and positive experience. Very well designed for the small space.",
+    "reviewDate": "2024-03-20T12:00:00Z",
+    "propertyId": 13,
+    "tenantCognitoId": "us-east-2:c9876543-90ab-cdef-1234-567890abcdef"
+  },
+  {
+    "id": 10,
+    "rating": 4,
+    "comment": "The historic charm of this brownstone is amazing. The neighborhood is quiet and friendly.",
+    "reviewDate": "2024-11-05T16:45:00Z",
+    "propertyId": 10,
+    "tenantCognitoId": "us-east-2:10987654-90ab-cdef-1234-567890abcdef"
+  },
+  {
+    "id": 11,
+    "rating": 5,
+    "comment": "A fantastic apartment in a great part of town. No complaints at all. Would definitely rent again.",
+    "reviewDate": "2024-09-01T13:20:00Z",
+    "propertyId": 4,
+    "tenantCognitoId": "us-east-2:d9876543-90ab-cdef-1234-567890abcdef"
+  }
+]

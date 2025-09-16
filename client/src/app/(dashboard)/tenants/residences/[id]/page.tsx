@@ -299,7 +299,7 @@ const ResidenceCard = ({
             </div>
           </div>
           <div className="text-xl font-bold">
-            ${property.pricePerMonth}{" "}
+            ₹{property.pricePerMonth}{" "}
             <span className="text-gray-500 text-sm font-normal">/ month</span>
           </div>
         </div>
@@ -525,7 +525,7 @@ const BillingHistory = ({
                 <TableCell>
                   {new Date(payment.paymentDate).toLocaleDateString("en-GB")}
                 </TableCell>
-                <TableCell>${payment.amount.toFixed(2)}</TableCell>
+                <TableCell>₹{payment.amount.toFixed(2)}</TableCell>
                 <TableCell>
                   <button 
                     onClick={() => handleDownloadReceipt(payment)}

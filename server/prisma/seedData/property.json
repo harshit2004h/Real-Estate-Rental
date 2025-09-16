@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "id": 4,
     "name": "Sunny Downtown Apartment",
     "description": "A beautiful apartment in the heart of downtown with plenty of natural light.",
     "pricePerMonth": 1500.0,
@@ -21,11 +21,11 @@
     "postedDate": "2023-05-15T00:00:00Z",
     "averageRating": 4.5,
     "numberOfReviews": 10,
-    "locationId": 1,
+    "locationId": 4,
     "managerCognitoId": "010be580-60a1-70ae-780e-18a6fd94ad32"
   },
   {
-    "id": 2,
+    "id": 5,
     "name": "Cozy Beach House",
     "description": "A charming beach house with stunning ocean views.",
     "pricePerMonth": 2000.0,
@@ -46,11 +46,11 @@
     "postedDate": "2023-06-01T00:00:00Z",
     "averageRating": 4.8,
     "numberOfReviews": 5,
-    "locationId": 2,
+    "locationId": 5,
     "managerCognitoId": "us-east-2:23456789-90ab-cdef-1234-567890abcdef"
   },
   {
-    "id": 3,
+    "id": 6,
     "name": "Modern City Loft",
     "description": "Sleek and stylish loft in the heart of the city.",
     "pricePerMonth": 2200.0,
@@ -71,11 +71,11 @@
     "postedDate": "2023-07-01T00:00:00Z",
     "averageRating": 4.7,
     "numberOfReviews": 8,
-    "locationId": 3,
+    "locationId": 6,
     "managerCognitoId": "us-east-2:34567890-90ab-cdef-1234-567890abcdef"
   },
   {
-    "id": 4,
+    "id": 7,
     "name": "Spacious Family Home",
     "description": "Large family home with a beautiful backyard and modern amenities.",
     "pricePerMonth": 2500.0,
@@ -96,11 +96,11 @@
     "postedDate": "2023-06-15T00:00:00Z",
     "averageRating": 4.9,
     "numberOfReviews": 12,
-    "locationId": 4,
+    "locationId": 7,
     "managerCognitoId": "us-east-2:45678901-90ab-cdef-1234-567890abcdef"
   },
   {
-    "id": 5,
+    "id": 8,
     "name": "Luxury Penthouse",
     "description": "Stunning penthouse with panoramic city views and high-end finishes.",
     "pricePerMonth": 5000.0,
@@ -121,11 +121,11 @@
     "postedDate": "2023-07-01T00:00:00Z",
     "averageRating": 5.0,
     "numberOfReviews": 15,
-    "locationId": 5,
+    "locationId": 8,
     "managerCognitoId": "us-east-2:56789012-90ab-cdef-1234-567890abcdef"
   },
   {
-    "id": 6,
+    "id": 9,
     "name": "Cozy Studio Apartment",
     "description": "Efficient studio apartment perfect for students or young professionals.",
     "pricePerMonth": 1200.0,
@@ -146,11 +146,11 @@
     "postedDate": "2023-08-01T00:00:00Z",
     "averageRating": 4.2,
     "numberOfReviews": 6,
-    "locationId": 6,
+    "locationId": 9,
     "managerCognitoId": "us-east-2:67890123-90ab-cdef-1234-567890abcdef"
   },
   {
-    "id": 7,
+    "id": 10,
     "name": "Historic Brownstone",
     "description": "Charming brownstone with original features and modern updates.",
     "pricePerMonth": 3000.0,
@@ -171,11 +171,11 @@
     "postedDate": "2023-09-01T00:00:00Z",
     "averageRating": 4.6,
     "numberOfReviews": 9,
-    "locationId": 7,
+    "locationId": 10,
     "managerCognitoId": "us-east-2:78901234-90ab-cdef-1234-567890abcdef"
   },
   {
-    "id": 8,
+    "id": 11,
     "name": "Urban Micro-Apartment",
     "description": "Compact and efficient living space in the heart of the city.",
     "pricePerMonth": 1000.0,
@@ -196,11 +196,11 @@
     "postedDate": "2023-08-01T00:00:00Z",
     "averageRating": 4.3,
     "numberOfReviews": 7,
-    "locationId": 8,
+    "locationId": 11,
     "managerCognitoId": "us-east-2:89012345-90ab-cdef-1234-567890abcdef"
   },
   {
-    "id": 9,
+    "id": 12,
     "name": "Mountain View Cabin",
     "description": "Rustic cabin with breathtaking mountain views and modern amenities.",
     "pricePerMonth": 1800.0,
@@ -221,11 +221,11 @@
     "postedDate": "2023-08-15T00:00:00Z",
     "averageRating": 4.9,
     "numberOfReviews": 11,
-    "locationId": 9,
+    "locationId": 12,
     "managerCognitoId": "us-east-2:90123456-90ab-cdef-1234-567890abcdef"
   },
   {
-    "id": 10,
+    "id": 13,
     "name": "Eco-Friendly Tiny House",
     "description": "Sustainable living in a compact, well-designed tiny house.",
     "pricePerMonth": 900.0,
@@ -246,7 +246,7 @@
     "postedDate": "2023-08-10T00:00:00Z",
     "averageRating": 4.7,
     "numberOfReviews": 8,
-    "locationId": 10,
+    "locationId": 13,
     "managerCognitoId": "us-east-2:01234567-90ab-cdef-1234-567890abcdef"
   }
 ]

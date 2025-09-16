@@ -28,13 +28,12 @@ const SingleListing = () => {
   }
 
   const imageurls = property.photoUrls || [
-    "/singlelisting-2.jpg",
-    "/singlelisting-3.jpg",
+    "https://res.cloudinary.com/harshitscloud/image/upload/v1758027031/singlelisting-2_haggtw.jpg",
+    "https://res.cloudinary.com/harshitscloud/image/upload/v1758027039/singlelisting-3_rbd23r.jpg",
   ];
   return (
     <div>
       <ImagePreviews images={imageurls} />
-
       <div>
         <div className="flex flex-col md:flex-row justify-center gap-0 mx-10 md:w-9/12 md:mx-auto mt-16 mb-8">
           <div className="order-2 md:order-1 md:pr-6 md:mr-2">

@@ -109,7 +109,7 @@ const CardCompact = ({
           </div>
 
           <p className="text-base font-bold">
-            ${property.pricePerMonth.toFixed(0)}
+            ₹{property.pricePerMonth.toFixed(0)}
             <span className="text-gray-600 text-xs font-normal"> /mo</span>
           </p>
         </div>

@@ -29,7 +29,7 @@ const ImagePreviews = ({ images }: ImagePreviewsProps) => {
             fill
             priority={index == 0}
             className="object-cover cursor-pointer transition-transform duration-500 ease-in-out"
-          ></Image>
+          />
         </div>
       ))}
 

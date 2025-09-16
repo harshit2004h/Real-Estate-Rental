@@ -1,0 +1,110 @@
+[
+  {
+    "id": 8,
+    "paymentDate": "2023-06-28T00:00:00Z",
+    "amount": 1500.0,
+    "transactionId": "txn_1A2b3C4d5E6f7G8h",
+    "type": "RENT",
+    "tenantCognitoId": "us-east-2:98765432-90ab-cdef-1234-567890abcdef",
+    "propertyId": 4
+  },
+  {
+    "id": 9,
+    "paymentDate": "2023-08-30T00:00:00Z",
+    "amount": 2200.0,
+    "transactionId": "txn_2B3c4D5e6F7g8H9i",
+    "type": "RENT",
+    "tenantCognitoId": "817b3540-a061-707b-742a-a28391181149",
+    "propertyId": 6
+  },
+  {
+    "id": 10,
+    "paymentDate": "2023-07-14T00:00:00Z",
+    "amount": 1700.0,
+    "transactionId": "txn_3C4d5E6f7G8h9I0j",
+    "type": "RENT",
+    "tenantCognitoId": "us-east-2:65432109-90ab-cdef-1234-567890abcdef",
+    "propertyId": 7
+  },
+  {
+    "id": 11,
+    "paymentDate": "2023-09-14T00:00:00Z",
+    "amount": 2400.0,
+    "transactionId": "txn_4D5e6F7g8H9i1J2k",
+    "type": "RENT",
+    "tenantCognitoId": "us-east-2:43210987-90ab-cdef-1234-567890abcdef",
+    "propertyId": 9
+  },
+  {
+    "id": 12,
+    "paymentDate": "2023-09-25T00:00:00Z",
+    "amount": 1100.0,
+    "transactionId": "txn_5E6f7G8h9I0j2K3l",
+    "type": "RENT",
+    "tenantCognitoId": "us-east-2:32109876-90ab-cdef-1234-567890abcdef",
+    "propertyId": 6
+  },
+  {
+    "id": 13,
+    "paymentDate": "2023-07-30T00:00:00Z",
+    "amount": 5000.0,
+    "transactionId": "txn_6F7g8H9i1J2k3L4m",
+    "type": "SECURITY_DEPOSIT",
+    "tenantCognitoId": "us-east-2:21098765-90ab-cdef-1234-567890abcdef",
+    "propertyId": 8
+  },
+  {
+    "id": 14,
+    "paymentDate": "2023-10-25T00:00:00Z",
+    "amount": 1500.0,
+    "transactionId": "txn_7G8h9I0j2K3l4M5n",
+    "type": "RENT",
+    "tenantCognitoId": "us-east-2:10987654-90ab-cdef-1234-567890abcdef",
+    "propertyId": 10
+  },
+  {
+    "id": 15,
+    "paymentDate": "2023-08-10T00:00:00Z",
+    "amount": 2000.0,
+    "transactionId": "txn_8H9i1J2k3L4m5N6o",
+    "type": "RENT",
+    "tenantCognitoId": "us-east-2:09876543-90ab-cdef-1234-567890abcdef",
+    "propertyId": 5
+  },
+  {
+    "id": 16,
+    "paymentDate": "2023-09-28T00:00:00Z",
+    "amount": 1800.0,
+    "transactionId": "txn_9I0j2K3l4M5n6O7p",
+    "type": "RENT",
+    "tenantCognitoId": "us-east-2:b9876543-90ab-cdef-1234-567890abcdef",
+    "propertyId": 12
+  },
+  {
+    "id": 17,
+    "paymentDate": "2023-09-10T00:00:00Z",
+    "amount": 450.0,
+    "transactionId": "txn_1J2k3L4m5N6o7P8q",
+    "type": "RENT",
+    "tenantCognitoId": "us-east-2:c9876543-90ab-cdef-1234-567890abcdef",
+    "propertyId": 13
+  },
+  {
+    "id": 18,
+    "paymentDate": "2023-08-30T00:00:00Z",
+    "amount": 1500.0,
+    "transactionId": "txn_2K3l4M5n6O7p8Q9r",
+    "type": "RENT",
+    "tenantCognitoId": "us-east-2:d9876543-90ab-cdef-1234-567890abcdef",
+    "propertyId": 4
+  },
+  {
+    "id": 19,
+    "paymentDate": "2023-09-28T00:00:00Z",
+    "amount": 2500.0,
+    "transactionId": "txn_3L4m5N6o7P8q9R0s",
+    "type": "SECURITY_DEPOSIT",
+    "tenantCognitoId": "us-east-2:e9876543-90ab-cdef-1234-567890abcdef",
+    "propertyId": 7
+  }
+]

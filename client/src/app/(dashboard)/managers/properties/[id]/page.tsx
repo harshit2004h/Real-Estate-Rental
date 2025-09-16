@@ -92,7 +92,7 @@ const LeaseRow = ({
         </span>
       </TableCell>
       <TableCell className="font-semibold">
-        ${property?.pricePerMonth?.toFixed(2) || "0.00"}
+        ₹{property?.pricePerMonth?.toFixed(2) || "0.00"}
       </TableCell>
       <TableCell>
         <span
@@ -440,7 +440,7 @@ const PropertyLeases = () => {
                         </div>
                       </TableCell>
                       <TableCell className="font-semibold">
-                        ${payment.amount?.toFixed(2) || "0.00"}
+                        ₹{payment.amount?.toFixed(2) || "0.00"}
                       </TableCell>
                       <TableCell>
                         <span

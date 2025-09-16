@@ -57,7 +57,7 @@ const ApplicationCard = ({
               </div>
               <div className="space-y-1">
                 <div className="text-xl font-semibold text-green-600">
-                  ${application.property.pricePerMonth}{" "}
+                  ₹{application.property.pricePerMonth}{" "}
                   <span className="text-sm font-normal text-gray-500">
                     / month
                   </span>
@@ -65,7 +65,7 @@ const ApplicationCard = ({
                 <div className="text-sm text-gray-600">
                   Security Deposit:{" "}
                   <span className="font-medium">
-                    ${application.property.securityDeposit}
+                    ₹{application.property.securityDeposit}
                   </span>
                 </div>
               </div>
