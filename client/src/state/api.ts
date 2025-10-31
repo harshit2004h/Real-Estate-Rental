@@ -9,23 +9,22 @@ import {
   Review,
   Tenant,
 } from "@/types/prismaTypes";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
 import { FiltersState } from ".";
 import { toast } from "react-hot-toast";
-import { url } from "inspector";
 
 const loadScript = (src: string): Promise<boolean> => {
-  return new Promise((resolve) => {
+  return new Promise((resolve: (value: boolean) => void) => {
     // Prevent loading the script twice
     if (document.querySelector(`script[src="${src}"]`)) {
       resolve(true);
       return;
     }
-    const script = document.createElement("script");
+    const script: HTMLScriptElement = document.createElement("script");
     script.src = src;
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
+    script.onload = (): void => resolve(true);
+    script.onerror = (): void => resolve(false);
     document.body.appendChild(script);
   });
 };
@@ -33,7 +32,7 @@ const loadScript = (src: string): Promise<boolean> => {
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
-    prepareHeaders: async (headers) => {
+    prepareHeaders: async (headers: Headers): Promise<Headers> => {
       const session = await fetchAuthSession();
       const { idToken } = session.tokens ?? {};
       if (idToken) {
@@ -59,9 +58,9 @@ export const api = createApi({
           const session = await fetchAuthSession();
           const { idToken } = session.tokens ?? {};
           const user = await getCurrentUser();
-          const userRole = idToken?.payload["custom:role"] as string;
+          const userRole: string = idToken?.payload["custom:role"] as string;
 
-          const endpoint =
+          const endpoint: string =
             userRole === "manager"
               ? `/managers/${user.userId}`
               : `/tenants/${user.userId}`;
@@ -99,7 +98,7 @@ export const api = createApi({
       Property[],
       Partial<FiltersState> & { favoriteIds?: number[] }
     >({
-      query: (filters) => {
+      query: (filters: Partial<FiltersState> & { favoriteIds?: number[] }) => {
         const params = cleanParams({
           location: filters.location,
           priceMin: filters.priceRange?.[0],
@@ -118,7 +117,7 @@ export const api = createApi({
 
         return { url: "properties", params };
       },
-      providesTags: (result) =>
+      providesTags: (result: Property[] | undefined) =>
         result
           ? [
               ...result.map(({ id }) => ({ type: "Properties" as const, id })),
@@ -133,8 +132,8 @@ export const api = createApi({
     }),
 
     getProperty: build.query<Property, number>({
-      query: (id) => `properties/${id}`,
-      providesTags: (result, error, id) => [{ type: "PropertyDetails", id }],
+      query: (id: number) => `properties/${id}`,
+      providesTags: (result, error, id: number) => [{ type: "PropertyDetails", id }],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
           error: "Failed to load property details.",
@@ -144,8 +143,8 @@ export const api = createApi({
 
     // tenant related endpoints
     getTenant: build.query<Tenant, string>({
-      query: (cognitoId) => `tenants/${cognitoId}`,
-      providesTags: (result) => [{ type: "Tenants", id: result?.id }],
+      query: (cognitoId: string) => `tenants/${cognitoId}`,
+      providesTags: (result: Tenant | undefined) => [{ type: "Tenants", id: result?.id }],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
           error: "Failed to load tenant profile.",
@@ -154,8 +153,8 @@ export const api = createApi({
     }),
 
     getCurrentResidences: build.query<Property[], string>({
-      query: (cognitoId) => `tenants/${cognitoId}/current-residences`,
-      providesTags: (result) =>
+      query: (cognitoId: string) => `tenants/${cognitoId}/current-residences`,
+      providesTags: (result: Property[] | undefined) =>
         result
           ? [
               ...result.map(({ id }) => ({ type: "Properties" as const, id })),
@@ -173,12 +172,12 @@ export const api = createApi({
       Tenant,
       { cognitoId: string } & Partial<Tenant>
     >({
-      query: ({ cognitoId, ...updatedTenant }) => ({
+      query: ({ cognitoId, ...updatedTenant }: { cognitoId: string } & Partial<Tenant>) => ({
         url: `tenants/${cognitoId}`,
         method: "PUT",
         body: updatedTenant,
       }),
-      invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
+      invalidatesTags: (result: Tenant | undefined) => [{ type: "Tenants", id: result?.id }],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
           success: "Settings updated successfully!",
@@ -191,11 +190,11 @@ export const api = createApi({
       Tenant,
       { cognitoId: string; propertyId: number }
     >({
-      query: ({ cognitoId, propertyId }) => ({
+      query: ({ cognitoId, propertyId }: { cognitoId: string; propertyId: number }) => ({
         url: `tenants/${cognitoId}/favorites/${propertyId}`,
         method: "POST",
       }),
-      invalidatesTags: (result) => [
+      invalidatesTags: (result: Tenant | undefined) => [
         { type: "Tenants", id: result?.id },
         { type: "Properties", id: "LIST" },
       ],
@@ -211,11 +210,11 @@ export const api = createApi({
       Tenant,
       { cognitoId: string; propertyId: number }
     >({
-      query: ({ cognitoId, propertyId }) => ({
+      query: ({ cognitoId, propertyId }: { cognitoId: string; propertyId: number }) => ({
         url: `tenants/${cognitoId}/favorites/${propertyId}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result) => [
+      invalidatesTags: (result: Tenant | undefined) => [
         { type: "Tenants", id: result?.id },
         { type: "Properties", id: "LIST" },
       ],
@@ -378,7 +377,7 @@ export const api = createApi({
     }),
 
     createApplicationPayment: build.mutation<RazorpayOrder, StartPaymentArgs>({
-      query: (body) => ({
+      query: (body: StartPaymentArgs) => ({
         url: `payments/capture1`,
         method: "POST",
         body: {
@@ -387,13 +386,13 @@ export const api = createApi({
         },
       }),
 
-      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+      async onQueryStarted(args: StartPaymentArgs, { dispatch, queryFulfilled }) {
         try {
           // 1. Wait for the backend to create the Razorpay order
           const { data: order } = await queryFulfilled;
 
           // 2. Load the Razorpay checkout script
-          const scriptLoaded = await loadScript(
+          const scriptLoaded: boolean = await loadScript(
             "https://checkout.razorpay.com/v1/checkout.js"
           );
           if (!scriptLoaded) {
@@ -415,7 +414,7 @@ export const api = createApi({
               razorpay_payment_id: string;
               razorpay_order_id: string;
               razorpay_signature: string;
-            }) {
+            }): void {
               toast.success("Payment successful! Verifying...");
               // 4. Dispatch the verification mutation to your backend
               dispatch(
@@ -440,7 +439,7 @@ export const api = createApi({
           const paymentObject = new (window as any).Razorpay(options);
           paymentObject.open();
 
-          paymentObject.on("payment.failed", (response: any) => {
+          paymentObject.on("payment.failed", (response: any): void => {
             toast.error("Oops! Payment Failed.");
             console.error("Payment failed:", response.error);
           });
@@ -455,13 +454,13 @@ export const api = createApi({
       { success: boolean; message: string; application: Application },
       VerifyPaymentArgs
     >({
-      query: (body) => ({
+      query: (body: VerifyPaymentArgs) => ({
         url: `payments/verify1`,
         method: "POST",
         body,
       }),
       invalidatesTags: ["Applications"],
-      async onQueryStarted(args, { queryFulfilled }) {
+      async onQueryStarted(args: VerifyPaymentArgs, { queryFulfilled }) {
         try {
           await queryFulfilled;
           toast.success("Application submitted successfully!");

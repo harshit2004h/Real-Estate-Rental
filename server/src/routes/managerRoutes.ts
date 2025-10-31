@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   getManager,
   createManager,
@@ -6,7 +6,7 @@ import {
   getManagerProperties,
 } from "../controllers/managerControllers";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get("/:cognitoId", getManager);
 router.put("/:cognitoId", updateManager);

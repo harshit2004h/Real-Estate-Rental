@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Application, Property, Location, Manager, Tenant, ApplicationStatus } from "@prisma/client";
 
-const prisma = new PrismaClient();
+const prisma: PrismaClient = new PrismaClient();
 
 export const listApplications = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const { userId, userType } = req.query;
+    const { userId, userType }: { userId?: string; userType?: string } = req.query;
 
-    let whereClause = {};
+    let whereClause: any = {};
 
     if (userId && userType) {
       if (userType === "tenant") {
@@ -24,7 +24,13 @@ export const listApplications = async (
       }
     }
 
-    const applications = await prisma.application.findMany({
+    const applications: (Application & {
+      property: Property & {
+        location: Location;
+        manager: Manager;
+      };
+      tenant: Tenant;
+    })[] = await prisma.application.findMany({
       where: whereClause,
       include: {
         property: {
@@ -63,8 +69,11 @@ export const getApplicationById = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = req.params;
-    const application = await prisma.application.findUnique({
+    const { id } = req.params as { id: string };
+    const application: (Application & {
+      property: Property;
+      tenant: Tenant;
+    }) | null = await prisma.application.findUnique({
       where: { id: Number(id) },
       include: {
         property: true,
@@ -88,11 +97,14 @@ export const updateApplicationStatus = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = req.params;
-    const { status } = req.body;
+    const { id } = req.params as { id: string };
+    const { status }: { status: ApplicationStatus } = req.body;
     console.log("status:", status);
 
-    const application = await prisma.application.findUnique({
+    const application: (Application & {
+      property: Property;
+      tenant: Tenant;
+    }) | null = await prisma.application.findUnique({
       where: { id: Number(id) },
       include: {
         property: true,
@@ -120,7 +132,10 @@ export const updateApplicationStatus = async (
     }
 
     // Respond with the updated application details
-    const updatedApplication = await prisma.application.findUnique({
+    const updatedApplication: (Application & {
+      property: Property;
+      tenant: Tenant;
+    }) | null = await prisma.application.findUnique({
       where: { id: Number(id) },
       include: {
         property: true,

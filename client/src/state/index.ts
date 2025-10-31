@@ -38,13 +38,13 @@ export const globalSlice = createSlice({
   name: "global",
   initialState,
   reducers: {
-    setFilters: (state, action: PayloadAction<Partial<FiltersState>>) => {
+    setFilters: (state: InitialStateTypes, action: PayloadAction<Partial<FiltersState>>): void => {
       state.filters = { ...state.filters, ...action.payload };
     },
-    toggleFiltersFullOpen: (state) => {
+    toggleFiltersFullOpen: (state: InitialStateTypes): void => {
       state.isFiltersFullOpen = !state.isFiltersFullOpen;
     },
-    setViewMode: (state, action: PayloadAction<"grid" | "list">) => {
+    setViewMode: (state: InitialStateTypes, action: PayloadAction<"grid" | "list">): void => {
       state.viewMode = action.payload;
     },
   },

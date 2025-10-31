@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { AuthMiddleware } from "../middlewares/authMiddleware";
 import {
   capturePayment1,
@@ -10,7 +10,7 @@ import {
   checkNextMonthPayment,
 } from "../controllers/paymentControllers";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.post("/capture1", AuthMiddleware(["tenant"]), capturePayment1);
 router.post("/verify1", AuthMiddleware(["tenant"]), verifyPayment1);

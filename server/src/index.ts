@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -16,7 +16,7 @@ import paymentRoutes from "./routes/paymentRoutes";
 
 /*CONFIGURATION*/
 dotenv.config();
-const app = express();
+const app: Application = express();
 app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 /*ROUTES*/
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response): void => {
   res.send("This is home route");
 });
 
@@ -38,7 +38,7 @@ app.use("/managers", AuthMiddleware(["manager"]), managerRoutes);
 app.use("/payments", paymentRoutes);
 
 /*SERVER*/
-const PORT = Number(process.env.PORT) || 3002;
-app.listen(PORT, "0.0.0.0", () => {
+const PORT: number = Number(process.env.PORT) || 3002;
+app.listen(PORT, "0.0.0.0", (): void => {
   console.log(`Server is running on port ${PORT}`);
 });

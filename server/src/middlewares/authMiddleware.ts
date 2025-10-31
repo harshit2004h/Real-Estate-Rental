@@ -19,7 +19,7 @@ declare global {
 
 export const AuthMiddleware = (allowedRules: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    const token = req.headers.authorization?.split(" ")[1];
+    const token: string | undefined = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
       res.status(401).json({ message: "Unauthorized" });
@@ -27,14 +27,14 @@ export const AuthMiddleware = (allowedRules: string[]) => {
     }
 
     try {
-      const decoded = jwt.decode(token) as DecodedToken;
-      const userRole = decoded["custom:role"] || "";
+      const decoded: DecodedToken = jwt.decode(token) as DecodedToken;
+      const userRole: string = decoded["custom:role"] || "";
       req.user = {
         id: decoded.sub,
         role: userRole,
       };
 
-      const hasAccess = allowedRules.includes(userRole.toLowerCase());
+      const hasAccess: boolean = allowedRules.includes(userRole.toLowerCase());
       if (!hasAccess) {
         res.status(403).json({ message: "Access Denied" });
         return;

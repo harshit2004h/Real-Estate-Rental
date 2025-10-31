@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   getProperties,
   getProperty,
@@ -7,13 +7,13 @@ import {
   getPropertyReviews,
   getPropertyPaymentHistory,
 } from "../controllers/propertyControllers";
-import multer from "multer";
+import multer, { Multer, StorageEngine } from "multer";
 import { AuthMiddleware } from "../middlewares/authMiddleware";
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const storage: StorageEngine = multer.memoryStorage();
+const upload: Multer = multer({ storage: storage });
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get("/", getProperties);
 router.get("/:id", getProperty);

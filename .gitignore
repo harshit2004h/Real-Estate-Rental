@@ -23,4 +23,4 @@ server/.env
 client/.next/
 node_modules
 
-supabase_dump.sql
+dump.sql

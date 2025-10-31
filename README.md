@@ -58,14 +58,17 @@ server-> https://real-estate-rental-nw85.onrender.com [HOSTED ON RENDER]
 - Apply for rental properties
 - Save listings as favorites
 - Track application status
-- _(Future)_ Make payments through LemonSqueezy
+- View lease agreements and payment history
+- Download receipts for payments
 
 ### 🧑‍💼 Manager
 
 - Create and manage property listings
-- Review and approve rental applications
-- Track property performance
-- _(Future)_ Generate contracts and payment cycles
+- Review and approve/reject rental applications
+- Create and manage lease agreements
+- Track property performance and applications
+- View payment history
+- Generate lease agreements and receipts
 
 ## 🚀 Key Features
 
@@ -93,45 +96,60 @@ Filter properties by:
 
 ### Current Functionality
 
-- Properties can be rented for 1 year (hardcoded duration - future: flexible)
+- Properties can be rented with flexible lease duration
 - Tenants can apply to listings and track application status
-- Managers can approve or reject tenant applications
-- Interactive map view shows all property listings
-- Payment functionality via "amount" field (future: LemonSqueezy integration)
+- Managers can approve or reject tenant applications and create leases
+- Interactive map view shows all property listings with location-based filtering
+- Payment tracking and history management via Razorpay integration
 - Secure file uploads for property images to AWS S3
-- User authentication via AWS Cognito
+- User authentication and authorization via AWS Cognito
+- PDF generation for lease agreements and payment receipts
+- Email notifications for applications and important updates via EmailJS
 
 ## 🛠️ Technology Stack
 
-| Layer                | Technologies                                                                                        |
-| -------------------- | --------------------------------------------------------------------------------------------------- |
-| Frontend             | Next.js, TailwindCSS, Redux Toolkit Query, Shadcn UI Components, React Hook Form,                   |
-| Backend              | Node.js, Zod (validation), Prisma ORM, RESTful API architecture                                     |
-| Database             | PostgreSQL, PostGIS (for geospatial queries), AWS RDS                                               |
-| Cloud Infrastructure | AWS Cognito (Authentication), AWS S3 (File Storage), AWS EC2 (Frontend/Backend), AWS RDS (Database) |
-| Maps                 | OpenLayers, Nominatim, MapTiler for Map UI                                                          |
-| Future Payments      | LemonSqueezy (Planned)                                                                              |
+| Layer                | Technologies                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------- |
+| Frontend             | Next.js 15, React 19, TailwindCSS, Redux Toolkit Query, Shadcn UI, React Hook Form, Framer Motion |
+| Backend              | Node.js, Express, Zod (validation), Prisma ORM, RESTful API architecture                          |
+| Database             | PostgreSQL, PostGIS (for geospatial queries), AWS RDS                                             |
+| Cloud Infrastructure | AWS Cognito (Authentication), AWS S3 (File Storage), AWS EC2 (Hosting), AWS RDS (Database)        |
+| Maps                 | OpenLayers, Nominatim (Geocoding), MapTiler (Map UI)                                              |
+| Payments             | Razorpay                                                                                          |
+| Notifications        | EmailJS                                                                                           |
+| PDF Generation       | jsPDF                                                                                             |
 
-## 🗄️ Database Schema
+## 🗄️ Database Diagram
 
 <div align="center">
-  <img src="client/public/images/ER-Diagram.png" alt="SwiftStay Database Schema" />
-  <p><em>PostgreSQL database schema ER Diagram with PostGIS extensions for geospatial data</em></p>
+  <img src="client/public/images/Database-Diagram.png" alt="SwiftStay Database Schema" />
+  <p><em>PostgreSQL Database Diagram with PostGIS extensions for geospatial data</em></p>
+</div>
+
+## ER Diagram
+
+<div align="center">
+  <img src="client/public/images/ER-Diagram.jpg" alt="SwiftStay Database Schema" />
+  <p><em>PostgreSQL database schema ER Diagram</em></p>
 </div>
 
 ## 🛣️ Roadmap
 
-| Feature                            | Status     |
-| ---------------------------------- | ---------- |
-| LemonSqueezy Payment Integration   | 🔜 Planned |
-| Dynamic Contract Duration          | 🔜 Planned |
-| Admin Dashboard                    | 🔜 Planned |
-| Lease PDF Generation               | 🔜 Planned |
-| Real-Time Notifications            | 🔜 Planned |
-| Ratings and Reviews                | 🔜 Planned |
-| Messaging between Tenants/Managers | 🔜 Planned |
+| Feature                        | Status       |
+| ------------------------------ | ------------ |
+| Lease PDF Generation           | ✅ Completed |
+| Payment Integration (Razorpay) | ✅ Completed |
+| Email Notifications (EmailJS)  | ✅ Completed |
+| Dynamic Contract Duration      | ✅ Completed |
+| Receipt Generation             | ✅ Completed |
+| Admin Dashboard                | 🔜 Planned   |
+| Real-Time Notifications        | 🔜 Planned   |
+| Advanced Ratings and Reviews   | 🔜 Planned   |
+| In-App Messaging System        | 🔜 Planned   |
+| Property Analytics Dashboard   | 🔜 Planned   |
 
-## 📦 Getting Started 
+## 📦 Getting Started
+
 ### Installation
 
 #### 1. Clone the repository
@@ -199,6 +217,9 @@ npm run dev
 - [Prisma ORM](https://www.prisma.io/docs/)
 - [AWS Cognito](https://docs.aws.amazon.com/cognito/)
 - [AWS Amplify Cognito React Docs](https://docs.amplify.aws/lib/auth/getting-started/q/platform/js/)
+- [Razorpay](https://razorpay.com/docs/)
+- [EmailJS](https://www.emailjs.com/docs/)
+- [jsPDF](https://artskydj.github.io/jsPDF/docs/)
 
 ## 🧑‍💻 Contributing
 

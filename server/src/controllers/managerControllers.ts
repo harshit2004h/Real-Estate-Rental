@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Manager, Property, Location } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
 
-const prisma = new PrismaClient();
+const prisma: PrismaClient = new PrismaClient();
 
 export const getManager = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId } = req.params;
-    const manager = await prisma.manager.findUnique({
+    const { cognitoId } = req.params as { cognitoId: string };
+    const manager: Manager | null = await prisma.manager.findUnique({
       where: {
         cognitoId: cognitoId,
       },
@@ -33,8 +33,13 @@ export const createManager = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId, name, email, phoneNumber } = req.body;
-    const manager = await prisma.manager.create({
+    const { cognitoId, name, email, phoneNumber }: {
+      cognitoId: string;
+      name: string;
+      email: string;
+      phoneNumber: string;
+    } = req.body;
+    const manager: Manager = await prisma.manager.create({
       data: {
         cognitoId,
         name,
@@ -56,9 +61,13 @@ export const updateManager = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId } = req.params;
-    const { name, email, phoneNumber } = req.body;
-    const updateManager = await prisma.manager.update({
+    const { cognitoId } = req.params as { cognitoId: string };
+    const { name, email, phoneNumber }: {
+      name: string;
+      email: string;
+      phoneNumber: string;
+    } = req.body;
+    const updateManager: Manager = await prisma.manager.update({
       where: {
         cognitoId: cognitoId,
       },
@@ -82,8 +91,10 @@ export const getManagerProperties = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId } = req.params;
-    const properties = await prisma.property.findMany({
+    const { cognitoId } = req.params as { cognitoId: string };
+    const properties: (Property & {
+      location: Location;
+    })[] = await prisma.property.findMany({
       where: {
         managerCognitoId: cognitoId,
       },
@@ -98,8 +109,8 @@ export const getManagerProperties = async (
           await prisma.$queryRaw`SELECT ST_asText(coordinates) as coordinates from "Location" where id = ${property.location.id}`;
 
         const geoJSON: any = wktToGeoJSON(coordinates[0].coordinates || "");
-        const longitude = geoJSON.coordinates[0];
-        const latitude = geoJSON.coordinates[1];
+        const longitude: number = geoJSON.coordinates[0];
+        const latitude: number = geoJSON.coordinates[1];
 
         return {
           ...property,

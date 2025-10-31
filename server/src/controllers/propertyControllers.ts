@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, Property, Location, Manager } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
 import { v2 as cloudinary } from "cloudinary";
 import streamifier from "streamifier";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
-const prisma = new PrismaClient();
+const prisma: PrismaClient = new PrismaClient();
 export const getProperties = async (
   req: Request,
   res: Response
@@ -24,12 +24,25 @@ export const getProperties = async (
       availableFrom,
       latitude,
       longitude,
+    }: {
+      favoriteIds?: string;
+      priceMin?: string;
+      priceMax?: string;
+      beds?: string;
+      baths?: string;
+      propertyType?: string;
+      squareFeetMin?: string;
+      squareFeetMax?: string;
+      amenities?: string;
+      availableFrom?: string;
+      latitude?: string;
+      longitude?: string;
     } = req.query;
 
     let whereConditions: Prisma.Sql[] = [];
 
     if (favoriteIds) {
-      const favoriteIdsArray = (favoriteIds as string).split(",").map(Number);
+      const favoriteIdsArray: number[] = (favoriteIds as string).split(",").map(Number);
       whereConditions.push(
         Prisma.sql`p.id IN (${Prisma.join(favoriteIdsArray)})`
       );
@@ -74,15 +87,15 @@ export const getProperties = async (
     }
 
     if (amenities && amenities !== "any") {
-      const amenitiesArray = (amenities as string).split(",");
+      const amenitiesArray: string[] = (amenities as string).split(",");
       whereConditions.push(Prisma.sql`p.amenities @> ${amenitiesArray}`);
     }
 
     if (availableFrom && availableFrom !== "any") {
-      const availableFromDate =
+      const availableFromDate: string | null =
         typeof availableFrom === "string" ? availableFrom : null;
       if (availableFromDate) {
-        const date = new Date(availableFromDate);
+        const date: Date = new Date(availableFromDate);
         if (!isNaN(date.getTime())) {
           whereConditions.push(
             Prisma.sql`EXISTS (
@@ -96,10 +109,10 @@ export const getProperties = async (
     }
 
     if (latitude && longitude) {
-      const lat = parseFloat(latitude as string);
-      const lng = parseFloat(longitude as string);
-      const radiusInKilometers = 1000;
-      const degrees = radiusInKilometers / 111; // Converts kilometers to degrees
+      const lat: number = parseFloat(latitude as string);
+      const lng: number = parseFloat(longitude as string);
+      const radiusInKilometers: number = 1000;
+      const degrees: number = radiusInKilometers / 111; // Converts kilometers to degrees
 
       whereConditions.push(
         Prisma.sql`ST_DWithin(
@@ -110,7 +123,7 @@ export const getProperties = async (
       );
     }
 
-    const completeQuery = Prisma.sql`
+    const completeQuery: Prisma.Sql = Prisma.sql`
       SELECT 
         p.*,
         json_build_object(
@@ -134,7 +147,7 @@ export const getProperties = async (
       }
     `;
 
-    const properties = await prisma.$queryRaw(completeQuery);
+    const properties: any[] = await prisma.$queryRaw(completeQuery);
     res.json(properties);
   } catch (error: any) {
     res
@@ -148,8 +161,11 @@ export const getProperty = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = req.params;
-    const property = await prisma.property.findUnique({
+    const { id } = req.params as { id: string };
+    const property: (Property & {
+      location: Location;
+      manager: Manager;
+    }) | null = await prisma.property.findUnique({
       where: {
         id: Number(id),
       },
@@ -164,8 +180,8 @@ export const getProperty = async (
         await prisma.$queryRaw`SELECT ST_asText(coordinates) as coordinates from "Location" where id = ${property.location.id}`;
 
       const geoJSON: any = wktToGeoJSON(coordinates[0].coordinates || "");
-      const longitude = geoJSON.coordinates[0];
-      const latitude = geoJSON.coordinates[1];
+      const longitude: number = geoJSON.coordinates[0];
+      const latitude: number = geoJSON.coordinates[1];
 
       const propertyWithCoordinates = {
         ...property,
@@ -192,7 +208,7 @@ export const createProperty = async (
   res: Response
 ): Promise<void> => {
   try {
-    const files = req.files as Express.Multer.File[];
+    const files: Express.Multer.File[] = req.files as Express.Multer.File[];
     const {
       address,
       city,
@@ -201,6 +217,14 @@ export const createProperty = async (
       postalCode,
       managerCognitoId,
       ...propertyData
+    }: {
+      address: string;
+      city: string;
+      state: string;
+      country: string;
+      postalCode: string;
+      managerCognitoId: string;
+      [key: string]: any;
     } = req.body;
 
     console.log("Creating property with data:", {
@@ -248,7 +272,7 @@ export const createProperty = async (
     }
 
     // Geocoding - Method 1: Combined query
-    const geocodingUrl1 = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
+    const geocodingUrl1: string = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
         q: `${address}, ${city}, ${state}, ${country}, ${postalCode}`,
         format: "json",
@@ -258,7 +282,7 @@ export const createProperty = async (
     ).toString()}`;
 
     // Method 2: Structured query (alternative approach)
-    const geocodingUrl2 = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
+    const geocodingUrl2: string = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
         street: address,
         city: city,
@@ -272,7 +296,7 @@ export const createProperty = async (
     ).toString()}`;
 
     console.log("Starting geocoding...");
-    let geocodingResponse = await axios.get(geocodingUrl1, {
+    let geocodingResponse: AxiosResponse<any> = await axios.get(geocodingUrl1, {
       headers: {
         "User-Agent": "RealEstateRental (testdesk.personal@gmail.com)",
         "Accept-Language": "en",
@@ -291,7 +315,7 @@ export const createProperty = async (
 
     if (!geocodingResponse.data || geocodingResponse.data.length === 0) {
       console.log("Trying city-level geocoding...");
-      const fallbackUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
+      const fallbackUrl: string = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
         {
           q: `${city}, ${state}, ${country}`,
           format: "json",
@@ -307,7 +331,7 @@ export const createProperty = async (
       });
     }
 
-    const result = geocodingResponse.data[0];
+    const result: any = geocodingResponse.data[0];
 
     if (!result || !result.lon || !result.lat) {
       throw new Error(
@@ -315,8 +339,8 @@ export const createProperty = async (
       );
     }
 
-    const longitude = parseFloat(result.lon);
-    const latitude = parseFloat(result.lat);
+    const longitude: number = parseFloat(result.lon);
+    const latitude: number = parseFloat(result.lat);
 
     console.log(`Geocoded coordinates: ${latitude}, ${longitude}`);
     console.log(`Display name: ${result.display_name}`);
@@ -333,9 +357,9 @@ export const createProperty = async (
 
     // Create location with better error handling
     console.log("Creating location...");
-    let location;
+    let location: any;
     try {
-      const locationResult = await prisma.$queryRaw<any[]>`
+      const locationResult: any[] = await prisma.$queryRaw<any[]>`
         INSERT INTO "Location" (address, city, state, country, "postalCode", coordinates)
         VALUES (${address}, ${city}, ${state}, ${country}, ${postalCode}, 
                 ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326))
@@ -359,7 +383,7 @@ export const createProperty = async (
 
     // Prepare property data with proper type conversions and null checks
     console.log("Preparing property data...");
-    const propertyCreateData = {
+    const propertyCreateData: any = {
       ...propertyData,
       photoUrls,
       locationId: location.id,
@@ -405,9 +429,9 @@ export const createProperty = async (
     };
 
     // Remove undefined values to avoid Prisma issues
-    Object.keys(propertyCreateData).forEach((key) => {
-      if (propertyCreateData[key] === undefined) {
-        delete propertyCreateData[key];
+    Object.keys(propertyCreateData).forEach((key: string) => {
+      if ((propertyCreateData as any)[key] === undefined) {
+        delete (propertyCreateData as any)[key];
       }
     });
 
@@ -418,7 +442,10 @@ export const createProperty = async (
 
     // Create property
     console.log("Creating property...");
-    let newProperty;
+    let newProperty: Property & {
+      location: Location;
+      manager: Manager;
+    };
     try {
       newProperty = await prisma.property.create({
         data: propertyCreateData,
@@ -471,7 +498,7 @@ export const getPropertyLeases = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { propertyId } = req.params;
+    const { propertyId } = req.params as { propertyId: string };
 
     const Leases = await prisma.lease.findMany({
       where: {
@@ -495,7 +522,7 @@ export const getPropertyReviews = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { propertyId } = req.params;
+    const { propertyId } = req.params as { propertyId: string };
     const reviews = await prisma.review.findMany({
       where: {
         propertyId: Number(propertyId),
@@ -520,7 +547,7 @@ export const getPropertyPaymentHistory = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { propertyId } = req.params;
+    const { propertyId } = req.params as { propertyId: string };
     const paymentHistory = await prisma.paymentHistory.findMany({
       where: {
         propertyId: Number(propertyId),

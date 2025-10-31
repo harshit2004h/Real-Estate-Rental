@@ -1,11 +1,11 @@
 import Razorpay from "razorpay";
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Property, Application, Lease, Payment, PaymentHistory } from "@prisma/client";
 import crypto from "crypto";
 
-const prisma = new PrismaClient();
+const prisma: PrismaClient = new PrismaClient();
 
-var instance = new Razorpay({
+const instance: Razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY as string,
   key_secret: process.env.RAZORPAY_SECRET as string,
 });
@@ -20,7 +20,10 @@ export const capturePayment1 = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { propertyId, tenantCognitoId } = req.body;
+    const { propertyId, tenantCognitoId }: {
+      propertyId: number;
+      tenantCognitoId: string;
+    } = req.body;
 
     if (!propertyId || !tenantCognitoId) {
       res
@@ -29,7 +32,7 @@ export const capturePayment1 = async (
       return;
     }
 
-    let property;
+    let property: Property | null;
     try {
       property = await prisma.property.findUnique({
         where: { id: propertyId },
@@ -63,7 +66,7 @@ export const capturePayment1 = async (
 
     //check if application already exists
     try {
-      let application = await prisma.application.findFirst({
+      let application: Application | null = await prisma.application.findFirst({
         where: {
           propertyId: Number(propertyId),
           tenantCognitoId: tenantCognitoId,
@@ -81,23 +84,23 @@ export const capturePayment1 = async (
       return;
     }
 
-    const amount = property.applicationFee * 100;
-    const currency = "INR";
-    const options = {
+    const amount: number = property.applicationFee * 100;
+    const currency: string = "INR";
+    const options: any = {
       amount: amount,
       currency: currency,
       receipt: `receipt_order_${Math.random() * 1000}`,
       notes: {
-        propertyId: propertyId,
+        propertyId: propertyId.toString(),
         tenantCognitoId: tenantCognitoId,
         purchaseType: "APPLICATION_FEE",
         purchaseDateTime: new Date().toISOString(),
       },
-    } as any; // Type assertion to fix Razorpay type issues
+    };
 
     try {
       //initiate razorpay payment
-      const order = await instance.orders.create(options);
+      const order: any = await instance.orders.create(options);
       console.log(order);
       res.status(200).json(order);
     } catch (error) {
@@ -122,6 +125,11 @@ export const verifyPayment1 = async (
       razorpay_payment_id,
       razorpay_signature,
       applicationData,
+    }: {
+      razorpay_order_id: string;
+      razorpay_payment_id: string;
+      razorpay_signature: string;
+      applicationData: any;
     } = req.body;
 
     console.log("Extracted data:", {
@@ -137,8 +145,8 @@ export const verifyPayment1 = async (
       return;
     }
 
-    let body = razorpay_order_id + "|" + razorpay_payment_id;
-    const expectedSignature = crypto
+    const body: string = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSignature: string = crypto
       .createHmac("sha256", process.env.RAZORPAY_SECRET!)
       .update(body.toString())
       .digest("hex");
@@ -158,6 +166,14 @@ export const verifyPayment1 = async (
         phoneNumber,
         message,
         durationMonths,
+      }: {
+        propertyId: number;
+        tenantCognitoId: string;
+        name: string;
+        email: string;
+        phoneNumber: string;
+        message: string;
+        durationMonths: number;
       } = applicationData.applicationData; // Fix: access the nested applicationData
 
       console.log("Creating application with data:", {
@@ -171,7 +187,10 @@ export const verifyPayment1 = async (
       });
 
       // create application
-      const newApplication = await prisma.application.create({
+      const newApplication: Application & {
+        property: Property;
+        tenant: any;
+      } = await prisma.application.create({
         data: {
           applicationDate: new Date(),
           status: "Pending",
@@ -223,7 +242,10 @@ export const capturePayment2 = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { propertyId, tenantCognitoId } = req.body;
+    const { propertyId, tenantCognitoId }: {
+      propertyId: number;
+      tenantCognitoId: string;
+    } = req.body;
 
     if (!propertyId || !tenantCognitoId) {
       res
@@ -232,7 +254,7 @@ export const capturePayment2 = async (
       return;
     }
 
-    let managerCognitoId;
+    let managerCognitoId: string | undefined;
     try {
       managerCognitoId = await prisma.property
         .findUnique({
@@ -250,7 +272,7 @@ export const capturePayment2 = async (
       return;
     }
 
-    let property;
+    let property: Property | null;
     try {
       property = await prisma.property.findUnique({
         where: { id: propertyId },
@@ -283,25 +305,25 @@ export const capturePayment2 = async (
       return;
     }
 
-    const amount =
+    const amount: number =
       property!.pricePerMonth * 100 + property!.securityDeposit * 100;
-    const currency = "INR";
-    const options = {
+    const currency: string = "INR";
+    const options: any = {
       amount: amount,
       currency: currency,
       receipt: `receipt_order_${Math.random() * 1000}`,
       notes: {
-        propertyId: propertyId,
+        propertyId: propertyId.toString(),
         tenantCognitoId: tenantCognitoId,
         managerCognitoId: managerCognitoId,
         purchaseType: "SECURITY_AND_FIRST_MONTH",
         purchaseDateTime: new Date().toISOString(),
       },
-    } as any; // Type assertion to fix Razorpay type issues
+    };
 
     try {
       //initiate razorpay payment
-      const order = await instance.orders.create(options);
+      const order: any = await instance.orders.create(options);
       console.log(order);
       res.status(200).json(order);
     } catch (error) {
@@ -323,6 +345,11 @@ export const verifyPayment2 = async (
       razorpay_payment_id,
       razorpay_signature,
       paymentData,
+    }: {
+      razorpay_order_id: string;
+      razorpay_payment_id: string;
+      razorpay_signature: string;
+      paymentData: any;
     } = req.body;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -330,18 +357,25 @@ export const verifyPayment2 = async (
       return;
     }
 
-    let body = razorpay_order_id + "|" + razorpay_payment_id;
+    const body: string = razorpay_order_id + "|" + razorpay_payment_id;
 
-    const expectedSignature = crypto
+    const expectedSignature: string = crypto
       .createHmac("sha256", process.env.RAZORPAY_SECRET!)
       .update(body.toString())
       .digest("hex");
 
     if (expectedSignature === razorpay_signature) {
-      const { propertyId, tenantCognitoId } = paymentData;
+      const { propertyId, tenantCognitoId }: {
+        propertyId: number;
+        tenantCognitoId: string;
+      } = paymentData;
 
       // Get property details to retrieve manager info and calculate amounts
-      const property = await prisma.property.findUnique({
+      const property: {
+        managerCognitoId: string;
+        pricePerMonth: number;
+        securityDeposit: number;
+      } | null = await prisma.property.findUnique({
         where: { id: Number(propertyId) },
         select: {
           managerCognitoId: true,
@@ -355,11 +389,11 @@ export const verifyPayment2 = async (
         return;
       }
 
-      const managerCognitoId = property.managerCognitoId;
-      const monthlyRentAmount = property.pricePerMonth * 100; // Convert to paisa
+      const managerCognitoId: string = property.managerCognitoId;
+      const monthlyRentAmount: number = property.pricePerMonth * 100; // Convert to paisa
 
       //get durationMonths from application
-      const application = await prisma.application.findFirst({
+      const application: { durationMonths: number } | null = await prisma.application.findFirst({
         where: {
           propertyId: Number(propertyId),
           tenantCognitoId: tenantCognitoId,
@@ -370,7 +404,7 @@ export const verifyPayment2 = async (
       });
 
       //create razorpay recurring payment plan for monthly rent
-      const plan = await instance.plans.create({
+      const plan: any = await instance.plans.create({
         period: "monthly",
         interval: 1,
         item: {
@@ -380,7 +414,7 @@ export const verifyPayment2 = async (
           description: `Monthly rent for property ID: ${propertyId} for tenant ${tenantCognitoId}`,
         },
         notes: {
-          propertyId: propertyId,
+          propertyId: propertyId.toString(),
           tenantCognitoId: tenantCognitoId,
           managerCognitoId: managerCognitoId,
           purchaseType: "MONTHLY_RENT_PLAN",
@@ -389,19 +423,19 @@ export const verifyPayment2 = async (
       });
 
       //get plan id
-      const planId = plan.id;
+      const planId: string = plan.id;
 
       //create subscription for the tenant
-      const startDate = new Date();
+      const startDate: Date = new Date();
       startDate.setMonth(startDate.getMonth() + 1);
 
-      const subscription = await instance.subscriptions.create({
+      const subscription: any = await instance.subscriptions.create({
         plan_id: planId,
         customer_notify: true,
         total_count: (application?.durationMonths || 12) - 1,
         start_at: Math.floor(startDate.getTime() / 1000),
         notes: {
-          propertyId: propertyId,
+          propertyId: propertyId.toString(),
           tenantCognitoId: tenantCognitoId,
           managerCognitoId: managerCognitoId,
           purchaseType: "MONTHLY_RENT_SUBSCRIPTION",
@@ -420,12 +454,12 @@ export const verifyPayment2 = async (
       });
 
       //create lease for the tenant
-      const leaseStartDate = new Date();
-      const endDate = new Date();
+      const leaseStartDate: Date = new Date();
+      const endDate: Date = new Date();
       endDate.setMonth(
         endDate.getMonth() + (application?.durationMonths || 12)
       );
-      const newLease = await prisma.lease.create({
+      const newLease: Lease = await prisma.lease.create({
         data: {
           startDate: leaseStartDate,
           endDate: endDate,

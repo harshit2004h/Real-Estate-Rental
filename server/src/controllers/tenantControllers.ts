@@ -1,13 +1,15 @@
 import e, { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Tenant, Property, Location, PaymentHistory, Review } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
 
-const prisma = new PrismaClient();
+const prisma: PrismaClient = new PrismaClient();
 
 export const getTenant = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { cognitoId } = req.params;
-    const tenant = await prisma.tenant.findUnique({
+    const { cognitoId } = req.params as { cognitoId: string };
+    const tenant: (Tenant & {
+      favorites: Property[];
+    }) | null = await prisma.tenant.findUnique({
       where: {
         cognitoId: cognitoId,
       },
@@ -33,8 +35,13 @@ export const createTenant = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId, name, email, phoneNumber } = req.body;
-    const tenant = await prisma.tenant.create({
+    const { cognitoId, name, email, phoneNumber }: {
+      cognitoId: string;
+      name: string;
+      email: string;
+      phoneNumber: string;
+    } = req.body;
+    const tenant: Tenant = await prisma.tenant.create({
       data: {
         cognitoId,
         name,
@@ -56,9 +63,13 @@ export const updateTenant = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId } = req.params;
-    const { name, email, phoneNumber } = req.body;
-    const updateTenant = await prisma.tenant.update({
+    const { cognitoId } = req.params as { cognitoId: string };
+    const { name, email, phoneNumber }: {
+      name: string;
+      email: string;
+      phoneNumber: string;
+    } = req.body;
+    const updateTenant: Tenant = await prisma.tenant.update({
       where: {
         cognitoId: cognitoId,
       },
@@ -82,8 +93,10 @@ export const getCurrentResidences = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId } = req.params;
-    const properties = await prisma.property.findMany({
+    const { cognitoId } = req.params as { cognitoId: string };
+    const properties: (Property & {
+      location: Location;
+    })[] = await prisma.property.findMany({
       where: {
         tenants: { some: { cognitoId: cognitoId } },
       },
@@ -98,8 +111,8 @@ export const getCurrentResidences = async (
           await prisma.$queryRaw`SELECT ST_asText(coordinates) as coordinates from "Location" where id = ${property.location.id}`;
 
         const geoJSON: any = wktToGeoJSON(coordinates[0].coordinates || "");
-        const longitude = geoJSON.coordinates[0];
-        const latitude = geoJSON.coordinates[1];
+        const longitude: number = geoJSON.coordinates[0];
+        const latitude: number = geoJSON.coordinates[1];
 
         return {
           ...property,
@@ -127,8 +140,10 @@ export const addFavoriteProperty = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId, propertyId } = req.params;
-    const tenant = await prisma.tenant.findUnique({
+    const { cognitoId, propertyId } = req.params as { cognitoId: string; propertyId: string };
+    const tenant: (Tenant & {
+      favorites: Property[];
+    }) | null = await prisma.tenant.findUnique({
       where: {
         cognitoId: cognitoId,
       },
@@ -137,11 +152,13 @@ export const addFavoriteProperty = async (
       },
     });
 
-    const propertyIdNumber = Number(propertyId);
-    const existingFavorite = tenant?.favorites || [];
+    const propertyIdNumber: number = Number(propertyId);
+    const existingFavorite: Property[] = tenant?.favorites || [];
 
     if (!existingFavorite.some((fav) => fav.id === propertyIdNumber)) {
-      const updatedTenant = await prisma.tenant.update({
+      const updatedTenant: Tenant & {
+        favorites: Property[];
+      } = await prisma.tenant.update({
         where: {
           cognitoId: cognitoId,
         },
@@ -172,9 +189,11 @@ export const removeFavoriteProperty = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId, propertyId } = req.params;
-    const propertyIdNumber = Number(propertyId);
-    const updatedTenant = await prisma.tenant.update({
+    const { cognitoId, propertyId } = req.params as { cognitoId: string; propertyId: string };
+    const propertyIdNumber: number = Number(propertyId);
+    const updatedTenant: Tenant & {
+      favorites: Property[];
+    } = await prisma.tenant.update({
       where: {
         cognitoId: cognitoId,
       },
@@ -201,8 +220,8 @@ export const getPaymentHistory = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId } = req.params;
-    const paymentHistory = await prisma.paymentHistory.findMany({
+    const { cognitoId } = req.params as { cognitoId: string };
+    const paymentHistory: PaymentHistory[] = await prisma.paymentHistory.findMany({
       where: {
         tenantCognitoId: cognitoId,
       },
@@ -223,9 +242,9 @@ export const giveReviewToProperty = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { propertyId, cognitoId } = req.params;
-    const { rating, comment } = req.body;
-    const newReview = await prisma.review.create({
+    const { propertyId, cognitoId } = req.params as { propertyId: string; cognitoId: string };
+    const { rating, comment }: { rating: number; comment: string } = req.body;
+    const newReview: Review = await prisma.review.create({
       data: {
         tenantCognitoId: cognitoId,
         propertyId: Number(propertyId),
@@ -236,15 +255,15 @@ export const giveReviewToProperty = async (
     });
 
     //put average rating and count in property table
-    const reviews = await prisma.review.findMany({
+    const reviews: Review[] = await prisma.review.findMany({
       where: {
         propertyId: Number(propertyId),
       },
     });
 
-    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-    const averageRating = totalRating / reviews.length;
-    const numberOfReviews = reviews.length;
+    const totalRating: number = reviews.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating: number = totalRating / reviews.length;
+    const numberOfReviews: number = reviews.length;
 
     await prisma.property.update({
       where: { id: Number(propertyId) },
@@ -267,8 +286,10 @@ export const getReviewsByTenant = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { cognitoId } = req.params;
-    const reviews = await prisma.review.findMany({
+    const { cognitoId } = req.params as { cognitoId: string };
+    const reviews: (Review & {
+      property: Property;
+    })[] = await prisma.review.findMany({
       where: {
         tenantCognitoId: cognitoId,
       },
@@ -292,8 +313,8 @@ export const getPaymentHistoryByProperty = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { propertyId, cognitoId } = req.params;
-    const paymentHistory = await prisma.paymentHistory.findMany({
+    const { propertyId, cognitoId } = req.params as { propertyId: string; cognitoId: string };
+    const paymentHistory: PaymentHistory[] = await prisma.paymentHistory.findMany({
       where: {
         propertyId: Number(propertyId),
         tenantCognitoId: cognitoId,

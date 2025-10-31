@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Lease, Tenant, Property } from "@prisma/client";
 
-const prisma = new PrismaClient();
+const prisma: PrismaClient = new PrismaClient();
 
 export const getLeases = async (req: Request, res: Response): Promise<void> => {
   try {
-    const leases = await prisma.lease.findMany({
+    const leases: (Lease & {
+      tenant: Tenant;
+      property: Property;
+    })[] = await prisma.lease.findMany({
       include: {
         tenant: true,
         property: true,
@@ -24,8 +27,11 @@ export const getLeaseById = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = req.params;
-    const lease = await prisma.lease.findUnique({
+    const { id } = req.params as { id: string };
+    const lease: (Lease & {
+      tenant: Tenant;
+      property: Property;
+    }) | null = await prisma.lease.findUnique({
       where: { id: Number(id) },
       include: {
         tenant: true,
